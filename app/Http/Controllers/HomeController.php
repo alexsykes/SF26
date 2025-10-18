@@ -27,6 +27,7 @@ class HomeController extends Controller
     public function dashboard()
     {
         $gmap = config('gmap');
+        $numSites = 3;
 
         if (!isset($_COOKIE['lat']) || !isset($_COOKIE['lng'])) {
             $curLat = 53.59476;
@@ -36,13 +37,18 @@ class HomeController extends Controller
             $curLng = $_COOKIE['lng'];
         }
 
-        $sites = Site::select(DB::raw("site_name, site_description, begin, end, lat, lng, `from`, `to`, ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km"))
+        $localSites = Site::select(DB::raw("site_name, site_description, begin, end, lat, lng, `from`, `to`, ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km"))
             ->orderBy('distance_km', 'asc')
-            ->limit(3)
+            ->limit($numSites)
             ->get()
             ->toArray();
 
-//        dd($sites);
-        return view('dashboard', compact('sites', 'curLat', 'curLng'));
+        $allSites = Site::select(DB::raw("id, site_name, site_description, begin, end, lat, lng, `from`, `to`, ROUND(ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000) as distance_km"))
+            ->orderBy('distance_km', 'asc')
+            ->get()
+            ->toArray();
+
+//        dd($localSites);
+        return view('dashboard', compact('localSites', 'curLat', 'curLng', 'allSites'));
     }
 }

@@ -1,6 +1,29 @@
 <x-app-layout>
+    @php
+        $numSites = sizeof($allSites);
+        $numLocalSites = sizeof($localSites);
+
+        $sitesHTML = "";
+        foreach($allSites as $site) {
+            $site_name = $site['site_name'];
+            $site_distance = $site['distance_km'];
+            $begin = $site['begin'];
+            $end = $site['end'];
+            $siteID = $site['id'];
+
+
+
+           $sitesHTML .= "<a href=\"/site/detail/{$siteID}\"><div class=\" grid grid-cols-4 w-full\">
+           <div class=\"col-span-3\"><b>$site_name</b> ($begin - $end) </div>";
+           $sitesHTML .= "<div class=\"col-span-1 text-end\"> $site_distance km</div></div></a>";
+//
+//           $sitesHTML .= "<div class=\" grid grid-cols-2 w-full\"> <div class=\"\"><b>$site_name</b> ($begin - $end) </div>";
+//           $sitesHTML .= "<div class=\" text-end\"> $site_distance km</div></div>";
+        }
+//    dd($sitesHTML);
+    @endphp
     <script>
-        var sites = <?php echo json_encode($sites); ?>;
+        var localSites = <?php echo json_encode($localSites); ?>;
 
         (g => {
             var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__",
@@ -49,8 +72,8 @@
         }
 
 
-        for (i = 0; i < 3; i++) {
-            site = sites[i];
+        for (i = 0; i < {{$numLocalSites}}; i++) {
+            site = localSites[i];
             lat = site['lat'];
             lng = site['lng'];
             initMap(i, site);
@@ -58,25 +81,64 @@
     </script>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">
-            {{ __('Sites') }}
+            {{ __('Local sites') }}
         </h2>
     </x-slot>
 
-    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl p-4 md:p-12">
+    {{-- Maps start   --}}
+    <div class="flex  h-full w-full flex-1 flex-col gap-4 rounded-xl p-4 md:p-4">
         <div class="grid auto-rows-min gap-4 md:grid-cols-3">
             @php
-                for ($i = 0; $i < 3; $i++) {
-                $site = $sites[$i];
+                $numSites = sizeof($localSites);
+                    for ($i = 0; $i < $numSites; $i++) {
+                    $site = $localSites[$i];
+                    $begin = $site['begin'];
+                    $end = $site['end'];
+                    $dirs = $begin." to ".$end;
             @endphp
             <div class="bg-white map shadow-xl relative aspect-4/3 overflow-hidden rounded-xl border border-neutral-200
                     dark:border-neutral-700">
                 <div id="map{{$i}}" class="bg-slate-500 w-full aspect-square"></div>
                 <div class="font-semibold  bg-white p-2 pb-0 ">{{$site['site_name']}}</div>
-                <div class="p-2  bg-white ">{{$site['site_description']}}</div>
+                <div class="p-2 pt-0  bg-white ">{{$site['site_description']}}</div>
+                <div class="p-2  bg-white ">Winds: {{$dirs}}</div>
             </div>
             @php
                 }
             @endphp
+        </div>
+    </div>
+    {{-- Maps end --}}
+
+    {{--  Small screen  --}}
+    <div class="visible bg-white shadow-xl flex ml-4 mr-4 h-full flex-1 flex-col gap-1 rounded-xl border border-neutral-200 md:hidden">
+        @foreach($allSites as $site)
+            @php
+                $siteID = $site['id'];
+                $link = "/site/detail/$siteID";
+            @endphp
+            <a href="{{$link}}">
+                <div class="pl-2 grid grid-cols-4">
+                    <div class="col-span-3">
+                        <b>{{$site['site_name']}}</b>&nbsp; ({{$site['begin']}} - {{$site['end']}})
+                    </div>
+                    <div class="col-span-1 text-end pr-2">
+                        {{$site['distance_km']}} km
+                    </div>
+                </div>
+            </a>
+        @endforeach
+    </div>
+
+    {{-- Wide screen version - TODO prevent line break before wind directions--}}
+    <div class="hidden flex h-full w-full flex-1 flex-col gap-4 rounded-xl p-4 md:p-4 md:block">
+        <div class="bg-white shadow-xl grid auto-rows-min gap-4 ">
+
+            <div class="overflow-hidden  border-neutral-200 dark:border-neutral-700">
+                <div class="p-4  three  md:one">
+                    <?php echo $sitesHTML; ?>
+                </div>
+            </div>
         </div>
     </div>
 </x-app-layout>

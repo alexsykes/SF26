@@ -9,3 +9,13 @@
 .map100 {
     height: 100%;
 }
+
+
+.three {
+    column-count: 3;
+    column-gap: 40px;
+}
+
+.one {
+    column-count: 1;
+}
