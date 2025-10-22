@@ -16,6 +16,10 @@ Route::middleware('auth')->group(function () {
 
 // Site Controller
 Route::get('/site/detail/{id}', [SiteController::class, 'index'])->name('site.detail');
+Route::get('/sites', [SiteController::class, 'sites'])->name('sites');
+
+// Forecast Controller
+Route::get('/forecast/{id}', [\App\Http\Controllers\ForecastController::class, 'index'])->name('forecast.index');
 
 
 require __DIR__ . '/auth.php';

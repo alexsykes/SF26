@@ -2,7 +2,7 @@
     @php
         $numSites = sizeof($allSites);
         $numLocalSites = sizeof($localSites);
-
+//dump($localSites);
         $sitesHTML = "";
         foreach($allSites as $site) {
             $site_name = $site['site_name'];
@@ -95,6 +95,11 @@
                     $begin = $site['begin'];
                     $end = $site['end'];
                     $dirs = $begin." to ".$end;
+                    $lat = $site['lat'];
+                    $lng = $site['lat'];
+                    $siteID = $site['id'];
+
+        $url = "https://www.windy.com/$lat,$lng,14";
             @endphp
             <div class="bg-white map shadow-xl relative aspect-4/3 overflow-hidden rounded-xl border border-neutral-200
                     dark:border-neutral-700">
@@ -102,6 +107,24 @@
                 <div class="font-semibold  bg-white p-2 pb-0 ">{{$site['site_name']}}</div>
                 <div class="p-2 pt-0  bg-white ">{{$site['site_description']}}</div>
                 <div class="p-2  bg-white ">Winds: {{$dirs}}</div>
+                {{--                <h1 class="mb-1 font-medium">Winds</h1>--}}
+                {{--                <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site['begin']}} to {{$site['end']}}</p>--}}
+                {{--                <h1 class="mb-1 font-medium">Locality</h1>--}}
+                {{--                <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site['near']}}</p>--}}
+                {{--                <h1 class="mb-1 font-medium">Description</h1>--}}
+                {{--                <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site['site_description']}}</p>--}}
+                {{--                <h1 class="mb-1 font-medium">Access</h1>--}}
+                {{--                <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site['site_access']}}</p>--}}
+
+                {{--                <p><strong>Coordinates:</strong> Lat: {{$site['lat']}}° Lng: {{$site['lng'] }}°</p>--}}
+                {{--                <p><strong>W3W: </strong><a href="https://what3words.com/{{$site['w3w'] }}">{{$site['w3w']}}</a></p>--}}
+                {{--                --}}{{--                <!-- p><strong>Site details last updated:</strong> {{$site['updated_at']->format('M jS, Y') }}</p -->--}}
+                {{--                --}}{{--                <p><strong>Weather last updated :</strong> {{$forecast->updated_at->format('M jS, g:ia') }}</p>--}}
+                {{--                <p><strong>Current conditions on Windy.com - </strong><a target="_blank" href="{{$url}}">click--}}
+                {{--                        here</a>--}}
+                <div class="p-2  bg-white ">Full details and forecast - <a href="/site/detail/{{$siteID}}">click
+                        here</a>
+                </div>
             </div>
             @php
                 }

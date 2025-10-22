@@ -37,7 +37,7 @@ class HomeController extends Controller
             $curLng = $_COOKIE['lng'];
         }
 
-        $localSites = Site::select(DB::raw("site_name, site_description, begin, end, lat, lng, `from`, `to`, ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km"))
+        $localSites = Site::select(DB::raw("id, site_name, site_description, near, site_access, w3w, begin, end, lat, lng, updated_at, `from`, `to`, ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km"))
             ->orderBy('distance_km', 'asc')
             ->limit($numSites)
             ->get()
