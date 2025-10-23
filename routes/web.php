@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\ForecastController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SiteController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -19,7 +21,12 @@ Route::get('/site/detail/{id}', [SiteController::class, 'index'])->name('site.de
 Route::get('/sites', [SiteController::class, 'sites'])->name('sites');
 
 // Forecast Controller
-Route::get('/forecast/{id}', [\App\Http\Controllers\ForecastController::class, 'index'])->name('forecast.index');
+Route::get('/forecast/{id}', [ForecastController::class, 'index'])->name('forecast.index');
+
+// User Controller
+Route::get('/user/favourites', [UserController::class, 'favourites'])->middleware(['auth', 'verified'])->name('favourites');
+Route::get('/addFavourite/{id}', [UserController::class, 'addFavourite'])->middleware(['auth', 'verified'])->name('addFavourite');
+Route::get('/removeFavourite/{id}', [UserController::class, 'removeFavourite'])->middleware(['auth', 'verified'])->name('removeFavourite');
 
 
 require __DIR__ . '/auth.php';

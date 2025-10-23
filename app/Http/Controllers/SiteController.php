@@ -9,10 +9,9 @@ class SiteController extends Controller
 {
     public function index($id)
     {
+        $user = auth()->user();
         $site = Site::where('id', $id)->first();
-
-//        dd($forecast);
-        return view('site.detail', compact('site'));
+        return view('site.detail', compact('site', 'user'));
     }
 
     function sites()

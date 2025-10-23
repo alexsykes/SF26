@@ -1,8 +1,28 @@
 <x-guest-layout>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script>
+        function onSubmit(token) {
+            document.getElementById("loginForm").submit();
+        }
+    </script>
+    <style>
+        .grecaptcha-badge {
+            width: 70px !important;
+            overflow: hidden !important;
+            transition: all 0.3s ease !important;
+            left: 4px !important;
+        }
+
+        .grecaptcha-badge:hover {
+            width: 256px !important;
+        }
+
+    </style>
+
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}">
+    <form id="loginForm" method="POST" action="{{ route('login') }}">
         @csrf
 
         <!-- Email Address -->
@@ -39,8 +59,15 @@
                 </a>
             @endif
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
+{{--            <x-primary-button class="ms-3">--}}
+{{--                {{ __('Log in') }}--}}
+{{--            </x-primary-button>--}}
+        </div>
+        <div class="flex items-center justify-end mt-4">
+            <x-primary-button class="g-recaptcha btn btn-primary btn-lg ms-4"
+                              data-sitekey="{{ config('services.recaptcha_v3.siteKey') }}"
+                              data-callback="onSubmit"
+                              data-action="registerUser">Submit
             </x-primary-button>
         </div>
     </form>

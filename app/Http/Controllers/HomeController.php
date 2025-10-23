@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Site;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -26,7 +27,9 @@ class HomeController extends Controller
 
     public function dashboard()
     {
-        $gmap = config('gmap');
+        $user = Auth::user();
+
+        $userFavourites = $user->favourites;
         $numSites = 3;
 
         if (!isset($_COOKIE['lat']) || !isset($_COOKIE['lng'])) {
@@ -49,6 +52,6 @@ class HomeController extends Controller
             ->toArray();
 
 //        dd($localSites);
-        return view('dashboard', compact('localSites', 'curLat', 'curLng', 'allSites'));
+        return view('dashboard', compact('localSites', 'curLat', 'curLng', 'allSites', 'userFavourites'));
     }
 }

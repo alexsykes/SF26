@@ -47,12 +47,24 @@
         initMap();
     </script>
     @php
-        $site_name = $site['site_name'];
-        $url = "https://www.windy.com/?$site->lat,$site->lng,14";
+        $favourites = $user->favourites;
+        $favArray = explode(',', $favourites);
+        $siteID = $site['id'];
+        $sitename = $site['site_name'];
+
+        $isFavourite = in_array($siteID, $favArray);
+
+        $icon = $isFavourite ? "text-teal-400 fa-solid fa-star"  : "text-teal-400 fa-regular fa-star";
+
+        $link = "$sitename <i class=\"$icon\"></i>";
+
+
+            $site_name = $site['site_name'];
+            $url = "https://www.windy.com/?$site->lat,$site->lng,14";
     @endphp
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">
-            {{ __($site['site_name']) }}
+            @php echo $link; @endphp
         </h2>
     </x-slot>
 
@@ -62,7 +74,8 @@
             <div class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-4xl lg:flex-row">
 
                 {{--  Site description          --}}
-                <div class="text-[13px] leading-[20px] flex-1 p-6 pb-12 lg:p-12 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-bl-lg rounded-br-lg lg:rounded-tl-lg lg:rounded-br-none">               <div class="mt-3 mb-3 space-y-1 ">
+                <div class="text-[13px] leading-[20px] flex-1 p-6 pb-12 lg:p-12 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-bl-lg rounded-br-lg lg:rounded-tl-lg lg:rounded-br-none">
+                    <div class="mt-3 mb-3 space-y-1 ">
                         <button class="border p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "
                                 onclick="history.back()">Go
                             Back
@@ -85,6 +98,11 @@
                             here</a>
                     <p><strong>48 hour forecast - </strong><a href="/forecast/{{$site->id}}">click here</a>
                     </p>
+                    @if($isFavourite)
+                        <p class="text-red-400 text-lg font-semibold"><a href="/removeFavourite/{{$site->id}}">Remove from Favourites</a></p>
+                    @else
+                        <p class="text-red-400 text-lg font-semibold"><a href="/addFavourite/{{$site->id}}">Add to Favourites</a></p>
+                    @endif
                 </div>
                 {{--  end of Site description--}}
 
