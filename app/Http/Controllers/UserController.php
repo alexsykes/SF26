@@ -21,8 +21,9 @@ class UserController extends Controller
             ->orderBy('site_name', 'asc')
             ->get();
 
-        $favourites = Site::whereIn('id', $siteIDArray)
+        $favourites = Site::whereIn('sites.id', $siteIDArray)
             ->orderBy('site_name', 'asc')
+            ->join('forecasts', 'sites.id', '=', 'forecasts.site_id')
             ->get();
 
         return view('user.favourites', compact('sites', 'favourites'));

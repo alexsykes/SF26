@@ -1,5 +1,6 @@
 {{--@dd($sites)--}}    @php
     $numSites = sizeof($sites);
+    $userFavouritesArray = explode(',', $favourites);
 
     $sitesHTML = "";
     foreach($sites as $site) {
@@ -9,9 +10,13 @@
         $end = $site['end'];
         $siteID = $site['id'];
 
+            $fav = "";
+            if(in_array($siteID, $userFavouritesArray)) {
+                $fav = " <span><i class=\"text-teal-400 fa-solid fa-heart\"></i></span>";
+            }
 
            $sitesHTML .= "<a href=\"/site/detail/{$siteID}\"><div class=\" grid grid-cols-4 w-full\">
-           <div class=\"col-span-3\"><b>$site_name</b> ($begin - $end) </div>";
+           <div class=\"col-span-3\">$fav <b> $site_name</b>  ($begin - $end) </div>";
            $sitesHTML .= "<div class=\"col-span-1 text-end\"> $site_distance km</div></div></a>";
 
 }
@@ -25,7 +30,7 @@
 
     </x-slot>
 
-    <div class="visible bg-white shadow-xl flex mt-4 ml-4 mr-4 h-full flex-1 flex-col gap-1 rounded-xl border border-neutral-200 md:hidden">
+    <div class="visible bg-white shadow-xl flex ml-4 mr-4 h-full flex-1 flex-col gap-1 rounded-xl border border-neutral-200 md:hidden">
         @foreach($sites as $site)
             @php
                 $siteID = $site['id'];
@@ -34,6 +39,10 @@
             <a href="{{$link}}">
                 <div class="pl-2 grid grid-cols-4">
                     <div class="col-span-3">
+                        @if(in_array($siteID, $userFavouritesArray))
+                            <span>
+                <i class="text-teal-400 fa-solid fa-heart"></i></span>
+                        @endif
                         <b>{{$site['site_name']}}</b>&nbsp; ({{$site['begin']}} - {{$site['end']}})
                     </div>
                     <div class="col-span-1 text-end pr-2">

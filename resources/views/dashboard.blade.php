@@ -18,7 +18,7 @@
             }
 
            $sitesHTML .= "<a href=\"/site/detail/{$siteID}\"><div class=\" grid grid-cols-4 w-full\">
-           <div class=\"col-span-3\"><b>$site_name</b> $fav ($begin - $end) </div>";
+           <div class=\"col-span-3\">$fav<b> $site_name</b> ($begin - $end) </div>";
            $sitesHTML .= "<div class=\"col-span-1 text-end\"> $site_distance km</div></div></a>";
 //
 //           $sitesHTML .= "<div class=\" grid grid-cols-2 w-full\"> <div class=\"\"><b>$site_name</b> ($begin - $end) </div>";

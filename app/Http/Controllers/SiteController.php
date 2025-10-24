@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Site;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class SiteController extends Controller
@@ -29,6 +30,16 @@ class SiteController extends Controller
             ->get()
             ->toArray();
 
-        return view('site.list', compact('sites'));
+        $user_id = auth()->user()->id;
+
+        $siteIDs = User::where('id', $user_id)
+            ->select('favourites')
+            ->first();
+
+        $siteIDArray = explode(',', $siteIDs['favourites']);
+
+        $favourites = auth()->user()->favourites;
+
+        return view('site.list', compact('sites', 'favourites'));
     }
 }

@@ -72,16 +72,29 @@
     <div class="mt-4 flex items-center justify-center w-full transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0">
         <div class="bg-white   shadow-2xl">
             <div class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-4xl lg:flex-row">
-
                 {{--  Site description          --}}
                 <div class="text-[13px] leading-[20px] flex-1 p-6 pb-12 lg:p-12 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-bl-lg rounded-br-lg lg:rounded-tl-lg lg:rounded-br-none">
-                    <div class="mt-3 mb-3 space-y-1 ">
-                        <button class="border p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "
-                                onclick="history.back()">Go
-                            Back
-                        </button>
+                    <div class="flex justify-between">
+                        <div class="">
+                            <button class="border p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "
+                                    onclick="history.back()">Go
+                                Back
+                            </button>
+                        </div>
+                        <div class="">
+                            @if($isFavourite)
+                                <p class="border p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "><a
+                                            href="/removeFavourite/{{$site->id}}">Remove
+                                        from Favourites</a></p>
+                            @else
+                                <p class="border p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "><a
+                                            href="/addFavourite/{{$site->id}}">Add
+                                        to
+                                        Favourites</a></p>
+                            @endif
+                        </div>
                     </div>
-                    <h1 class="mb-1 font-medium">Winds</h1>
+                    <h1 class="pt-4 mb-1 font-medium">Winds</h1>
                     <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site->begin}} to {{$site->end}}</p>
                     <h1 class="mb-1 font-medium">Locality</h1>
                     <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site->near}}</p>
@@ -98,11 +111,7 @@
                             here</a>
                     <p><strong>48 hour forecast - </strong><a href="/forecast/{{$site->id}}">click here</a>
                     </p>
-                    @if($isFavourite)
-                        <p class="text-red-400 text-lg font-semibold"><a href="/removeFavourite/{{$site->id}}">Remove from Favourites</a></p>
-                    @else
-                        <p class="text-red-400 text-lg font-semibold"><a href="/addFavourite/{{$site->id}}">Add to Favourites</a></p>
-                    @endif
+
                 </div>
                 {{--  end of Site description--}}
 
