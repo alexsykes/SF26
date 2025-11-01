@@ -10,6 +10,8 @@ class HomeController extends Controller
 {
     public function index()
     {
+
+        
         $gmap = config('gmap');
 
         if (!isset($_COOKIE['lat']) || !isset($_COOKIE['lng'])) {

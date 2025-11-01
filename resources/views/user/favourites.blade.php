@@ -1,29 +1,7 @@
 <x-app-layout>
-
-    @php
-        //    dd($sites);
-                $numSites = sizeof($sites);
-                $numFavourites = sizeof($favourites);
-
-                $sitesHTML = "";
-                foreach($sites as $site) {
-                    if($site) {
-                    $site_name = $site['site_name'];
-                    $site_distance = $site['distance_km'];
-                    $begin = $site['begin'];
-                    $end = $site['end'];
-                    $siteID = $site['id'];
-
-
-                       $sitesHTML .= "<a href=\"/site/detail/{$siteID}\"><div class=\" grid grid-cols-4 w-full\">
-                       <div class=\"col-span-3\"><b>$site_name</b> ($begin - $end) </div>";
-                       $sitesHTML .= "<div class=\"col-span-1 text-end\"> $site_distance km</div></div></a>";
-        }
-            }
-            //    dd($sitesHTML);
-    @endphp
     <script>
-        var localSites = <?php echo json_encode($favourites); ?>;
+        var favourites = <?php echo json_encode($favourites); ?>;
+        var numFavourites = favourites.length ? favourites.length : 0;
 
         (g => {
             var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__",
@@ -72,8 +50,8 @@
         }
 
 
-        for (i = 0; i < {{$numFavourites}}; i++) {
-            site = localSites[i];
+        for (i = 0; i < numFavourites; i++) {
+            site = favourites[i];
             lat = site['lat'];
             lng = site['lng'];
             initMap(i, site);
@@ -89,66 +67,75 @@
     <div class="flex  h-full w-full flex-1 flex-col gap-4 rounded-xl p-4 md:p-4">
         <div class="grid auto-rows-min gap-4 md:grid-cols-3">
             @php
-                $numSites = sizeof($favourites);
-                    for ($i = 0; $i < $numSites; $i++) {
-                    $site = $favourites[$i];
-                    $begin = $site['begin'];
-                    $end = $site['end'];
-                    $dirs = $begin." to ".$end;
-                    $lat = $site['lat'];
-                    $lng = $site['lat'];
-                    $siteID = $site['id'];
+//                            dd($favourites);
+                //                $numSites = sizeof($favourites);
 
-        $url = "https://www.windy.com/$lat,$lng,14";
+                //                 For each favourite
+                //                    for ($i = 0; $i < $numSites; $i++) {
+                $i=0;
+                foreach ($favourites as $site) {
+                //                    $site = $favourites[$i];
+//                                    $begin = $site['begin'];
+//                                    $end = $site['end'];
+//                                    $dirs = $begin." to ".$end;
+//                                    $lat = $site['lat'];
+//                                    $lng = $site['lng'];
+//                                    $siteID = $site['site_id'];
+//                                    $forecastData = $site['data'];
+
+                                    $begin = $site->begin;
+                                    $end = $site->end;
+                                    $dirs = $begin." to ".$end;
+                                    $lat = $site->lat;
+                                    $lng = $site->lng;
+                                    $siteID = $site->id;
+                                    $forecastData = $site->data;
+
+                                            $data = json_decode($forecastData);
+                        $directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
+                        $dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+                        $hourly = $data->hourly;
+                        $daily = $data->daily;
+
+                        $today = $daily[0]->summary;
+                        $tomorrow = $daily[1]->summary;
+                        $html = "";
+                        foreach($hourly as $hourData) {
+                            $time = date("D ga", $hourData->dt);
+                                            $windSpeeds = intval($hourData->wind_speed)." ~ ".intval($hourData->wind_gust);
+                                            $dir = $hourData->wind_deg;
+
+                                            $windIndex = (int) (($dir * 16 / 360) + 0.5);
+                                            $dir = $directions[$windIndex];
+
+                                            $html .= "<p><strong>$time</strong> $dir at $windSpeeds mph</p>";
+                                }
+
+                        $url = "https://www.windy.com/$lat,$lng,14";
+
             @endphp
             <div class="bg-white map shadow-xl relative aspect-4/3 overflow-hidden rounded-xl border border-neutral-200
                     dark:border-neutral-700">
-{{--                <div class="font-semibold  bg-white p-2 pb-0 "></div>--}}
+                {{--                <div class="font-semibold  bg-white p-2 pb-0 "></div>--}}
 
-                <details>
-                    <summary  class="font-semibold  bg-white p-2 pb-2" >{{$site['site_name']}}</summary>
+                <details open>
+                    <summary class="font-semibold  bg-white p-2 pb-2">{{$site->site_name}}</summary>
                     <div id="map{{$i}}" class="bg-slate-500 w-full aspect-square"></div>
-                    <div class="p-2 pt-0  bg-white ">{{$site['site_description']}}</div>
+                    <div class="p-2 pt-0  bg-white ">{{$site->site_description}}</div>
                     <div class="p-2  bg-white ">Winds: {{$dirs}}</div>
-                    <div class="p-2  bg-white ">Full details and forecast - <a href="/site/detail/{{$siteID}}">click
-                            here</a>
-                    </div>
+                    <details>
+                        <summary class="font-semibold  bg-white p-2 pb-2">Latest forecast</summary>
+                        <div class="p-2  bg-white "><?php echo $html; ?>
+                        </div>
+                    </details>
                 </details>
             </div>
             @php
-                }
+
+                $i++;
+            }
             @endphp
         </div>
     </div>
-    {{-- Maps end --}}
-{{--    <div class="visible bg-white shadow-xl flex mt-4 ml-4 mr-4 h-full flex-1 flex-col gap-1 rounded-xl border border-neutral-200 md:hidden">--}}
-{{--        @foreach($sites as $site)--}}
-{{--            @php--}}
-{{--                $siteID = $site['id'];--}}
-{{--                $link = "/site/detail/$siteID";--}}
-{{--            @endphp--}}
-{{--            <a href="{{$link}}">--}}
-{{--                <div class="pl-2 grid grid-cols-4">--}}
-{{--                    <div class="col-span-3">--}}
-{{--                        <b>{{$site['site_name']}}</b>&nbsp; ({{$site['begin']}} - {{$site['end']}})--}}
-{{--                    </div>--}}
-{{--                    <div class="col-span-1 text-end pr-2">--}}
-{{--                        {{$site['distance_km']}} km--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </a>--}}
-{{--        @endforeach--}}
-{{--    </div>--}}
-
-{{--    --}}{{-- Wide screen version - TODO prevent line break before wind directions--}}
-{{--    <div class="hidden flex h-full w-full flex-1 flex-col gap-4 rounded-xl p-4 md:p-4 md:block">--}}
-{{--        <div class="bg-white shadow-xl grid auto-rows-min gap-4 ">--}}
-
-{{--            <div class="overflow-hidden  border-neutral-200 dark:border-neutral-700">--}}
-{{--                <div class="p-4  three  md:one">--}}
-{{--                    <?php echo $sitesHTML; ?>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
 </x-app-layout>

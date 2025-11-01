@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Site;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -11,22 +11,22 @@ class UserController extends Controller
     {
         $user_id = auth()->user()->id;
 
+//        Get siteIDs from logged in user
         $siteIDs = User::where('id', $user_id)
             ->select('favourites')
             ->first();
 
         $siteIDArray = explode(',', $siteIDs['favourites']);
 
-        $sites = Site::whereNotIn('id', $siteIDArray)
-            ->orderBy('site_name', 'asc')
-            ->get();
+        $favourites = DB::table('sites')
+            ->leftJoin('forecasts', 'sites.id', '=', 'forecasts.site_id')
+            ->whereIn('sites.id', $siteIDArray)
+            ->select('sites.*', 'forecasts.data')
+            ->get()
+            ->toArray();
 
-        $favourites = Site::whereIn('sites.id', $siteIDArray)
-            ->orderBy('site_name', 'asc')
-            ->join('forecasts', 'sites.id', '=', 'forecasts.site_id')
-            ->get();
-
-        return view('user.favourites', compact('sites', 'favourites'));
+//        dd($favourites[0]->data);
+        return view('user.favourites', compact('favourites'));
     }
 
     public function removeFavourite($id)

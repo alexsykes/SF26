@@ -13,12 +13,12 @@
     <!-- Styles / Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script>
-        // document.addEventListener("DOMContentLoaded", getLocation());
         // const x = document.getElementById("demo");
 
         function getLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(success);
+                console.log("location success.");
             } else {
                 console.log("Geolocation is not supported by this browser.");
             }
@@ -29,6 +29,16 @@
             document.cookie = "lat=" + position.coords.latitude;
             document.cookie = "lng=" + position.coords.longitude;
         }
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(success);
+                console.log("location success.");
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+        });
 
     </script>
 

@@ -39,6 +39,7 @@ class SiteController extends Controller
         $siteIDArray = explode(',', $siteIDs['favourites']);
 
         $favourites = auth()->user()->favourites;
+//        dd($favourites);
 
         return view('site.list', compact('sites', 'favourites'));
     }
