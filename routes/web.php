@@ -19,6 +19,7 @@ Route::middleware('auth')->group(function () {
 // Site Controller
 Route::get('/site/detail/{id}', [SiteController::class, 'index'])->name('site.detail');
 Route::get('/sites', [SiteController::class, 'sites'])->name('sites');
+Route::get('site/update_request/{id}/',  [SiteController::class, 'update_request'])->middleware(['auth', 'verified'])->name('site.update_request');
 
 // Forecast Controller
 Route::get('/forecast/{id}', [ForecastController::class, 'index'])->name('forecast.index');
@@ -27,6 +28,7 @@ Route::get('/forecast/{id}', [ForecastController::class, 'index'])->name('foreca
 Route::get('/user/favourites', [UserController::class, 'favourites'])->middleware(['auth', 'verified'])->name('favourites');
 Route::get('/addFavourite/{id}', [UserController::class, 'addFavourite'])->middleware(['auth', 'verified'])->name('addFavourite');
 Route::get('/removeFavourite/{id}', [UserController::class, 'removeFavourite'])->middleware(['auth', 'verified'])->name('removeFavourite');
+Route::post('/site_user_update', [SiteController::class, 'site_user_update'])->middleware(['auth', 'verified'])->name('site.user.update');
 
 
 require __DIR__ . '/auth.php';

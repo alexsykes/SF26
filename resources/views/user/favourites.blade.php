@@ -23,15 +23,15 @@
         })({
             key: "{{config('gmap.gmap_key')}}",
             v: "weekly",
-            // Use the 'v' parameter to indicate the version to use (weekly, beta, alpha, etc.).
-            // Add other bootstrap parameters as needed, using camel case.
+// Use the 'v' parameter to indicate the version to use (weekly, beta, alpha, etc.).
+// Add other bootstrap parameters as needed, using camel case.
         });
 
 
         let map;
 
         async function initMap(i, site) {
-            // console.log(i);
+// console.log(i);
             const {Map} = await google.maps.importLibrary("maps");
             const {AdvancedMarkerElement} = await google.maps.importLibrary("marker");
 
@@ -65,63 +65,49 @@
     </x-slot>
     {{-- Maps start   --}}
     <div class="flex  h-full w-full flex-1 flex-col gap-4 rounded-xl p-4 md:p-4">
-        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+        <div class="grid auto-rows-min gap-4 ">
             @php
-//                            dd($favourites);
-                //                $numSites = sizeof($favourites);
-
-                //                 For each favourite
-                //                    for ($i = 0; $i < $numSites; $i++) {
                 $i=0;
                 foreach ($favourites as $site) {
-                //                    $site = $favourites[$i];
-//                                    $begin = $site['begin'];
-//                                    $end = $site['end'];
-//                                    $dirs = $begin." to ".$end;
-//                                    $lat = $site['lat'];
-//                                    $lng = $site['lng'];
-//                                    $siteID = $site['site_id'];
-//                                    $forecastData = $site['data'];
+                $begin = $site->begin;
+                $end = $site->end;
+                $dirs = $begin." to ".$end;
+                $lat = $site->lat;
+                $lng = $site->lng;
+                $siteID = $site->id;
+                $forecastData = $site->data;
+                $data = json_decode($forecastData);
+                $directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
+                $dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-                                    $begin = $site->begin;
-                                    $end = $site->end;
-                                    $dirs = $begin." to ".$end;
-                                    $lat = $site->lat;
-                                    $lng = $site->lng;
-                                    $siteID = $site->id;
-                                    $forecastData = $site->data;
+                $hourly = $data->hourly;
+                $daily = $data->daily;
 
-                                            $data = json_decode($forecastData);
-                        $directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
-                        $dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+                $today = $daily[0]->summary;
+                $tomorrow = $daily[1]->summary;
+                $html = "";
+                foreach($hourly as $hourData) {
+                $time = date("D ga", $hourData->dt);
+                $windSpeeds = intval($hourData->wind_speed)." ~ ".intval($hourData->wind_gust);
+                $dir = $hourData->wind_deg;
 
-                        $hourly = $data->hourly;
-                        $daily = $data->daily;
+                $windIndex = (int) (($dir * 16 / 360) + 0.5);
+                $dir = $directions[$windIndex];
 
-                        $today = $daily[0]->summary;
-                        $tomorrow = $daily[1]->summary;
-                        $html = "";
-                        foreach($hourly as $hourData) {
-                            $time = date("D ga", $hourData->dt);
-                                            $windSpeeds = intval($hourData->wind_speed)." ~ ".intval($hourData->wind_gust);
-                                            $dir = $hourData->wind_deg;
+                $html .= "<p><strong>$time</strong> $dir at $windSpeeds mph</p>";
+                }
 
-                                            $windIndex = (int) (($dir * 16 / 360) + 0.5);
-                                            $dir = $directions[$windIndex];
-
-                                            $html .= "<p><strong>$time</strong> $dir at $windSpeeds mph</p>";
-                                }
-
-                        $url = "https://www.windy.com/$lat,$lng,14";
+                $url = "https://www.windy.com/$lat,$lng,14";
 
             @endphp
             <div class="bg-white map shadow-xl relative aspect-4/3 overflow-hidden rounded-xl border border-neutral-200
-                    dark:border-neutral-700">
+dark:border-neutral-700">
                 {{--                <div class="font-semibold  bg-white p-2 pb-0 "></div>--}}
 
                 <details open>
                     <summary class="font-semibold  bg-white p-2 pb-2">{{$site->site_name}}</summary>
                     <div id="map{{$i}}" class="bg-slate-500 w-full aspect-square"></div>
+
                     <div class="p-2 pt-0  bg-white ">{{$site->site_description}}</div>
                     <div class="p-2  bg-white ">Winds: {{$dirs}}</div>
                     <details>
@@ -129,12 +115,15 @@
                         <div class="p-2  bg-white "><?php echo $html; ?>
                         </div>
                     </details>
+                    @auth
+                        <div class="p-2 font-semibold">Suggest an update or correction - <a
+                                    href="/site/update_request/{{$site->id}}">click here</a></div>
+                    @endauth()
                 </details>
             </div>
             @php
-
                 $i++;
-            }
+                }
             @endphp
         </div>
     </div>

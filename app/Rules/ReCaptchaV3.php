@@ -6,12 +6,13 @@ use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Request;
 
 class ReCaptchaV3 implements ValidationRule
 {
     public function __construct(
         private ?string $action = null,
-        private ?float $minScore = null)
+        private ?float  $minScore = null)
     {
     }
 
@@ -33,7 +34,6 @@ class ReCaptchaV3 implements ValidationRule
             ]);
 
 
-
         // This happens if google denied our request with an error
         if ($siteVerify->failed()) {
             $fail('Google reCAPTCHA was not able to verify the form, please try again.');
@@ -49,7 +49,7 @@ class ReCaptchaV3 implements ValidationRule
             // When this fails it means the browser didn't send a correct code. This means it's very likely a bot we should block
             if ($body['success'] !== true) {
                 $fail('Your form submission failed the Google reCAPTCHA verification, please try again.');
-                $ip = \Request::ip();
+                $ip = Request::ip();
                 Log::info("Recaptcha fail: $ip");
                 return;
             }

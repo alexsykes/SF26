@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Site;
+use App\Models\Suggestion;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class SiteController extends Controller
@@ -43,4 +45,27 @@ class SiteController extends Controller
 
         return view('site.list', compact('sites', 'favourites'));
     }
+
+    public function update_request($id)
+    {
+        $site = Site::where('id', $id)->first();
+        $user = auth()->user();
+        return view('site.update_form', compact('site', 'user'));
+    }
+
+    public function site_user_update(Request $request)
+    {
+        $user = auth()->user();
+        $siteID = $request->input('site_id');
+
+        $attributes['userID'] = $user->id;
+        $attributes['siteID'] = $siteID;
+        $attributes['suggestion'] = $request->input('comment');
+
+        Suggestion::create($attributes);
+
+        return view('site.acknowledge');
+
+    }
+
 }

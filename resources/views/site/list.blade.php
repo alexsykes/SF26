@@ -30,7 +30,7 @@
 
     </x-slot>
 
-    <div class="visible bg-white shadow-xl flex ml-4 mr-4 h-full flex-1 flex-col gap-1 rounded-xl border border-neutral-200 md:hidden">
+    <div class="visible p-2  bg-white shadow-xl flex mt-4 ml-4 mr-4 h-full flex-1 flex-col gap-1 rounded-xl border border-neutral-200 md:hidden">
         @foreach($sites as $site)
             @php
                 $siteID = $site['id'];

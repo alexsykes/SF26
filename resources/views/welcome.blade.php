@@ -13,31 +13,20 @@
     <!-- Styles / Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script>
-        // const x = document.getElementById("demo");
-
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(success);
-                console.log("location success.");
-            } else {
-                console.log("Geolocation is not supported by this browser.");
-            }
-            return true;
-        }
-
         function success(position) {
             document.cookie = "lat=" + position.coords.latitude;
             document.cookie = "lng=" + position.coords.longitude;
         }
 
-
         document.addEventListener("DOMContentLoaded", function () {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(success);
-                console.log("location success.");
+                console.log("Request location");
             } else {
                 console.log("Geolocation is not supported by this browser.");
             }
+            navigator.permissions.query({name: 'geolocation'})
+                .then(console.log)
         });
 
     </script>

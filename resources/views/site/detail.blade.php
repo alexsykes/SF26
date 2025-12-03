@@ -111,6 +111,10 @@
                             here</a>
                     <p><strong>48 hour forecast - </strong><a href="/forecast/{{$site->id}}">click here</a>
                     </p>
+                    @auth
+                        <p><strong>Suggest an update or correction - </strong><a
+                                    href="/site/update_request/{{$site->id}}">click here</a></p>
+                    @endauth()
 
                 </div>
                 {{--  end of Site description--}}

@@ -39,7 +39,7 @@ class UserController extends Controller
         array_splice($favouriteArray, $pos, 1);
         $newFavourites = implode(',', $favouriteArray);
 
-        $user->favourites = $newFavourites;
+        $user->favourites = trim($newFavourites, " ,\n\r\t\v\x00");
         $user->save();
         return redirect('/user/favourites');
     }
@@ -47,7 +47,7 @@ class UserController extends Controller
     public function addFavourite($id)
     {
         $user = auth()->user();
-        $favourites = $user->favourites;
+        $favourites = trim($user->favourites, " ,\n\r\t\v\x00");
         $favouriteArray = explode(',', $favourites);
         array_push($favouriteArray, $id);
         $newFavourites = implode(',', $favouriteArray);

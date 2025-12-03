@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -58,8 +57,8 @@ return new class extends Migration
         Schema::create('sites', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('clubID');
-            $table->decimal('lat',10, 6)->nullable();;
-            $table->decimal('lng',10, 6)->nullable();
+            $table->decimal('lat', 10, 6)->nullable();
+            $table->decimal('lng', 10, 6)->nullable();
             $table->string('near', 255)->nullable();
             $table->tinyInteger('published')->default(0);
             $table->text('site_access');
