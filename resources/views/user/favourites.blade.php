@@ -64,7 +64,7 @@
 
     </x-slot>
     {{-- Maps start   --}}
-    <div class="flex  h-full w-full flex-1 flex-col gap-4 rounded-xl p-4 md:p-4">
+    <div class="flex   w-5xl  flex-1 flex-col gap-4 rounded-xl p-4 md:p-4">
         <div class="grid auto-rows-min gap-4 ">
             @php
                 $i=0;
@@ -97,27 +97,37 @@
                 $html .= "<p><strong>$time</strong> $dir at $windSpeeds mph</p>";
                 }
 
-                $url = "https://www.windy.com/$lat,$lng,14";
-
+                $url = "https://www.windy.com/?".$lat.",".$lng.",14";
+//                $url = "https://www.windy.com/\?$site->lat,$site->lng,14";
             @endphp
-            <div class="bg-white map shadow-xl relative aspect-4/3 overflow-hidden rounded-xl border border-neutral-200
-dark:border-neutral-700">
+            <div class="bg-white map shadow-xl relative aspect-4/3 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
                 {{--                <div class="font-semibold  bg-white p-2 pb-0 "></div>--}}
 
-                <details open>
-                    <summary class="font-semibold  bg-white p-2 pb-2">{{$site->site_name}}</summary>
-                    <div id="map{{$i}}" class="bg-slate-500 w-full aspect-square"></div>
+                <details>
+                    <summary class="flex flex-col-2 font-semibold justify-between bg-white p-2 pb-2">
+                        <div class="col-span-1">
+                            {{$site->site_name}}
+                        </div>
+                        <div class="col-span-1 font-semibold"><a class="underline" target="_blank" href="{{$url}}">Windy.com</a></div>
+                    </summary>
+                    <div id="map{{$i}}" class="bg-slate-500 w-full aspect-video"></div>
 
-                    <div class="p-2 pt-0  bg-white ">{{$site->site_description}}</div>
-                    <div class="p-2  bg-white ">Winds: {{$dirs}}</div>
+                    <div class="pl-2 pt-0  bg-white ">{{$site->site_description}}</div>
+                    <div class="pl-2  bg-white ">Winds: {{$dirs}}</div>
+{{--                    <div class="pl-2 font-semibold">Current conditions on Windy.com - <a class="underline"--}}
+{{--                                                                                         target="_blank"--}}
+{{--                                                                                         href="{{$url}}">click--}}
+{{--                            here</a></div>--}}
                     <details>
-                        <summary class="font-semibold  bg-white p-2 pb-2">Latest forecast</summary>
-                        <div class="p-2  bg-white "><?php echo $html; ?>
+
+                        <summary class="font-semibold  bg-white pl-2">48 hour forecast</summary>
+                        <div class="pl-2  bg-white "><?php echo $html; ?>
                         </div>
                     </details>
                     @auth
-                        <div class="p-2 font-semibold">Suggest an update or correction - <a
-                                    href="/site/update_request/{{$site->id}}">click here</a></div>
+                        <div class="pl-2 pt-2 font-semibold">Suggest a site update or correction - <a class="underline"
+                                                                                                      href="/site/update_request/{{$site->id}}">click
+                                here</a></div>
                     @endauth()
                 </details>
             </div>

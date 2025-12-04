@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Models\User;
 use App\Rules\ReCaptchaV3;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -31,10 +30,16 @@ class AuthenticatedSessionController extends Controller
         ]);
 
         $request->authenticate();
-
         $request->session()->regenerate();
+        $user = Auth::user();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $favourites = $user->favourites;
+
+        if($favourites == '') {
+            return redirect()->intended(route('dashboard', absolute: false));
+        } else {
+            return redirect()->intended(route('favourites', absolute: false));
+        }
     }
 
     /**

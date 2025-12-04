@@ -3,19 +3,20 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SuggestionAcknowledgement extends Mailable
+class SuggestionReviewCompleted extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(public $name, public $site_name, public $suggestion)
+    public function __construct(public $name, public $suggestion, public $site_name, public $siteID)
     {
         //
     }
@@ -26,7 +27,7 @@ class SuggestionAcknowledgement extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Suggestion Acknowledgement',
+            subject: 'Suggestion Review Completed',
         );
     }
 
@@ -36,12 +37,13 @@ class SuggestionAcknowledgement extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mails.suggestion-acknowledge',
+            view: 'mails.site-reviewed',
             with: [
-                'sender' => $this->name,
-                'site' => $this->site_name,
-                'suggestion' => $this->suggestion,
-            ],
+            'sender' => $this->name,
+            'site' => $this->site_name,
+            'suggestion' => $this->suggestion,
+                'siteID' => $this->siteID,
+        ],
         );
     }
 

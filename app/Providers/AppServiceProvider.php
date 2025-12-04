@@ -3,11 +3,12 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Rules\ReCaptcha;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * Register services.
      */
     public function register(): void
     {
@@ -15,10 +16,20 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Bootstrap any application services.
+     * Bootstrap services.
      */
     public function boot(): void
     {
-        //
+        $this->app->validator->extend('google_recaptcha', function ($attribute, $value, $parameters, $validator) {
+            $rule = new GoogleReCaptcha;
+
+//            dd($rule->validate($value));
+            // Validate reCAPTCHA
+            $rule->validate($attribute, $value, function ($message) use ($validator, $attribute) {
+                $validator->errors()->add($attribute, $message);
+            });
+            // Return true to success
+            return true;
+        });
     }
 }

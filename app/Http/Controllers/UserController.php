@@ -22,6 +22,7 @@ class UserController extends Controller
             ->leftJoin('forecasts', 'sites.id', '=', 'forecasts.site_id')
             ->whereIn('sites.id', $siteIDArray)
             ->select('sites.*', 'forecasts.data')
+            ->orderBy('site_name')
             ->get()
             ->toArray();
 
