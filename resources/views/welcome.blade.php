@@ -16,6 +16,7 @@
         function success(position) {
             document.cookie = "lat=" + position.coords.latitude;
             document.cookie = "lng=" + position.coords.longitude;
+            console.log("Cookies saved");
         }
 
         document.addEventListener("DOMContentLoaded", function () {

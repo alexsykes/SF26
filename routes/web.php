@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+Route:: get('locate', [ForecastController::class, 'locate'])->middleware(['auth', 'verified'])->name('locate');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -37,4 +38,7 @@ Route::post('/site_user_update', [SiteController::class, 'site_user_update'])->m
 // AdminController
 Route::get('suggestions', [AdminController::class, 'suggestions'])->middleware(['auth', 'verified'])->name('suggestions');
 
+
+// LocateController
+Route::get('nearest', [HomeController::class, 'nearest'])->middleware(['auth', 'verified'])->name('nearest');
 require __DIR__ . '/auth.php';

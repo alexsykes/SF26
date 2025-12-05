@@ -58,4 +58,9 @@ class UserController extends Controller
 
         return redirect('/user/favourites');
     }
+
+    public function getNearest()
+    {
+
+    }
 }

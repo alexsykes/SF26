@@ -24,6 +24,11 @@
                         {{ __('Sites (A-Z)') }}
                     </x-nav-link>
                 </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('nearest')" :active="request()->routeIs('nearest')">
+                        {{ __('Nearest') }}
+                    </x-nav-link>
+                </div>
 
                 {{--                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
                 {{--                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">--}}
@@ -96,6 +101,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('sites')" :active="request()->routeIs('sites')">
                 {{ __('Sites (A-Z)') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('nearest')" :active="request()->routeIs('nearest')">
+                {{ __('Nearest') }}
             </x-responsive-nav-link>
         </div>
 
