@@ -6,25 +6,45 @@
 
     </x-slot>
     @php
-        $data = json_decode($forecast['data']);
-        $directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
-        $dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        //    Decode data
+                $data = json_decode($forecast['data']);
 
-        $hourly = $data->hourly;
-        $daily = $data->daily;
+        //        Set up lookup arrays
+                $directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
+                $dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-        $today = $daily[0]->summary;
-        $tomorrow = $daily[1]->summary;
-        $html = "";
-        foreach($hourly as $hourData) {
-            $time = date("D ga", $hourData->dt);
-                            $windSpeeds = intval($hourData->wind_speed)." ~ ".intval($hourData->wind_gust);
-                            $dir = $hourData->wind_deg;
+                $hourly = $data->hourly;
+                $daily = $data->daily;
 
-                            $windIndex = (int) (($dir * 16 / 360) + 0.5);
-                            $dir = $directions[$windIndex];
+        //        Get summary data for today/tomorrow
+                $today = $daily[0]->summary;
+                $tomorrow = $daily[1]->summary;
 
-                            $html .= "<p><strong>$time</strong> $dir at $windSpeeds mph</p>";
+//                Get data for rest of week
+                $outlook = array();
+                for ($i=2; $i < sizeof($daily); $i++) {
+                    $day = $daily[$i];
+                    $dayData = $day->summary;
+                    $dayText = date("l", $day->dt);
+                    $windDir = $day->wind_deg;
+                    $windIndex = (int) (($windDir * 16 / 360) + 0.5);
+                    $dir = $directions[$windIndex];
+                    $windSpeed = intval($day->wind_speed);
+                    $windGust = intval($day->wind_gust);
+                    $lineItem =  "<div><span class=\"font-semibold\">Outlook for next $dayText - </span>";
+                    $lineItem .= "$dir at $windSpeed ~ $windGust mph</div>";
+                    array_push($outlook, $lineItem);
+                }
+
+//                Get html data for next 48 hours
+                $html = "";
+                foreach($hourly as $hourData) {
+                    $time = date("D ga", $hourData->dt);
+                    $windSpeeds = intval($hourData->wind_speed)." ~ ".intval($hourData->wind_gust);
+                    $dir = $hourData->wind_deg;
+                    $windIndex = (int) (($dir * 16 / 360) + 0.5);
+                    $dir = $directions[$windIndex];
+                    $html .= "<p><strong>$time</strong> $dir at $windSpeeds mph</p>";
                 }
     @endphp
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col">
@@ -40,12 +60,16 @@
                 <div><strong>Weather last updated :</strong> {{$forecast->updated_at->format('M jS, g:ia') }}</div>
                 <div><strong>Summary for today :</strong> {{$today }}</div>
                 <div><strong>Summary for tomorrow :</strong> {{$tomorrow }}</div>
-                <div class="pt-2"><strong>Forecast winds</strong></div>
+                <div class="pt-2"><strong>48 hour forecast</strong></div>
                 <div class="lg:columns-3 gap-5">
                     <p class=""><?php echo $html; ?>
                     </p>
                 </div>
-
+                <div id="outlook" class="mt-2">
+                    @foreach($outlook as $dayItem)
+                        @php echo $dayItem; @endphp
+                    @endforeach
+                </div>
 
                 @php
                     $data = json_decode($forecast->data);

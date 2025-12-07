@@ -10,8 +10,19 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $randomSite = Site::inRandomOrder()->first();
-        return view('welcome', compact('randomSite'));
+        if (Auth::check()) {
+            $user = Auth::user();
+            $favourites = $user->favourites;
+
+            if ($favourites == '') {
+                return redirect()->intended(route('dashboard', absolute: false));
+            } else {
+                return redirect()->intended(route('favourites', absolute: false));
+            }
+        } else {
+            $randomSite = Site::inRandomOrder()->first();
+            return view('welcome', compact('randomSite'));
+        }
     }
 
     public function dashboard()
@@ -70,7 +81,7 @@ class HomeController extends Controller
         setcookie("nearestSiteID", $siteID);
 
         $wind_deg = $current->wind_deg;
-        $windIndex = (int) (($wind_deg * 16 / 360) + 0.5);
+        $windIndex = (int)(($wind_deg * 16 / 360) + 0.5);
         $wind_dir = $directions[$windIndex];
 
         $sitesForDirection = DB::table("site_wind_directions")
@@ -81,7 +92,7 @@ class HomeController extends Controller
             ->orderBy('distance_km', 'asc')
             ->limit(10)
             ->get()
-        ->toArray();
+            ->toArray();
 
         return view('site.nearest', ['current' => $current, 'directions' => $directions, 'sites' => $sitesForDirection]);
     }

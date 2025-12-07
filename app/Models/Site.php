@@ -2,18 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Model;
 
 class Site extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['site_name', 'near', 'site_description', 'site_access', 'site_wind_directions', 'lat', 'lng', 'created_by', 'hits', 'updated_by', 'published', 'w3w', 'updated_at' , 'dir', 'from', 'to', 'begin', 'end'];
+    protected $fillable = ['site_name', 'near', 'site_description', 'site_access', 'site_wind_directions', 'lat', 'lng', 'created_by', 'hits', 'updated_by', 'published', 'w3w', 'updated_at', 'dir', 'from', 'to', 'begin', 'end'];
 
-    static function getPublishedSiteList() {
+    static function getPublishedSiteList()
+    {
         $sites = Site::where('published', 1)
             ->orderBy('site_name')
             ->limit(5)
@@ -22,7 +21,8 @@ class Site extends Model
         return $sites;
     }
 
-    static function getFiveSites() {
+    static function getFiveSites()
+    {
         $sites = Site::where('published', 1)
             ->orderBy('site_name')
             ->limit(1)
@@ -42,5 +42,10 @@ class Site extends Model
     public function forecast(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Forecast::class, 'site_id');
+    }
+
+    public function gforecast(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(GForecast::class, 'site_id');
     }
 }

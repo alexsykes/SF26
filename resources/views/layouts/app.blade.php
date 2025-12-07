@@ -33,6 +33,7 @@
     <main>
         {{ $slot }}
     </main>
+    <x-footer>Footer</x-footer>
 </div>
 </body>
 </html>
