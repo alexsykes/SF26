@@ -9,7 +9,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+Route::get('/credits', [HomeController::class, 'credits'])->name('credits');
 Route:: get('locate', [ForecastController::class, 'locate'])->middleware(['auth', 'verified'])->name('locate');
 
 Route::middleware('auth')->group(function () {
@@ -21,6 +21,7 @@ Route::middleware('auth')->group(function () {
 // Site Controller
 Route::get('/site/detail/{id}', [SiteController::class, 'index'])->name('site.detail');
 Route::get('/sites', [SiteController::class, 'sites'])->name('sites');
+Route::get('/sites_near', [SiteController::class, 'sites_near'])->name('near.sites');
 Route::get('/site/edit/{id}', [AdminController::class, 'editSite'])->middleware(['auth', 'verified']);
 Route::get('site/update_request/{id}/', [SiteController::class, 'update_request'])->middleware(['auth', 'verified'])->name('site.update_request');
 
@@ -40,5 +41,5 @@ Route::get('suggestions', [AdminController::class, 'suggestions'])->middleware([
 
 
 // LocateController
-Route::get('nearest', [HomeController::class, 'nearest'])->middleware(['auth', 'verified'])->name('nearest');
+Route::get('/nearest', [SiteController::class, 'nearest'])->middleware(['auth', 'verified'])->name('nearest');
 require __DIR__ . '/auth.php';

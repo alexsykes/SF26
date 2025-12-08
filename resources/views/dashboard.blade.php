@@ -90,55 +90,55 @@
     </x-slot>
 
     {{-- Maps start   --}}
-    <div class="flex  h-full w-full flex-1 flex-col gap-4 rounded-xl p-4 md:p-4">
-        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-            @php
-                $numSites = sizeof($localSites);
-                    for ($i = 0; $i < $numSites; $i++) {
-                    $site = $localSites[$i];
-                    $begin = $site['begin'];
-                    $end = $site['end'];
-                    $dirs = $begin." to ".$end;
-                    $lat = $site['lat'];
-                    $lng = $site['lat'];
-                    $siteID = $site['id'];
+{{--    <div class="flex  h-full w-full flex-1 flex-col gap-4 rounded-xl p-4 md:p-4">--}}
+{{--        <div class="grid auto-rows-min gap-4 md:grid-cols-3">--}}
+{{--            @php--}}
+{{--                $numSites = sizeof($localSites);--}}
+{{--                    for ($i = 0; $i < $numSites; $i++) {--}}
+{{--                    $site = $localSites[$i];--}}
+{{--                    $begin = $site['begin'];--}}
+{{--                    $end = $site['end'];--}}
+{{--                    $dirs = $begin." to ".$end;--}}
+{{--                    $lat = $site['lat'];--}}
+{{--                    $lng = $site['lat'];--}}
+{{--                    $siteID = $site['id'];--}}
 
-        $url = "https://www.windy.com/$lat,$lng,14";
-            @endphp
-            <div class="bg-white map shadow-xl relative aspect-4/3 overflow-hidden rounded-xl border border-neutral-200
-                    dark:border-neutral-700">
-                <div id="map{{$i}}" class="bg-slate-500 w-full aspect-square"></div>
-                <div class="font-semibold  bg-white p-2 pb-0 ">{{$site['site_name']}}</div>
-                <div class="p-2 pt-0  bg-white ">{{$site['site_description']}}</div>
-                <div class="p-2  bg-white ">Winds: {{$dirs}}</div>
-                {{--                <h1 class="mb-1 font-medium">Winds</h1>--}}
-                {{--                <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site['begin']}} to {{$site['end']}}</p>--}}
-                {{--                <h1 class="mb-1 font-medium">Locality</h1>--}}
-                {{--                <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site['near']}}</p>--}}
-                {{--                <h1 class="mb-1 font-medium">Description</h1>--}}
-                {{--                <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site['site_description']}}</p>--}}
-                {{--                <h1 class="mb-1 font-medium">Access</h1>--}}
-                {{--                <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site['site_access']}}</p>--}}
+{{--        $url = "https://www.windy.com/$lat,$lng,14";--}}
+{{--            @endphp--}}
+{{--            <div class="bg-white map shadow-xl relative aspect-4/3 overflow-hidden rounded-xl border border-neutral-200--}}
+{{--                    dark:border-neutral-700">--}}
+{{--                <div id="map{{$i}}" class="bg-slate-500 w-full aspect-square"></div>--}}
+{{--                <div class="font-semibold  bg-white p-2 pb-0 ">{{$site['site_name']}}</div>--}}
+{{--                <div class="p-2 pt-0  bg-white ">{{$site['site_description']}}</div>--}}
+{{--                <div class="p-2  bg-white ">Winds: {{$dirs}}</div>--}}
+{{--                --}}{{--                <h1 class="mb-1 font-medium">Winds</h1>--}}
+{{--                --}}{{--                <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site['begin']}} to {{$site['end']}}</p>--}}
+{{--                --}}{{--                <h1 class="mb-1 font-medium">Locality</h1>--}}
+{{--                --}}{{--                <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site['near']}}</p>--}}
+{{--                --}}{{--                <h1 class="mb-1 font-medium">Description</h1>--}}
+{{--                --}}{{--                <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site['site_description']}}</p>--}}
+{{--                --}}{{--                <h1 class="mb-1 font-medium">Access</h1>--}}
+{{--                --}}{{--                <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site['site_access']}}</p>--}}
 
-                {{--                <p><strong>Coordinates:</strong> Lat: {{$site['lat']}}° Lng: {{$site['lng'] }}°</p>--}}
-                {{--                <p><strong>W3W: </strong><a href="https://what3words.com/{{$site['w3w'] }}">{{$site['w3w']}}</a></p>--}}
-                {{--                --}}{{--                <!-- p><strong>Site details last updated:</strong> {{$site['updated_at']->format('M jS, Y') }}</p -->--}}
-                {{--                --}}{{--                <p><strong>Weather last updated :</strong> {{$forecast->updated_at->format('M jS, g:ia') }}</p>--}}
-                {{--                <p><strong>Current conditions on Windy.com - </strong><a target="_blank" href="{{$url}}">click--}}
-                {{--                        here</a>--}}
-                <div class="p-2  bg-white ">Full details and forecast - <a href="/site/detail/{{$siteID}}">click
-                        here</a>
-                </div>
-            </div>
-            @php
-                }
-            @endphp
-        </div>
-    </div>
+{{--                --}}{{--                <p><strong>Coordinates:</strong> Lat: {{$site['lat']}}° Lng: {{$site['lng'] }}°</p>--}}
+{{--                --}}{{--                <p><strong>W3W: </strong><a href="https://what3words.com/{{$site['w3w'] }}">{{$site['w3w']}}</a></p>--}}
+{{--                --}}{{--                --}}{{----}}{{--                <!-- p><strong>Site details last updated:</strong> {{$site['updated_at']->format('M jS, Y') }}</p -->--}}
+{{--                --}}{{--                --}}{{----}}{{--                <p><strong>Weather last updated :</strong> {{$forecast->updated_at->format('M jS, g:ia') }}</p>--}}
+{{--                --}}{{--                <p><strong>Current conditions on Windy.com - </strong><a target="_blank" href="{{$url}}">click--}}
+{{--                --}}{{--                        here</a>--}}
+{{--                <div class="p-2  bg-white ">Full details and forecast - <a href="/site/detail/{{$siteID}}">click--}}
+{{--                        here</a>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--            @php--}}
+{{--                }--}}
+{{--            @endphp--}}
+{{--        </div>--}}
+{{--    </div>--}}
     {{-- Maps end --}}
 
     {{--  Small screen  --}}
-    <div class="visible bg-white shadow-xl flex ml-4 mr-4 h-full flex-1 flex-col gap-1 rounded-xl border border-neutral-200 md:hidden">
+    <div class="visible bg-white shadow-xl flex m-4 h-full flex-1 flex-col gap-1 rounded-xl border border-neutral-200 md:hidden">
         @foreach($allSites as $site)
             @php
                 $siteID = $site['id'];
@@ -163,7 +163,7 @@
 
     {{-- Wide screen version - TODO prevent line break before wind directions--}}
     <div class="hidden flex h-full w-full flex-1 flex-col gap-4 rounded-xl p-4 md:p-4 md:block">
-        <div class="bg-white shadow-xl grid auto-rows-min gap-4 ">
+        <div class="bg-white shadow-xl grid auto-rows-min gap-4 rounded-xl">
 
             <div class="overflow-hidden  border-neutral-200 dark:border-neutral-700">
                 <div class="p-4  three  md:one">

@@ -109,7 +109,7 @@
                     {{--                <p><strong>Weather last updated :</strong> {{$forecast->updated_at->format('M jS, g:ia') }}</p>--}}
                     <p><strong>Current conditions on Windy.com - </strong><a target="_blank" href="{{$url}}">click
                             here</a>
-                    <p><strong>48 hour forecast - </strong><a href="/forecast/{{$site->id}}">click here</a>
+                    <p><strong>Weather outlook - </strong><a href="/forecast/{{$site->id}}">click here</a>
                     </p>
                     @auth
                         <p><strong>Suggest an update or correction - </strong><a

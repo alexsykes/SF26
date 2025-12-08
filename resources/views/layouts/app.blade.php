@@ -33,7 +33,7 @@
     <main>
         {{ $slot }}
     </main>
-    <x-footer>Footer</x-footer>
+    <x-bottom-nav></x-bottom-nav>
 </div>
 </body>
 </html>

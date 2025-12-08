@@ -8,6 +8,7 @@ use App\Rules\ReCaptchaV3;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -32,11 +33,14 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
         $user = Auth::user();
+        $username = $user->name;
 
         $favourites = $user->favourites;
+        $ip = $request->getClientIp();
+        Log::info("Succesful login by $username from IPaddress: $ip");
 
-        if($favourites == '') {
-            return redirect()->intended(route('dashboard', absolute: false));
+        if ($favourites == '') {
+            return redirect()->intended(route('near.sites', absolute: false));
         } else {
             return redirect()->intended(route('favourites', absolute: false));
         }

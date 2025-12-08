@@ -48,3 +48,55 @@ Artisan::command('getForecast', function () {
     }
 //    info("$count forecasts updated.");
 })->twiceDailyAt(5, 13, 57);
+
+Artisan::command('UpdateWindDirections', function () {
+
+    $directions = array("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW");
+
+    $numDirs = count($directions);
+
+    $sites = Site::all();
+    foreach ($sites as $site) {
+//    $site = $sites->first();
+        $site_name = $site->site_name;
+        $begin = $site->begin;
+        $end = $site->end;
+        $siteID = $site->id;
+
+        $beginIndex = array_search($begin, $directions);
+        $endIndex = array_search($end, $directions);
+
+//    Working
+        if($endIndex > $beginIndex) {
+            for($i = $beginIndex; $i <= $endIndex; $i++) {
+                $site_wind_direction = \App\Models\SiteWindDirections::create([
+                    'siteID' => $siteID,
+                    'direction' => $i,
+                ]);
+            }
+        }
+        elseif ($endIndex == $beginIndex) {
+            $site_wind_direction = \App\Models\SiteWindDirections::create([
+                'siteID' => $siteID,
+                'direction' => $endIndex,
+            ]);
+        }
+        else {
+            for($i = $beginIndex; $i < $numDirs; $i++) {
+                $site_wind_direction = \App\Models\SiteWindDirections::create([
+                    'siteID' => $siteID,
+                    'direction' => $i,
+                ]);
+            }
+            for($i = 0; $i <= $endIndex; $i++) {
+                $site_wind_direction = \App\Models\SiteWindDirections::create([
+                    'siteID' => $siteID,
+                    'direction' => $i,
+                ]);
+            }
+        }
+
+
+    }
+
+});

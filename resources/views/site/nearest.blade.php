@@ -1,5 +1,5 @@
 @php
-
+//dd($sites);
     $wind_speed = $current->wind_speed;
     $wind_deg = $current->wind_deg;
     $wind_gust = $current->wind_gust;
@@ -24,7 +24,7 @@
         @foreach($sites as $site)
 {{--            @dump($site)--}}
             @php
-                $siteID = $site->id;
+                $siteID = $site->site_id;
                 $site_name = $site->site_name;
                 $site_dirs = "$site->begin - $site->end";
                 $distance_km = intval($site->distance_km);

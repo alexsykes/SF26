@@ -60,11 +60,13 @@
                 <div><strong>Weather last updated :</strong> {{$forecast->updated_at->format('M jS, g:ia') }}</div>
                 <div><strong>Summary for today :</strong> {{$today }}</div>
                 <div><strong>Summary for tomorrow :</strong> {{$tomorrow }}</div>
-                <div class="pt-2"><strong>48 hour forecast</strong></div>
-                <div class="lg:columns-3 gap-5">
-                    <p class=""><?php echo $html; ?>
-                    </p>
-                </div>
+                <details>
+                    <summary class="pt-2 font-semibold">48 hour wind forecast</summary>
+                    <div class="lg:columns-3 gap-5">
+                        <p class=""><?php echo $html; ?>
+                        </p>
+                    </div>
+                </details>
                 <div id="outlook" class="mt-2">
                     @foreach($outlook as $dayItem)
                         @php echo $dayItem; @endphp
