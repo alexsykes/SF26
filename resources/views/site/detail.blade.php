@@ -70,18 +70,18 @@
 
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col">
     <div class="mt-4 flex items-center justify-center w-full transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0">
-        <div class="bg-white   shadow-2xl">
-            <div class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-4xl lg:flex-row">
+        <div class="shadow-2xl rounded-lg">
+            <div class="bg-none flex max-w-[335px]  w-full flex-col-reverse lg:max-w-4xl lg:flex-row">
+
                 {{--  Site description          --}}
-                <div class="text-[13px] leading-[20px] flex-1 p-6 pb-12 lg:p-12 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-bl-lg rounded-br-lg lg:rounded-tl-lg lg:rounded-br-none">
+                <div class="text-[13px] leading-[20px] flex-1 p-6 pb-12 lg:p-12 bg-white  shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] rounded-bl-lg rounded-br-lg lg:rounded-tl-lg lg:rounded-br-none dark:bg-[#161615] dark:text-[#EDEDEC] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] ">
+
+
                     <div class="flex justify-between">
-                        <div class="">
                             <button class="border p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "
                                     onclick="history.back()">Go
                                 Back
                             </button>
-                        </div>
-                        <div class="">
                             @if($isFavourite)
                                 <p class="border p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "><a
                                             href="/removeFavourite/{{$site->id}}">Remove
@@ -92,7 +92,6 @@
                                         to
                                         Favourites</a></p>
                             @endif
-                        </div>
                     </div>
                     <h1 class="pt-4 mb-1 font-medium">Winds</h1>
                     <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site->begin}} to {{$site->end}}</p>
@@ -120,7 +119,7 @@
                 {{--  end of Site description--}}
 
                 {{--   Map         --}}
-                <div class="bg-[#fff2f2] dark:bg-[#1D0002] relative lg:-ml-px -mb-px lg:mb-0 rounded-t-lg lg:rounded-t-none lg:rounded-r-lg aspect-[335/376] lg:aspect-auto w-full lg:w-[438px] shrink-0 overflow-hidden">
+                <div class="bg-[#fff2f2] dark:bg-[#1D0002] relative lg:-ml-px -mb-px  rounded-t-lg  lg:mb-0 lg:rounded-tl-none lg:rounded-tr-lg lg:rounded-br-lg  aspect-[335/376] lg:aspect-auto w-full lg:w-[438px] shrink-0 overflow-hidden">
                     {{-- Laravel Logo --}}
                     {{----}}
 
@@ -133,8 +132,5 @@
         </div>
     </div>
 
-    @if (Route::has('login'))
-        <div class="h-14.5 hidden lg:block"></div>
-    @endif
     </body>
 </x-app-layout>

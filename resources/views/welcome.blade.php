@@ -12,25 +12,25 @@
 
     <!-- Styles / Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script>
-        function success(position) {
-            document.cookie = "lat=" + position.coords.latitude;
-            document.cookie = "lng=" + position.coords.longitude;
-            console.log("Cookies saved");
-        }
+    {{--    <script>--}}
+    {{--        function success(position) {--}}
+    {{--            document.cookie = "lat=" + position.coords.latitude;--}}
+    {{--            document.cookie = "lng=" + position.coords.longitude;--}}
+    {{--            console.log("Cookies saved");--}}
+    {{--        }--}}
 
-        document.addEventListener("DOMContentLoaded", function () {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(success);
-                console.log("Request location");
-            } else {
-                console.log("Geolocation is not supported by this browser.");
-            }
-            navigator.permissions.query({name: 'geolocation'})
-                .then(console.log)
-        });
+    {{--        document.addEventListener("DOMContentLoaded", function () {--}}
+    {{--            if (navigator.geolocation) {--}}
+    {{--                navigator.geolocation.getCurrentPosition(success);--}}
+    {{--                console.log("Request location");--}}
+    {{--            } else {--}}
+    {{--                console.log("Geolocation is not supported by this browser.");--}}
+    {{--            }--}}
+    {{--            navigator.permissions.query({name: 'geolocation'})--}}
+    {{--                .then(console.log)--}}
+    {{--        });--}}
 
-    </script>
+    {{--    </script>--}}
 
     <script>
         (g => {

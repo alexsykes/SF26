@@ -28,6 +28,12 @@ function sendmail(int $suggestionID, string $site_name)
     Mail::to($email)->send(new SuggestionReviewCompleted($name, $suggestion, $site_name, $siteID));
 }
 
+function convertToDirection(int $input)
+{
+    $directions = array("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW");
+    return $directions[$input];
+}
+
 class SiteController extends Controller
 {
     public function index($id)
@@ -132,7 +138,11 @@ class SiteController extends Controller
         $site->w3w = $request->input('w3w');
         $site->from = $request->input('from');
         $site->to = $request->input('to');
+
         $site->update();
+//         Site updated - now update site_wind_directions
+
+        $this->updateWindDirections($site);
 
 //      Process Suggestions
         if ($request->input('completed') !== null) {
@@ -146,6 +156,52 @@ class SiteController extends Controller
             }
         }
         return redirect('/suggestions');
+    }
+
+    private function updateWindDirections(?Site $site)
+    {
+//        Delete existing
+        $siteID = $site->id;
+        $deleted = DB::table('site_wind_directions')->where('siteID', $siteID)->delete();
+
+//        Set up direction array
+        $directions = array("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW");
+
+        $numDirs = count($directions);
+
+//        Get end points
+        $beginIndex = $site->from;
+        $endIndex = $site->to;
+
+
+//        dd($siteID, $beginIndex, $endIndex);
+
+        if ($endIndex > $beginIndex) {
+            for ($i = $beginIndex; $i <= $endIndex; $i++) {
+                $site_wind_direction = \App\Models\SiteWindDirections::create([
+                    'siteID' => $siteID,
+                    'direction' => $i,
+                ]);
+            }
+        } elseif ($endIndex == $beginIndex) {
+            $site_wind_direction = \App\Models\SiteWindDirections::create([
+                'siteID' => $siteID,
+                'direction' => $endIndex,
+            ]);
+        } else {
+            for ($i = $beginIndex; $i < $numDirs; $i++) {
+                $site_wind_direction = \App\Models\SiteWindDirections::create([
+                    'siteID' => $siteID,
+                    'direction' => $i,
+                ]);
+            }
+            for ($i = 0; $i <= $endIndex; $i++) {
+                $site_wind_direction = \App\Models\SiteWindDirections::create([
+                    'siteID' => $siteID,
+                    'direction' => $i,
+                ]);
+            }
+        }
     }
 
     public function site_user_update(Request $request)
@@ -166,7 +222,8 @@ class SiteController extends Controller
             ->bcc('ale@alexsykes.net')
             ->send(new SuggestionAcknowledgement($user->name, $site_name, $attributes['suggestion']));
 
-        return view('site.acknowledge');
+        $message = "Thank you for your submission. We will review comments and get back to you as soon as possible.";
+        return view('site.acknowledge', ['message' => $message]);
     }
 
     public function nearest()
@@ -174,8 +231,8 @@ class SiteController extends Controller
         $directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
 
         if (!isset($_COOKIE['lat']) || !isset($_COOKIE['lng'])) {
-            $curLat = null;
-            $curLng = null;
+            $curLat = -2.547855;
+            $curLng = 54.00366;
         } else {
             $curLat = $_COOKIE['lat'];
             $curLng = $_COOKIE['lng'];
@@ -187,16 +244,16 @@ class SiteController extends Controller
             ->orderBy('distance_km', 'asc')
             ->first();
 
+
         $siteID = $nearestSite->id;
         $json = $nearestSite->data;
 
         $data = json_decode($json);
         $current = $data->current;
-        setcookie("nearestSiteID", $siteID);
+        setcookie("nearestSiteID", $siteID, time() + (86400 * 30), "/");
 
         $wind_deg = $current->wind_deg;
         $windIndex = (int)(($wind_deg * 16 / 360) + 0.5);
-        $wind_dir = $directions[$windIndex];
 
         $sitesForDirection = DB::table("site_wind_directions")
             ->selectRaw("sites.*, forecasts.*, ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km")
@@ -210,5 +267,50 @@ class SiteController extends Controller
 
 //        dd($sitesForDirection);
         return view('site.nearest', ['current' => $current, 'directions' => $directions, 'sites' => $sitesForDirection]);
+    }
+
+    public function addSite()
+    {
+        return view('site.add');
+    }
+
+    public function storeSite(Request $request)
+    {
+        $userID = auth()->user()->id;
+        $request->validate([
+            'site_name' => ['required', 'string', 'max:255'],
+            'site_access' => ['required'],
+            'site_description' => ['required'],
+            'near' => ['required'],
+            'to' => ['required'],
+            'from' => ['required'],
+        ]);
+
+        $w3w = $request->input('w3w');
+//        dump($request->all());
+
+        $begin = convertToDirection($request->input('from'));
+        $end = convertToDirection($request->input('to'));
+
+        $site = Site::create([
+            'site_name' => $request->input('site_name'),
+            'site_access' => $request->input('site_access'),
+            'site_description' => $request->input('site_description'),
+            'near' => $request->input('near'),
+            'to' => $request->input('to'),
+            'from' => $request->input('from'),
+            'created_by' => $userID,
+            'lat' => 0,
+            'lng' => 0,
+            'hits' => 0,
+            'w3w' => $w3w,
+            'end' => $begin,
+            'begin' => $end,
+        ]);
+
+        $this->updateWindDirections($site);
+
+        $message = "Thank you for your submission. We will review the site and get back to you as soon as possible. Please note that the site will not appear in our listings until it is approved.";
+        return view('site.acknowledge', ['message' => $message]);
     }
 }

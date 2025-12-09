@@ -29,6 +29,13 @@
                     </x-nav-link>
                 </div>
 
+                @if(Auth::user()->isEditor)
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('site.add')" :active="request()->routeIs('site.add')">
+                            {{ __('Add a Site') }}
+                        </x-nav-link>
+                    </div>
+                @endif
                 {{--                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
                 {{--                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">--}}
                 {{--                        {{ __('Dashboard') }}--}}
@@ -101,9 +108,15 @@
 {{--                        <x-responsive-nav-link :href="route('sites')" :active="request()->routeIs('sites')">--}}
 {{--                            {{ __('Sites (A-Z)') }}--}}
 {{--                        </x-responsive-nav-link>--}}
-                        <x-responsive-nav-link :href="route('nearest')" :active="request()->routeIs('nearest')">
-                            {{ __('Today') }}
-                        </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('nearest')" :active="request()->routeIs('nearest')">
+                {{ __('Today') }}
+            </x-responsive-nav-link>
+
+            @if(Auth::user()->isEditor)
+            <x-responsive-nav-link :href="route('site.add')" :active="request()->routeIs('site.add')">
+                {{ __('Add a site') }}
+            </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

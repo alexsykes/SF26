@@ -6,6 +6,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\IsEditor;
+use App\Http\Middleware\IsSuperUser;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -22,10 +24,13 @@ Route::middleware('auth')->group(function () {
 Route::get('/site/detail/{id}', [SiteController::class, 'index'])->name('site.detail');
 Route::get('/sites', [SiteController::class, 'sites'])->name('sites');
 Route::get('/sites_near', [SiteController::class, 'sites_near'])->name('near.sites');
-Route::get('/site/edit/{id}', [AdminController::class, 'editSite'])->middleware(['auth', 'verified']);
-Route::get('site/update_request/{id}/', [SiteController::class, 'update_request'])->middleware(['auth', 'verified'])->name('site.update_request');
+Route::get('/site/edit/{id}', [AdminController::class, 'editSite'])->middleware([IsEditor::class]);
+Route::get('/site/update_request/{id}/', [SiteController::class, 'update_request'])->middleware(['auth', 'verified'])->name('site.update_request');
 
-Route::patch('site/update', [SiteController::class, 'update'])->middleware(['auth', 'verified'])->name('site.update');
+Route::get('/site/add', [SiteController::class, 'addSite'])->middleware([IsEditor::class])->name('site.add');
+Route::post('/site/add', [SiteController::class, 'storeSite'])->middleware([IsEditor::class])->name('site.store');
+
+Route::patch('/site/update', [SiteController::class, 'update'])->middleware(['auth', 'verified'])->name('site.update');
 
 // Forecast Controller
 Route::get('/forecast/{id}', [ForecastController::class, 'index'])->name('forecast.index');
@@ -37,7 +42,7 @@ Route::get('/removeFavourite/{id}', [UserController::class, 'removeFavourite'])-
 Route::post('/site_user_update', [SiteController::class, 'site_user_update'])->middleware(['auth', 'verified'])->name('site.user.update');
 
 // AdminController
-Route::get('suggestions', [AdminController::class, 'suggestions'])->middleware(['auth', 'verified'])->name('suggestions');
+Route::get('/suggestions', [AdminController::class, 'suggestions'])->middleware([IsSuperUser::class])->name('suggestions');
 
 
 // LocateController
