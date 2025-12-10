@@ -1,13 +1,96 @@
+<script>
+    (g => {
+        var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__",
+            m = document, b = window;
+        b = b[c] || (b[c] = {});
+        var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams,
+            u = () => h || (h = new Promise(async (f, n) => {
+                await (a = m.createElement("script"));
+                e.set("libraries", [...r] + "");
+                for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
+                e.set("callback", c + ".maps." + q);
+                a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+                d[q] = f;
+                a.onerror = () => h = n(Error(p + " could not load."));
+                a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+                m.head.append(a)
+            }));
+        d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
+    })({
+        key: "{{config('gmap.gmap_key')}}",
+        v: "weekly",
+        // Use the 'v' parameter to indicate the version to use (weekly, beta, alpha, etc.).
+        // Add other bootstrap parameters as needed, using camel case.
+    });
+
+    let map;
+
+    async function initMap() {
+        // const {Map} = await google.maps.importLibrary("maps");
+        const {AdvancedMarkerElement} = await google.maps.importLibrary("marker");
+        const {Map} = (await google.maps.importLibrary('maps'));
+        // const infoWindow = new InfoWindow();
+
+
+        if (navigator.geolocation) {
+
+
+            navigator.geolocation.getCurrentPosition(function (position) {
+                initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+
+
+                let lat = document.getElementById("lat");
+                let lng = document.getElementById("lng");
+
+                lat.setAttribute('value', position.coords.latitude);
+                lng.setAttribute('value', position.coords.longitude);
+
+                map = new Map(document.getElementById("map"), {
+                    center: {position},
+                    zoom: 18,
+                    streetViewControl: false,
+                    mapTypeControl: false,
+                    mapTypeId: google.maps.MapTypeId.TERRAIN,
+                    mapId: "c2290875eac93973",
+                });
+
+                map.setCenter(initialLocation);
+
+                const marker = new AdvancedMarkerElement({
+                    map,
+                    gmpDraggable: true,
+                    position: {lat: position.coords.latitude, lng: position.coords.longitude},
+                });
+
+                marker.addListener('dragend', (event) => {
+                    const position = marker.position;
+                    let lat = document.getElementById("lat");
+                    let lng = document.getElementById("lng");
+
+                    lat.setAttribute('value', position.lat);
+                    lng.setAttribute('value', position.lng);
+                });
+            });
+        }
+    }
+
+    initMap();
+
+</script>
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">
             Add a new Site
         </h2>
     </x-slot>
-
+    <div id="mapContainer" class="h-64 sm:h-[32rem]">
+        <div class="map100" id="map">Map should appear here</div>
+    </div>
     <form method="POST" action="/site/add">
         @csrf
-{{--        <input type="hidden" name="siteID" value="{{$site->id}}">--}}
+        <input type="hidden" id="lng" name="lng">
+        <input type="hidden" id="lat" name="lat">
 
         <div class="visible p-2  bg-white shadow-xl flex mt-4 ml-4 mr-4 h-full flex-1 flex-col gap-1 rounded-xl border border-neutral-200 ">
 

@@ -43,7 +43,7 @@ Route::post('/site_user_update', [SiteController::class, 'site_user_update'])->m
 
 // AdminController
 Route::get('/suggestions', [AdminController::class, 'suggestions'])->middleware([IsSuperUser::class])->name('suggestions');
-
+Route::get('sites_approve', [AdminController::class, 'sitesToApprove'])->middleware([IsSuperUser::class])->name('sites.approve');
 
 // LocateController
 Route::get('/nearest', [SiteController::class, 'nearest'])->middleware(['auth', 'verified'])->name('nearest');

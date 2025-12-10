@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Mail\EntryChanged;
 use App\Mail\SuggestionAcknowledgement;
 use App\Mail\SuggestionReviewCompleted;
+use App\Models\Forecast;
 use App\Models\Site;
 use App\Models\Suggestion;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
@@ -54,6 +56,7 @@ class SiteController extends Controller
         }
 
         $sites = Site::select(DB::raw("id, site_name, site_description, begin, end, lat, lng, `from`, `to`, ROUND(ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000) as distance_km"))
+            ->where('sites.published', true)
             ->orderBy('site_name', 'asc')
             ->get()
             ->toArray();
@@ -88,12 +91,14 @@ class SiteController extends Controller
         }
 
         $localSites = Site::select(DB::raw("id, site_name, site_description, near, site_access, w3w, begin, end, lat, lng, updated_at, `from`, `to`, ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km"))
+            ->where('sites.published', true)
             ->orderBy('distance_km', 'asc')
             ->limit($numSites)
             ->get()
             ->toArray();
 
         $allSites = Site::select(DB::raw("id, site_name, site_description, begin, end, lat, lng, `from`, `to`, ROUND(ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000) as distance_km"))
+            ->where('sites.published', true)
             ->orderBy('distance_km', 'asc')
             ->get()
             ->toArray();
@@ -240,10 +245,10 @@ class SiteController extends Controller
 
         $nearestSite = DB::table('sites')
             ->selectRaw("sites.id, forecasts.data,  ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km")
+            ->where('sites.published', true)
             ->leftJoin('forecasts', 'sites.id', '=', 'forecasts.site_id')
             ->orderBy('distance_km', 'asc')
             ->first();
-
 
         $siteID = $nearestSite->id;
         $json = $nearestSite->data;
@@ -287,7 +292,7 @@ class SiteController extends Controller
         ]);
 
         $w3w = $request->input('w3w');
-//        dump($request->all());
+
 
         $begin = convertToDirection($request->input('from'));
         $end = convertToDirection($request->input('to'));
@@ -300,8 +305,8 @@ class SiteController extends Controller
             'to' => $request->input('to'),
             'from' => $request->input('from'),
             'created_by' => $userID,
-            'lat' => 0,
-            'lng' => 0,
+            'lat' => $request->input('lat'),
+            'lng' => $request->input('lng'),
             'hits' => 0,
             'w3w' => $w3w,
             'end' => $begin,
@@ -310,7 +315,26 @@ class SiteController extends Controller
 
         $this->updateWindDirections($site);
 
+        $this->getForecast($site);
         $message = "Thank you for your submission. We will review the site and get back to you as soon as possible. Please note that the site will not appear in our listings until it is approved.";
         return view('site.acknowledge', ['message' => $message]);
+    }
+
+    private function getForecast(Site $site)
+    {
+        $open_weather = Config::get('app.OPEN_WEATHER');
+        $lat = $site->lat;
+        $lng = $site->lng;
+
+        $url = "https://api.openweathermap.org/data/3.0/onecall?lat=$lat&lon=$lng&exclude=minutely,alerts&units=imperial&appid=" . $open_weather;
+
+        if (!$site->forecast) {
+            $rawData = (file_get_contents($url, 'r'));
+            Forecast::create([
+                'site_id' => $site->id,
+                'data' => $rawData,
+                'version' => 1,
+            ]);
+        }
     }
 }

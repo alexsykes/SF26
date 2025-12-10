@@ -25,7 +25,6 @@ class AdminController extends Controller
         return view('admin.suggestion_list', compact('suggestions'));
     }
 
-
     public function editSite(Request $request)
     {
 //        $user = auth()->user();
@@ -42,5 +41,14 @@ class AdminController extends Controller
             ->get();
 
         return view('site.edit', compact('site', 'suggestions'));
+    }
+
+    public function sitesToApprove()
+    {
+        $sites = DB::table('sites')
+            ->where('published', false)
+            ->get();
+
+        return view('admin.sites_approve', compact('sites'));
     }
 }
