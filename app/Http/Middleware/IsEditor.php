@@ -10,12 +10,16 @@ class IsEditor
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $user = \Auth::user();
-        $isEditor = $user->isEditor;
-        if ($isEditor) {
-            return $next($request);
-        } else {
-            return redirect('/');
+
+        if(auth()->check()) {
+            $user = \Auth::user();
+            $isEditor = $user->isEditor;
+            if ($isEditor) {
+                return $next($request);
+            } else {
+                return redirect('/');
+            }
         }
+        return redirect('/');
     }
 }

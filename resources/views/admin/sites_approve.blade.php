@@ -14,6 +14,7 @@
             </tr>
             </thead>
             <tbody class="p-0">
+{{--            @dd($sites)--}}
             @foreach($sites as $site)
                 @php
                     $user = DB::table('users')
@@ -28,6 +29,14 @@
                     <td class="pl-4">{{$site->site_name}}</td>
                     <td><a href="/site/edit/{{$site->id}}">{{$site->near}}</a></td>
                     <td>{{$user->name}}</td>
+                    <td>
+                        <form action="/site/publish" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" id="siteID" name="siteID" value="{{$site->id}}">
+                            <button type="submit">Publish</button>
+                        </form>
+                    </td>
                 </tr>
             @endforeach
             </tbody>

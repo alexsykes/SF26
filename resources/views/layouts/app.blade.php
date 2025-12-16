@@ -17,40 +17,6 @@
     <script src="https://kit.fontawesome.com/086d4db9c7.js" crossorigin="anonymous"></script>
     <script>
         function success(position) {
-            document.cookie = "lat=" + position.coords.latitude;
-            document.cookie = "lng=" + position.coords.longitude;
-            console.log("Cookies saved");
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(success);
-                console.log("Request location");
-            } else {
-                console.log("Geolocation is not supported by this browser.");
-            }
-            navigator.permissions.query({name: 'geolocation'})
-                .then(console.log)
-        });
-
-    </script>
-</head>
-<body class="font-sans antialiased">
-<div class="min-h-screen bg-gray-100">
-    @include('layouts.navigation')
-
-    <!-- Page Heading -->
-    @isset($header)
-        <header class="bg-white shadow">
-            <div class=" mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                {{ $header }}
-            </div>
-        </header>
-    @endisset
-
-    <!-- Page Content -->
-    <script>
-        function success(position) {
             // document.cookie = "lat=" + position.coords.latitude;
             // document.cookie = "lng=" + position.coords.longitude;
             let days = 365;
@@ -75,6 +41,22 @@
                 .then(console.log)
         });
     </script>
+</head>
+<body class="font-sans antialiased">
+<div class="min-h-screen bg-gray-100">
+    @include('layouts.navigation')
+
+    <!-- Page Heading -->
+    @isset($header)
+        <header class="bg-white shadow">
+            <div class=" mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                {{ $header }}
+            </div>
+        </header>
+    @endisset
+
+    <!-- Page Content -->
+
     <main>
         {{ $slot }}
     </main>

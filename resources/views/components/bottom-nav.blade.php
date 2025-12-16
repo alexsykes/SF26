@@ -3,5 +3,6 @@
         <a href="/sites">Sites (A-Z)</a>
         <a href="/sites_near">Sites (Near to Far)</a>
         <a href="/credits">Credits</a>
+        <a href="/contact">Contact</a>
     </div>
 </nav>

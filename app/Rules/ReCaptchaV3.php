@@ -56,7 +56,8 @@ class ReCaptchaV3 implements ValidationRule
 
             // Passed test and proceed
             if ($body['success'] == true) {
-
+                $ip = Request::ip();
+                Log::info("Recaptcha success: $ip");
             }
 
             // When this fails it means the action didn't match the one set in the button's data-action.

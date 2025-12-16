@@ -140,6 +140,11 @@
         </div>
     </main>
 </div>
+    <nav>
+        <div class="flex items-center align-middle underline m-4 space-x-4 text-center text-sm justify-center">
+            <a href="/contact" target="_blank">Contact</a>
+        </div>
+    </nav>
 
 @if (Route::has('login'))
     <div class="h-14.5 hidden lg:block"></div>

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AcknowledgeSiteSubmission;
 use App\Mail\EntryChanged;
+use App\Mail\SitePublished;
 use App\Mail\SuggestionAcknowledgement;
 use App\Mail\SuggestionReviewCompleted;
 use App\Models\Forecast;
@@ -42,6 +44,11 @@ class SiteController extends Controller
     {
         $user = auth()->user();
         $site = Site::where('id', $id)->first();
+
+        $hits = $site->hits;
+        $site->hits = $hits + 1;
+        $site->save();
+
         return view('site.detail', compact('site', 'user'));
     }
 
@@ -114,53 +121,252 @@ class SiteController extends Controller
         return view('site.update_form', compact('site', 'user'));
     }
 
-    public function update(Request $request)
+    public function site_user_update(Request $request)
     {
+        $user = auth()->user();
+        $siteID = $request->input('site_id');
+        $site = Site::where('id', $siteID)->first();
+        $site_name = $site->site_name;
+
+        $attributes['userID'] = $user->id;
+        $attributes['siteID'] = $siteID;
+        $attributes['suggestion'] = $request->input('comment');
+        $attributes['completed'] = false;
+
+        Suggestion::create($attributes);
+
+        Mail::to($user->email)
+            ->bcc('ale@alexsykes.net')
+            ->send(new SuggestionAcknowledgement($user->name, $site_name, $attributes['suggestion']));
+
+        $message = "Thank you for your submission. We will review comments and get back to you as soon as possible.";
+        return view('site.acknowledge', ['message' => $message]);
+    }
+
+//    public function nearest_old()
+//    {
+//        $directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
+//
+//        if (!isset($_COOKIE['lat']) || !isset($_COOKIE['lng'])) {
+//            $curLat = -2.547855;
+//            $curLng = 54.00366;
+//        } else {
+//            $curLat = $_COOKIE['lat'];
+//            $curLng = $_COOKIE['lng'];
+//        }
+//
+//        $nearestSite = DB::table('sites')
+//            ->selectRaw("sites.id, forecasts.data,  ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km")
+//            ->where('sites.published', true)
+//            ->leftJoin('forecasts', 'sites.id', '=', 'forecasts.site_id')
+//            ->orderBy('distance_km', 'asc')
+//            ->first();
+//
+//        $siteID = $nearestSite->id;
+////        dd($siteID);
+//        $json = $nearestSite->data;
+//
+//        $data = json_decode($json);
+//        $current = $data->current;
+//
+////        dd($curLat, $curLng);
+//        $site = Site::where('sites.id', $siteID)
+//            ->leftJoin('forecasts', 'sites.id', '=', 'forecasts.site_id')
+//            ->first();
+//
+//        $site_directions = DB::table('site_wind_directions')
+//            ->where('siteID', $siteID)
+//            ->select('direction')
+//            ->get()
+//            ->toArray();
+//        $site_winds = array();
+//
+//        foreach ($site_directions as $site_direction) {
+//            $site_winds[] = $site_direction->direction;
+//        }
+//
+//
+////        dd($current);
+//        setcookie("nearestSiteID", $siteID, time() + (86400 * 30), "/");
+//
+//        $wind_deg = $current->wind_deg;
+//        $windIndex = (int)(($wind_deg * 16 / 360) + 0.5);
+//
+//        if ($windIndex == 16) {
+//            $windIndex = 0;
+//        }
+////        dump($windIndex);
+//        $sitesForDirection = DB::table("site_wind_directions")
+//            ->selectRaw("sites.*, forecasts.*, ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km")
+//            ->leftJoin("sites", "site_wind_directions.siteID", "=", "sites.id")
+//            ->leftJoin('forecasts', 'sites.id', '=', 'forecasts.site_id')
+//            ->where("direction", $windIndex)
+//            ->where('sites.published', true)
+//            ->orderBy('distance_km', 'asc')
+//            ->limit(10)
+//            ->get()
+//            ->toArray();
+//
+//        return view('site.nearest', ['current' => $current, 'directions' => $directions, 'sites' => $sitesForDirection, 'nearestSite' => $site, 'site_winds' => $site_winds]);
+//    }
+
+    public function nearest(Request $request)
+    {
+//      Setup data arrays and get location if set
+        $directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+
+        if (!isset($_COOKIE['lat']) || !isset($_COOKIE['lng'])) {
+            $curLat = -2.547855;
+            $curLng = 54.00366;
+        } else {
+            $curLat = $_COOKIE['lat'];
+            $curLng = $_COOKIE['lng'];
+        }
+
+//      Get data for nearest site
+        //      Find the nearest site
+        $nearestSite = DB::table('sites')
+            ->selectRaw("sites.id, forecasts.data,  ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km")
+            ->where('sites.published', true)
+            ->leftJoin('forecasts', 'sites.id', '=', 'forecasts.site_id')
+            ->orderBy('distance_km', 'asc')
+            ->first();
+
+        $siteID = $nearestSite->id;
+        $json = $nearestSite->data;
+
+        $data = json_decode($json);
+        $current = $data->current;
+
+        $wind_speed = $current->wind_speed;
+        $wind_deg = $current->wind_deg;
+
+        $windIndex = (int)(($wind_deg * 16 / 360) + 0.5);
+
+        if ($windIndex == 16) {
+            $windIndex = 0;
+        }
+
+//      Check whether request includes wind direction
+        if ($request->windDirection) {
+            $direction = $request->windDirection;
+            $windIndex = array_search($direction, $directions);
+        }
+
+        $wind_dir = $directions[$windIndex];
+
+        $site = Site::where('sites.id', $siteID)
+            ->leftJoin('forecasts', 'sites.id', '=', 'forecasts.site_id')
+            ->first();
+
+        $site_directions = DB::table('site_wind_directions')
+            ->where('siteID', $siteID)
+            ->select('direction')
+            ->get()
+            ->toArray();
+        $site_winds = array();
+
+        foreach ($site_directions as $site_direction) {
+            $site_winds[] = $site_direction->direction;
+        }
+
+        setcookie("nearestSiteID", $siteID, time() + (86400 * 30), "/");
+
+        $sitesForDirection = DB::table("site_wind_directions")
+            ->selectRaw("sites.*, forecasts.*, ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km")
+            ->leftJoin("sites", "site_wind_directions.siteID", "=", "sites.id")
+            ->leftJoin('forecasts', 'sites.id', '=', 'forecasts.site_id')
+            ->where("direction", $windIndex)
+            ->where('sites.published', true)
+            ->orderBy('distance_km', 'asc')
+            ->limit(10)
+            ->get()
+            ->toArray();
+
+        return view('site.nearest', ['current' => $current, 'directions' => $directions, 'sites' => $sitesForDirection, 'nearestSite' => $site, 'site_winds' => $site_winds, 'windIndex' => $windIndex, 'wind_dir' => $wind_dir]);
+    }
+
+    public function direction(Request $request)
+    {
+        $directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
+
+        if (!isset($_COOKIE['lat']) || !isset($_COOKIE['lng'])) {
+            $curLat = -2.547855;
+            $curLng = 54.00366;
+        } else {
+            $curLat = $_COOKIE['lat'];
+            $curLng = $_COOKIE['lng'];
+        }
+
+        $dir = $request->input('windDirection');
+        $windIndex = array_search($dir, $directions);
+
+        $sitesForDirection = DB::table("site_wind_directions")
+            ->selectRaw("sites.*, forecasts.*, ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km")
+            ->leftJoin("sites", "site_wind_directions.siteID", "=", "sites.id")
+            ->leftJoin('forecasts', 'sites.id', '=', 'forecasts.site_id')
+            ->where("direction", $windIndex)
+            ->where('sites.published', true)
+            ->orderBy('distance_km', 'asc')
+            ->limit(10)
+            ->get()
+            ->toArray();
+
+        return view('site.byDirection', compact('directions', 'sitesForDirection', 'windIndex'));
+    }
+
+    public function addSite()
+    {
+        return view('site.add');
+    }
+
+    public function storeSite(Request $request)
+    {
+        $user = auth()->user();
+        $userID = $user->id;
+        $email = $user->email;
+
         $request->validate([
-            'site_name' => ['required', 'min:5', 'max:255'],
-            'site_access' => 'required',
-            'site_description' => 'required',
-            'near' => 'required',
-            'from' => 'required',
-            'to' => 'required',
+            'site_name' => ['required', 'string', 'max:255'],
+            'site_access' => ['required'],
+            'site_description' => ['required'],
+            'near' => ['required'],
+            'to' => ['required'],
+            'from' => ['required'],
         ]);
 
-        $directions = array("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW");
+        $w3w = $request->input('w3w');
 
-        $siteID = $request->input('siteID');
-        $site = Site::where('id', $siteID)->first();
 
-        $beginIndex = \request()->integer('from');
-        $endIndex = \request()->integer('to');
-        $site->end = $directions[$endIndex];
-        $site->begin = $directions[$beginIndex];
+        $begin = convertToDirection($request->input('from'));
+        $end = convertToDirection($request->input('to'));
 
-        $site->site_wind_directions = $directions[$beginIndex] . " to " . $directions[$endIndex];
+        $site = Site::create([
+            'site_name' => $request->input('site_name'),
+            'site_access' => $request->input('site_access'),
+            'site_description' => $request->input('site_description'),
+            'near' => $request->input('near'),
+            'to' => $request->input('to'),
+            'from' => $request->input('from'),
+            'created_by' => $userID,
+            'lat' => $request->input('lat'),
+            'lng' => $request->input('lng'),
+            'hits' => 0,
+            'w3w' => $w3w,
+            'end' => $end,
+            'begin' => $begin,
+        ]);
 
-        $site->site_name = $request->input('site_name');
-        $site->site_description = $request->input('site_description');
-        $site->site_access = $request->input('site_access');
-        $site->w3w = $request->input('w3w');
-        $site->from = $request->input('from');
-        $site->to = $request->input('to');
-
-        $site->update();
-//         Site updated - now update site_wind_directions
+        Mail::to($user->email)
+            ->bcc('alex@alexsykes.net')
+            ->send(new AcknowledgeSiteSubmission($user->name, $site));
 
         $this->updateWindDirections($site);
 
-//      Process Suggestions
-        if ($request->input('completed') !== null) {
-            $completed = $request->input('completed');
-            foreach ($completed as $completedID) {
-                $suggestion = Suggestion::where('id', $completedID)->first();
-                $suggestion->completed = true;
-                $suggestion->completed_at = now();
-                $suggestion->update();
-                sendmail($completedID, $site->site_name);
-            }
-        }
-        return redirect('/suggestions');
+        $this->getForecast($site);
+        $message = "Thank you for your submission. We will review the site and get back to you as soon as possible. Please note that the site will not appear in our listings until it is approved.";
+        return view('site.acknowledge', ['message' => $message]);
+
     }
 
     private function updateWindDirections(?Site $site)
@@ -209,117 +415,6 @@ class SiteController extends Controller
         }
     }
 
-    public function site_user_update(Request $request)
-    {
-        $user = auth()->user();
-        $siteID = $request->input('site_id');
-        $site = Site::where('id', $siteID)->first();
-        $site_name = $site->site_name;
-
-        $attributes['userID'] = $user->id;
-        $attributes['siteID'] = $siteID;
-        $attributes['suggestion'] = $request->input('comment');
-        $attributes['completed'] = false;
-
-        Suggestion::create($attributes);
-
-        Mail::to($user->email)
-            ->bcc('ale@alexsykes.net')
-            ->send(new SuggestionAcknowledgement($user->name, $site_name, $attributes['suggestion']));
-
-        $message = "Thank you for your submission. We will review comments and get back to you as soon as possible.";
-        return view('site.acknowledge', ['message' => $message]);
-    }
-
-    public function nearest()
-    {
-        $directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
-
-        if (!isset($_COOKIE['lat']) || !isset($_COOKIE['lng'])) {
-            $curLat = -2.547855;
-            $curLng = 54.00366;
-        } else {
-            $curLat = $_COOKIE['lat'];
-            $curLng = $_COOKIE['lng'];
-        }
-
-        $nearestSite = DB::table('sites')
-            ->selectRaw("sites.id, forecasts.data,  ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km")
-            ->where('sites.published', true)
-            ->leftJoin('forecasts', 'sites.id', '=', 'forecasts.site_id')
-            ->orderBy('distance_km', 'asc')
-            ->first();
-
-        $siteID = $nearestSite->id;
-        $json = $nearestSite->data;
-
-        $data = json_decode($json);
-        $current = $data->current;
-        setcookie("nearestSiteID", $siteID, time() + (86400 * 30), "/");
-
-        $wind_deg = $current->wind_deg;
-        $windIndex = (int)(($wind_deg * 16 / 360) + 0.5);
-
-        $sitesForDirection = DB::table("site_wind_directions")
-            ->selectRaw("sites.*, forecasts.*, ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km")
-            ->leftJoin("sites", "site_wind_directions.siteID", "=", "sites.id")
-            ->leftJoin('forecasts', 'sites.id', '=', 'forecasts.site_id')
-            ->where("direction", $windIndex)
-            ->orderBy('distance_km', 'asc')
-            ->limit(10)
-            ->get()
-            ->toArray();
-
-//        dd($sitesForDirection);
-        return view('site.nearest', ['current' => $current, 'directions' => $directions, 'sites' => $sitesForDirection]);
-    }
-
-    public function addSite()
-    {
-        return view('site.add');
-    }
-
-    public function storeSite(Request $request)
-    {
-        $userID = auth()->user()->id;
-        $request->validate([
-            'site_name' => ['required', 'string', 'max:255'],
-            'site_access' => ['required'],
-            'site_description' => ['required'],
-            'near' => ['required'],
-            'to' => ['required'],
-            'from' => ['required'],
-        ]);
-
-        $w3w = $request->input('w3w');
-
-
-        $begin = convertToDirection($request->input('from'));
-        $end = convertToDirection($request->input('to'));
-
-        $site = Site::create([
-            'site_name' => $request->input('site_name'),
-            'site_access' => $request->input('site_access'),
-            'site_description' => $request->input('site_description'),
-            'near' => $request->input('near'),
-            'to' => $request->input('to'),
-            'from' => $request->input('from'),
-            'created_by' => $userID,
-            'lat' => $request->input('lat'),
-            'lng' => $request->input('lng'),
-            'hits' => 0,
-            'w3w' => $w3w,
-            'end' => $begin,
-            'begin' => $end,
-        ]);
-
-        $this->updateWindDirections($site);
-
-        $this->getForecast($site);
-        $message = "Thank you for your submission. We will review the site and get back to you as soon as possible. Please note that the site will not appear in our listings until it is approved.";
-        return view('site.acknowledge', ['message' => $message]);
-    }
-
     private function getForecast(Site $site)
     {
         $open_weather = Config::get('app.OPEN_WEATHER');
@@ -336,5 +431,70 @@ class SiteController extends Controller
                 'version' => 1,
             ]);
         }
+    }
+
+    public function publishSite(Request $request)
+    {
+        $site = Site::find($request->input('siteID'));
+        $site->published = true;
+        $site->update();
+
+        $user = auth()->user();
+        $name = $user->name;
+//dd($name);
+        Mail::to($user->email)
+            ->bcc('alex@alexsykes.net')
+            ->send(new SitePublished($name, $site));
+
+        return redirect('/sites_approve');
+    }
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            'site_name' => ['required', 'min:5', 'max:255'],
+            'site_access' => 'required',
+            'site_description' => 'required',
+            'near' => 'required',
+            'from' => 'required',
+            'to' => 'required',
+        ]);
+
+        $directions = array("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW");
+
+        $siteID = $request->input('siteID');
+        $site = Site::where('id', $siteID)->first();
+
+        $beginIndex = \request()->integer('from');
+        $endIndex = \request()->integer('to');
+        $site->end = $directions[$endIndex];
+        $site->begin = $directions[$beginIndex];
+
+        $site->site_wind_directions = $directions[$beginIndex] . " to " . $directions[$endIndex];
+
+        $site->site_name = $request->input('site_name');
+        $site->site_description = $request->input('site_description');
+        $site->site_access = $request->input('site_access');
+        $site->w3w = $request->input('w3w');
+        $site->from = $request->input('from');
+        $site->to = $request->input('to');
+
+        $site->update();
+//         Site updated - now update site_wind_directions
+
+        $this->updateWindDirections($site);
+
+//      Process Suggestions
+        if ($request->input('completed') !== null) {
+            $completed = $request->input('completed');
+            foreach ($completed as $completedID) {
+                $suggestion = Suggestion::where('id', $completedID)->first();
+                $suggestion->completed = true;
+                $suggestion->completed_at = now();
+                $suggestion->update();
+                sendmail($completedID, $site->site_name);
+            }
+        }
+        return redirect('/suggestions');
     }
 }

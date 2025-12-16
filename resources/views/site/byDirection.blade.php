@@ -1,58 +1,50 @@
 @php
+    //    dd($sitesForDirection);
+    //            $wind_speed = $current->wind_speed;
+    //            $wind_deg = $current->wind_deg;
+    //
+    //            $windIndex = (int) (($wind_deg * 16 / 360) + 0.5);
+    //            $wind_dir = $directions[$windIndex];
+    //
+    //            if($windIndex == 16) {
+    //                $windIndex = 0;
+    //            }
+    //
+    //            $sitesHTML="";
 
-    $sitesHTML="";
-
-        $msg = "A list of local sites for the forecast wind direction for your location are listed below.";
-
+    //        dump($windIndex, $site_winds);
+    //            if(in_array($windIndex, $site_winds)) {
+    //                $msg = "The nearest site to your recorded location is $nearestSite->site_name. A list of local sites for the current wind direction are listed below.";
+    //            } else {
+    //                $msg  = "The nearest site to your recorded location is $nearestSite->site_name. Current forecast conditions suggest that this site will not be working today. Alternative sites for the current wind direction are listed below.";
+    //            }
 @endphp
-
-
 <x-app-layout>
-    <script>
-        function directionChanged() {
-            let directionForm = document.getElementById('directionForm');
-            let windDirection = document.getElementById('windDirection');
-            let direction = windDirection.value;
-            document.cookie = "dir=" + direction;
-            console.log("Direction changed: " + direction);
-            directionForm.submit();
-
-            // this.form.submit();
-        }
-    </script>
     <x-slot name="header">
+
         <div class="flex items-start justify-between"><h2
                     class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">
-                {{ __('Nearest sites for ') }}{{$wind_dir}}
+                {{--                {{ __('Nearest sites for ') }}{{$wind_dir}}--}}
             </h2>
-            <form id="directionForm" method="post" action="/nearest">
+            <form method="post" action="/sites/direction">
                 @csrf
                 @method('PUT')
-                <select class="" id="windDirection" name="windDirection"
-                        onchange="directionChanged()">
-                    @foreach($directions as $direction)
-                        <option value="{{$direction}}"
-                                @php
-                                    if($direction == $wind_dir) {
-                                        echo " selected ";
-                                    }
-                                @endphp
+                <select name="windDirection" onchange="this.form.submit()">
 
-                        >{{$direction}}
-                        </option>
+                    @foreach($directions as $direction)
+                        <option value="{{$direction}}">{{$direction}}</option>
                     @endforeach
-                </select>
-            </form>
+                </select></form>
         </div>
-        <div class="text-sm">{{$msg}}</div>
-        <div class="text-sm">For full details and the latest forecast for these sites, click on the site
+        {{--        <div class="text-sm">{{$msg}}</div>--}}
+        <div class="text-sm">To get the latest forecast for these sites, click on the site
             name. For current wind conditions, click on Windy.com
         </div>
     </x-slot>
 
 
     <div class="visible p-2  bg-white shadow-xl flex mt-4 ml-4 mr-4 h-full flex-1 flex-col gap-1 rounded-xl border border-neutral-200">
-        @foreach($sites as $site)
+        @foreach($sitesForDirection as $site)
             {{--            @dump($site)--}}
             @php
                 $siteID = $site->site_id;

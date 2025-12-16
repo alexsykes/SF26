@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\WebContact;
+use App\Rules\ReCaptchaV3;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
 {
@@ -49,6 +53,47 @@ class AdminController extends Controller
             ->where('published', false)
             ->get();
 
+//        dd($sites);
         return view('admin.sites_approve', compact('sites'));
+    }
+
+    public function contact(Request $request)
+    {
+        return view('admin.contact');
+    }
+
+    public function sendMail(Request $request)
+    {
+
+        $request->validate([
+                'sender' => ['required', 'string', 'max:255'],
+                'message' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
+                'g-recaptcha-response' => ['required', new ReCaptchaV3('sendMail')],
+            ]
+        );
+
+        $from = $request->sender;
+        $at = $request->email;
+        $content = $request->message;
+
+        if (isset($request->copy_sender)) {
+            Mail::to($at)
+                ->send(new WebContact($from, $at, $content));
+            info("Mail copied to $from at $at");
+        }
+
+        $adminAddress = "slopefinder@alexsykes.net";
+        $bcc = "info@slopefinder.uk";
+        Mail::to($adminAddress)
+            ->send(new WebContact($from, $at, $content));
+        info("Contact mail from $from at $at");
+
+//        dd($request->all());
+        if (Auth::check()) {
+            return view('admin.sent');
+        } else {
+            return view('public.sent');
+        }
     }
 }

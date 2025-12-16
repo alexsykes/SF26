@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Rules\ReCaptchaV3;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +26,7 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->validate([
-            'g-recaptcha-response' => ['required', new ReCaptchaV3('registerUser')],
+//            'g-recaptcha-response' => ['required', new ReCaptchaV3('registerUser')],
         ]);
 
         $request->authenticate();
@@ -37,7 +36,7 @@ class AuthenticatedSessionController extends Controller
 
         $favourites = $user->favourites;
         $ip = $request->getClientIp();
-        Log::info("Succesful login by $username from IPaddress: $ip");
+        Log::info("Successful login by $username from IPaddress: $ip");
 
         if ($favourites == '') {
             return redirect()->intended(route('near.sites', absolute: false));
