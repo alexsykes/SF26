@@ -34,6 +34,8 @@ Route::patch('/site/publish', [SiteController::class, 'publishSite'])->middlewar
 
 Route::patch('/site/update', [SiteController::class, 'update'])->middleware(['auth', 'verified'])->name('site.update');
 
+Route::get('sitemap', [SiteController::class, 'sitemap'])->middleware(['auth', 'verified'])->name('sitemap');
+
 // Forecast Controller
 Route::get('/forecast/{id}', [ForecastController::class, 'index'])->middleware(['auth', 'verified'])->name('forecast.index');
 

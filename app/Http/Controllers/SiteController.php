@@ -79,7 +79,13 @@ class SiteController extends Controller
         $favourites = auth()->user()->favourites;
 //        dd($favourites);
 
-        return view('site.list', compact('sites', 'favourites'));
+        $sitesForMap = Site::all()
+            ->where('published', true)
+            ->select('id', 'site_name', 'lat', 'lng', 'begin', 'end')
+            ->toArray();
+
+
+        return view('site.list', compact('sites', 'favourites', 'sitesForMap'));
     }
 
     public function sites_near()
@@ -496,5 +502,15 @@ class SiteController extends Controller
             }
         }
         return redirect('/suggestions');
+    }
+
+    function sitemap()
+    {
+        $sites = Site::all()
+            ->where('published', true)
+            ->select('id', 'site_name')
+            ->toArray();
+
+        return view('site.map', ['sites' => $sites]);
     }
 }
