@@ -22,9 +22,24 @@
 
 }
 //    dd($sitesHTML);
+
+// Check for cookies
+
 @endphp
 <x-app-layout>
     <script>
+        function getCookieByName(name) {
+            const cookies = document.cookie.split('; ');
+            for (let cookie of cookies) {
+                const [cookieName, cookieValue] = cookie.split('=');
+                if (cookieName === name) {
+                    return cookieValue;
+                }
+            }
+            return null; // Return null if the cookie is not found
+        }
+
+
         (g => {
             var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__",
                 m = document, b = window;
@@ -52,60 +67,90 @@
         let map;
 
         async function initMap() {
-            // const {Map} = await google.maps.importLibrary("maps");
             const {AdvancedMarkerElement} = await google.maps.importLibrary("marker");
             const {Map} = (await google.maps.importLibrary('maps'));
-            // const infoWindow = new InfoWindow();
+
+            let lat = 53.67;
+            let lng = -1.92;
+            let zoom = 6;
+
+            // Get saved map
+            let curLat = getCookieByName('curLat');
+            let curLng = getCookieByName('curLng');
+            let curZoom = getCookieByName('curZoom');
+
+            if (curLat) (lat = curLat);
+            if (curLng) (lng = curLng);
+            if (curZoom) (zoom = curZoom);
+
+            initialLocation = new google.maps.LatLng(lat, lng);
+
+            map = new Map(document.getElementById("map"), {
+                center: initialLocation,
+                zoom: parseInt(zoom),
+                streetViewControl: false,
+                mapTypeControl: false,
+                mapTypeId: google.maps.MapTypeId.TERRAIN,
+                mapId: "c2290875eac93973",
+            });
+
+            map.setCenter(initialLocation);
+
+            let curCenter = map.get('center');
+            console.log("Centre: " + curCenter);
+            curZoom = map.get('zoom');
+            console.log("Zoom: " + curZoom);
+
+            // Start of foreach
+            <?php
+            foreach ($sitesForMap as $siteForMap) {
+//                dump($siteForMap);
+                $url = env('APP_URL');
+                $url .= "/site/detail/" . $siteForMap['id'];
+                ?>
+
+                infowindow = new google.maps.InfoWindow({
+                content: "{{$siteForMap['site_name']}}",
+                ariaLabel: "{{$siteForMap['site_name']}}",
+            });
 
 
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            map.addListener("zoom_changed", () => {
+                const d = new Date();
+                d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
+                let expires = "expires=" + d.toUTCString();
 
-                    // let lat = document.getElementById("lat");
-                    // let lng = document.getElementById("lng");
-                    let lat = 53.67;
-                    let lng = -1.92;
+                let curZoom = map.getZoom();
+                document.cookie = "curZoom=" + curZoom + ";" + expires + ";";
+            });
+            map.addListener("center_changed", () => {
+                const d = new Date();
+                d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
+                let expires = "expires=" + d.toUTCString();
 
-                    initialLocation = new google.maps.LatLng(lat, lng);
-                    // lat.setAttribute('value', position.coords.latitude);
-                    // lng.setAttribute('value', position.coords.longitude);
+                let curLat = map.get('center').lat();
+                let curLng = map.get('center').lng();
 
-                    map = new Map(document.getElementById("map"), {
-                        center: {position},
-                        zoom: 6,
-                        streetViewControl: false,
-                        mapTypeControl: false,
-                        mapTypeId: google.maps.MapTypeId.TERRAIN,
-                        mapId: "c2290875eac93973",
-                    });
+                document.cookie = "curLat=" + curLat + ";" + expires + ";";
+                document.cookie = "curLng=" + curLng + ";" + expires + ";";
+            });
 
-                    map.setCenter(initialLocation);
+            marker = new AdvancedMarkerElement({
+                map,
+                position: {lat: {{$siteForMap['lat']}}, lng: {{$siteForMap['lng']}}},
+                title: "{{$siteForMap['site_name']}}",
+            });
+            {{--console.log("SiteID: " + {{$siteForMap['id']}});--}}
+            marker.addListener("click", () => {
 
-                    // Start of foreach
-                    <?php foreach ($sitesForMap as $siteForMap) { ?>
-                        infowindow = new google.maps.InfoWindow({
-                        content: "{{$siteForMap['site_name']}}",
-                        ariaLabel: "{{$siteForMap['site_name']}}",
-                    });
+                let html = "<a href=\"{{$url}}\"><b>{{$siteForMap['site_name']}}</b> ({{$siteForMap['begin']}} to {{$siteForMap['end']}})"
+                html += " - Click for full details click<a href=$url"
+                let messageDiv = document.getElementById('messageDiv');
+                messageDiv.innerHTML = html;
 
-                    marker = new AdvancedMarkerElement({
-                        map,
-                        position: {lat: {{$siteForMap['lat']}}, lng: {{$siteForMap['lng']}}},
-                        title: "{{$siteForMap['site_name']}}",
-                    });
-                    console.log("Position: " + position.coords.latitude);
-                    marker.addListener("click", () => {
-                        
-                        let html = "{{$siteForMap['site_name']}} ({{$siteForMap['begin']}} to {{$siteForMap['end']}})"
-                        let messageDiv = document.getElementById('messageDiv');
-                        messageDiv.setHTMLUnsafe(html);
-
-                    });
-                    // End of foreach
-                    <?php } ?>
-                });
-            }
+            });
+            // End of foreach
+            <?php } ?>
         }
 
         initMap();
@@ -113,7 +158,7 @@
     </script>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">
-            {{ __('Sites (A-Z)') }}
+            Site Map (work in progress - may have glitches)
         </h2>
 
     </x-slot>
@@ -122,7 +167,7 @@
         <div class="map100" id="map">Map should appear here</div>
     </div>
 
-    <div id="messageDiv"></div>
+    <div id="messageDiv" class="bg-white ml-4 mr-4 p-2"><b>Marker click</b> Site link will appear here…</div>
     <div class="visible p-2  bg-white shadow-xl flex mt-4 ml-4 mr-4 h-full flex-1 flex-col gap-1 rounded-xl border border-neutral-200 md:hidden">
 
         @foreach($sites as $site)

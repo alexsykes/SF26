@@ -149,84 +149,17 @@ class SiteController extends Controller
         return view('site.acknowledge', ['message' => $message]);
     }
 
-//    public function nearest_old()
-//    {
-//        $directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
-//
-//        if (!isset($_COOKIE['lat']) || !isset($_COOKIE['lng'])) {
-//            $curLat = -2.547855;
-//            $curLng = 54.00366;
-//        } else {
-//            $curLat = $_COOKIE['lat'];
-//            $curLng = $_COOKIE['lng'];
-//        }
-//
-//        $nearestSite = DB::table('sites')
-//            ->selectRaw("sites.id, forecasts.data,  ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km")
-//            ->where('sites.published', true)
-//            ->leftJoin('forecasts', 'sites.id', '=', 'forecasts.site_id')
-//            ->orderBy('distance_km', 'asc')
-//            ->first();
-//
-//        $siteID = $nearestSite->id;
-////        dd($siteID);
-//        $json = $nearestSite->data;
-//
-//        $data = json_decode($json);
-//        $current = $data->current;
-//
-////        dd($curLat, $curLng);
-//        $site = Site::where('sites.id', $siteID)
-//            ->leftJoin('forecasts', 'sites.id', '=', 'forecasts.site_id')
-//            ->first();
-//
-//        $site_directions = DB::table('site_wind_directions')
-//            ->where('siteID', $siteID)
-//            ->select('direction')
-//            ->get()
-//            ->toArray();
-//        $site_winds = array();
-//
-//        foreach ($site_directions as $site_direction) {
-//            $site_winds[] = $site_direction->direction;
-//        }
-//
-//
-////        dd($current);
-//        setcookie("nearestSiteID", $siteID, time() + (86400 * 30), "/");
-//
-//        $wind_deg = $current->wind_deg;
-//        $windIndex = (int)(($wind_deg * 16 / 360) + 0.5);
-//
-//        if ($windIndex == 16) {
-//            $windIndex = 0;
-//        }
-////        dump($windIndex);
-//        $sitesForDirection = DB::table("site_wind_directions")
-//            ->selectRaw("sites.*, forecasts.*, ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km")
-//            ->leftJoin("sites", "site_wind_directions.siteID", "=", "sites.id")
-//            ->leftJoin('forecasts', 'sites.id', '=', 'forecasts.site_id')
-//            ->where("direction", $windIndex)
-//            ->where('sites.published', true)
-//            ->orderBy('distance_km', 'asc')
-//            ->limit(10)
-//            ->get()
-//            ->toArray();
-//
-//        return view('site.nearest', ['current' => $current, 'directions' => $directions, 'sites' => $sitesForDirection, 'nearestSite' => $site, 'site_winds' => $site_winds]);
-//    }
-
     public function nearest(Request $request)
     {
 //      Setup data arrays and get location if set
         $directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
 
-        if (!isset($_COOKIE['lat']) || !isset($_COOKIE['lng'])) {
+        if (!isset($_COOKIE['curLat']) || !isset($_COOKIE['curLng'])) {
             $curLat = -2.547855;
             $curLng = 54.00366;
         } else {
-            $curLat = $_COOKIE['lat'];
-            $curLng = $_COOKIE['lng'];
+            $curLat = $_COOKIE['curLat'];
+            $curLng = $_COOKIE['curLng'];
         }
 
 //      Get data for nearest site
@@ -285,9 +218,16 @@ class SiteController extends Controller
             ->where("direction", $windIndex)
             ->where('sites.published', true)
             ->orderBy('distance_km', 'asc')
-            ->limit(10)
+//            ->limit(10)
             ->get()
             ->toArray();
+
+//        dd($sitesForDirection[0]->id);
+
+//        $sitesForDirection = Site::all()
+//            ->where('published', true)
+//            ->select('id', 'site_name', 'lat', 'lng', 'begin', 'end')
+//            ->toArray();
 
         return view('site.nearest', ['current' => $current, 'directions' => $directions, 'sites' => $sitesForDirection, 'nearestSite' => $site, 'site_winds' => $site_winds, 'windIndex' => $windIndex, 'wind_dir' => $wind_dir]);
     }

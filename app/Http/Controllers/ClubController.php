@@ -2,48 +2,59 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Club;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class ClubController extends Controller
 {
-    //
-    public function create() {
-        return view('club.register');
+    public function index()
+    {
+        return Club::all();
     }
 
-    public function update($id) {
-        $user = Auth::user();
-        $userid = $user->id;
-        $attrs = request()->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'contact_name' => 'required',
-            'contact_email' =>  ['required', 'email', 'max:254'],
-            'website' => 'max:254',
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'Name' => ['required'],
+            'Area' => ['required'],
+            'Contact' => ['required'],
+            'Email' => ['required'],
+            'Phone' => ['nullable'],
+            'Website' => ['nullable'],
+            'Description' => ['required'],
+            'Notes' => ['nullable'],
         ]);
 
-        $attrs['updated_by'] = $userid;
+        return Club::create($data);
+    }
 
-        $club = Club::findOrFail($id);
-        $club->update($attrs);
-        return redirect( '/auth/profile');
-}
+    public function show(Club $club)
+    {
+        return $club;
+    }
 
-    public function registerClub() {
-        $user = Auth::user();
-        $userid = $user->id;
-        $attrs = request()->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'contact_name' => 'required',
-            'contact_email' =>  ['required', 'email', 'max:254'],
-            'website' => 'max:254',
+    public function update(Request $request, Club $club)
+    {
+        $data = $request->validate([
+            'Name' => ['required'],
+            'Area' => ['required'],
+            'Contact' => ['required'],
+            'Email' => ['required'],
+            'Phone' => ['nullable'],
+            'Website' => ['nullable'],
+            'Description' => ['required'],
+            'Notes' => ['nullable'],
         ]);
-        $attrs['created_by'] = $userid;
-//        dd($attrs);
-        Club::create($attrs);
-        return redirect( '/auth/profile');
+
+        $club->update($data);
+
+        return $club;
+    }
+
+    public function destroy(Club $club)
+    {
+        $club->delete();
+
+        return response()->json();
     }
 }

@@ -15,32 +15,32 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <script src="https://kit.fontawesome.com/086d4db9c7.js" crossorigin="anonymous"></script>
-    <script>
-        function success(position) {
-            // document.cookie = "lat=" + position.coords.latitude;
-            // document.cookie = "lng=" + position.coords.longitude;
-            let days = 365;
-            var date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            var expires = "; expires=" + date.toGMTString();
-            let lat = position.coords.latitude;
-            let lng = position.coords.longitude;
-            document.cookie = "lat=" + lat + "; expires=" + expires + ";path=/";
-            document.cookie = "lng=" + lng + "; expires=" + expires + ";path=/";
-            console.log("Cookies saved");
-        }
+{{--    <script>--}}
+{{--        function success(position) {--}}
+{{--            // document.cookie = "lat=" + position.coords.latitude;--}}
+{{--            // document.cookie = "lng=" + position.coords.longitude;--}}
+{{--            let days = 365;--}}
+{{--            var date = new Date();--}}
+{{--            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));--}}
+{{--            var expires = "; expires=" + date.toGMTString();--}}
+{{--            let lat = position.coords.latitude;--}}
+{{--            let lng = position.coords.longitude;--}}
+{{--            document.cookie = "lat=" + lat + "; expires=" + expires + ";path=/";--}}
+{{--            document.cookie = "lng=" + lng + "; expires=" + expires + ";path=/";--}}
+{{--            console.log("Cookies saved");--}}
+{{--        }--}}
 
-        document.addEventListener("DOMContentLoaded", function () {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(success);
-                console.log("Request location");
-            } else {
-                console.log("Geolocation is not supported by this browser.");
-            }
-            navigator.permissions.query({name: 'geolocation'})
-                .then(console.log)
-        });
-    </script>
+{{--        document.addEventListener("DOMContentLoaded", function () {--}}
+{{--            if (navigator.geolocation) {--}}
+{{--                navigator.geolocation.getCurrentPosition(success);--}}
+{{--                console.log("Request location");--}}
+{{--            } else {--}}
+{{--                console.log("Geolocation is not supported by this browser.");--}}
+{{--            }--}}
+{{--            navigator.permissions.query({name: 'geolocation'})--}}
+{{--                .then(console.log)--}}
+{{--        });--}}
+{{--    </script>--}}
 </head>
 <body class="font-sans antialiased">
 <div class="min-h-screen bg-gray-100">
