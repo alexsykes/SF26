@@ -163,7 +163,7 @@
         <div class="text-sm">For full details and the latest forecast for these sites, click on the site
             name.
         </div>
-        <div class="text-sm">Distances are measured from the centre of the map when the page was loaded.
+        <div class="text-sm">Distances are measured from the centre of the map when the page was loaded.</div>
     </x-slot>
 
     <div id="mapContainer" class="h-64 sm:h-[32rem]">
