@@ -2,6 +2,7 @@
 
 use App\Models\Forecast;
 use App\Models\Site;
+use App\Models\SiteWindDirections;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 
@@ -20,10 +21,10 @@ Artisan::command('getForecast', function () {
     $open_weather = Config::get('app.OPEN_WEATHER');
     $count = 0;
 
-    foreach($sites as $site) {
+    foreach ($sites as $site) {
         $lat = $site->lat;
         $lng = $site->lng;
-        $url = "https://api.openweathermap.org/data/3.0/onecall?lat=$lat&lon=$lng&exclude=minutely,alerts&units=imperial&appid=".$open_weather;
+        $url = "https://api.openweathermap.org/data/3.0/onecall?lat=$lat&lon=$lng&exclude=minutely,alerts&units=imperial&appid=" . $open_weather;
 
         if (!$site->forecast) {
             $rawData = (file_get_contents($url, 'r'));
@@ -67,29 +68,27 @@ Artisan::command('UpdateWindDirections', function () {
         $endIndex = array_search($end, $directions);
 
 //    Working
-        if($endIndex > $beginIndex) {
-            for($i = $beginIndex; $i <= $endIndex; $i++) {
-                $site_wind_direction = \App\Models\SiteWindDirections::create([
+        if ($endIndex > $beginIndex) {
+            for ($i = $beginIndex; $i <= $endIndex; $i++) {
+                $site_wind_direction = SiteWindDirections::create([
                     'siteID' => $siteID,
                     'direction' => $i,
                 ]);
             }
-        }
-        elseif ($endIndex == $beginIndex) {
-            $site_wind_direction = \App\Models\SiteWindDirections::create([
+        } elseif ($endIndex == $beginIndex) {
+            $site_wind_direction = SiteWindDirections::create([
                 'siteID' => $siteID,
                 'direction' => $endIndex,
             ]);
-        }
-        else {
-            for($i = $beginIndex; $i < $numDirs; $i++) {
-                $site_wind_direction = \App\Models\SiteWindDirections::create([
+        } else {
+            for ($i = $beginIndex; $i < $numDirs; $i++) {
+                $site_wind_direction = SiteWindDirections::create([
                     'siteID' => $siteID,
                     'direction' => $i,
                 ]);
             }
-            for($i = 0; $i <= $endIndex; $i++) {
-                $site_wind_direction = \App\Models\SiteWindDirections::create([
+            for ($i = 0; $i <= $endIndex; $i++) {
+                $site_wind_direction = SiteWindDirections::create([
                     'siteID' => $siteID,
                     'direction' => $i,
                 ]);

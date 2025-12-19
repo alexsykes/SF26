@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Auth\Access\Response;
-use Illuminate\Support\Facades\Gate;
 use App\Policies\NotePolicy;
+use Auth;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -23,24 +23,24 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
-        Gate::define('manage_users', function(User $user) {
+        Gate::define('manage_users', function (User $user) {
             return $user->role == "admin";
         });
 
         /* define a admin user role */
-        Gate::define('isAdmin', function($user) {
+        Gate::define('isAdmin', function ($user) {
             return $user->role == 'admin';
         });
 
         /* define a manager user role */
-        Gate::define('isEditorOrAbove', function($user) {
+        Gate::define('isEditorOrAbove', function ($user) {
             return ($user->isEditor || $user->isSuperUser);
 
         });
 
         /* define a logged in user role */
-        Gate::define('isLoggedInUser', function($user) {
-            return \Auth::check();
+        Gate::define('isLoggedInUser', function ($user) {
+            return Auth::check();
         });
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Site extends Model
 {
@@ -39,12 +40,12 @@ class Site extends Model
 //        return $this->belongsTo(User::class)->orderBy('id','asc');
 //    }
 
-    public function forecast(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function forecast(): HasOne
     {
         return $this->hasOne(Forecast::class, 'site_id');
     }
 
-    public function gforecast(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function gforecast(): HasOne
     {
         return $this->hasOne(GForecast::class, 'site_id');
     }

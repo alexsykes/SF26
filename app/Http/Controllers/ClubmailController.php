@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Mail\BulkMail;
 use App\Models\Clubmail;
+use Auth;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Mail\Mailables\Address;
 
 class ClubmailController extends Controller
 {
@@ -20,7 +21,7 @@ class ClubmailController extends Controller
     public function store(Request $request)
     {
 //        dd($request->all());
-        $user = \Auth::user();
+        $user = Auth::user();
         $updated_by = $user->id;
         $data = $request->validate([
             'subject' => ['required', 'string', 'max:255'],
@@ -59,7 +60,7 @@ class ClubmailController extends Controller
             case 'prepare':
                 $this->saveMail($request);
                 $clubmail = Clubmail::find($request->id);
-                $user = \Auth::user();
+                $user = Auth::user();
                 return view('clubmails.prepare', compact('clubmail', 'user'));
                 break;
         }
@@ -68,7 +69,7 @@ class ClubmailController extends Controller
     private function saveMail(Request $request)
     {
         $clubmail = Clubmail::find($request->id);
-        $user = \Auth::user();
+        $user = Auth::user();
         $updated_by = $user->id;
         $data = $request->validate([
             'subject' => ['required', 'string', 'max:255'],
@@ -91,7 +92,7 @@ class ClubmailController extends Controller
 
     public function compose()
     {
-        $user = \Auth::user();
+        $user = Auth::user();
         $replyToName = $user->name;
         $replyToAddress = $user->email;
 
@@ -121,7 +122,7 @@ class ClubmailController extends Controller
                 $address = 'alexjeddah@icloud.com';
                 break;
             default:
-                throw new \Exception('Unexpected value');
+                throw new Exception('Unexpected value');
         }
 
         return redirect('/clubmails');

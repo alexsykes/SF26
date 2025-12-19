@@ -9,6 +9,7 @@ use App\Mail\SuggestionAcknowledgement;
 use App\Mail\SuggestionReviewCompleted;
 use App\Models\Forecast;
 use App\Models\Site;
+use App\Models\SiteWindDirections;
 use App\Models\Suggestion;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -362,25 +363,25 @@ class SiteController extends Controller
 
         if ($endIndex > $beginIndex) {
             for ($i = $beginIndex; $i <= $endIndex; $i++) {
-                $site_wind_direction = \App\Models\SiteWindDirections::create([
+                $site_wind_direction = SiteWindDirections::create([
                     'siteID' => $siteID,
                     'direction' => $i,
                 ]);
             }
         } elseif ($endIndex == $beginIndex) {
-            $site_wind_direction = \App\Models\SiteWindDirections::create([
+            $site_wind_direction = SiteWindDirections::create([
                 'siteID' => $siteID,
                 'direction' => $endIndex,
             ]);
         } else {
             for ($i = $beginIndex; $i < $numDirs; $i++) {
-                $site_wind_direction = \App\Models\SiteWindDirections::create([
+                $site_wind_direction = SiteWindDirections::create([
                     'siteID' => $siteID,
                     'direction' => $i,
                 ]);
             }
             for ($i = 0; $i <= $endIndex; $i++) {
-                $site_wind_direction = \App\Models\SiteWindDirections::create([
+                $site_wind_direction = SiteWindDirections::create([
                     'siteID' => $siteID,
                     'direction' => $i,
                 ]);
