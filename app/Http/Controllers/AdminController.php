@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Mail;
 class AdminController extends Controller
 {
 
+    public function index()
+    {
+        return view('admin.index');
+    }
+
     public function suggestions(Request $request)
     {
         $user = \Auth::user();

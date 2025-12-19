@@ -1,22 +1,21 @@
 <?php
 
-namespace App\Events\Mail;
+namespace App\Mail;
 
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class newMember extends Mailable
+class Clubmail extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(public User $user)
+    public function __construct()
     {
         //
     }
@@ -27,7 +26,7 @@ class newMember extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'New Member - ' . $this->user->name
+            subject: 'Clubmail',
         );
     }
 
@@ -37,7 +36,7 @@ class newMember extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.newMember'
+            view: 'mails.clubmail',
         );
     }
 

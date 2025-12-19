@@ -1,5 +1,17 @@
 <x-app-layout>
     <script>
+
+        function getCookieByName(name) {
+            const cookies = document.cookie.split('; ');
+            for (let cookie of cookies) {
+                const [cookieName, cookieValue] = cookie.split('=');
+                if (cookieName === name) {
+                    return cookieValue;
+                }
+            }
+            return null; // Return null if the cookie is not found
+        }
+
         (g => {
             var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__",
                 m = document, b = window;
@@ -27,52 +39,137 @@
         let map;
 
         async function initMap() {
-            // const {Map} = await google.maps.importLibrary("maps");
+            activeMarker = false;
             const {AdvancedMarkerElement} = await google.maps.importLibrary("marker");
             const {Map} = (await google.maps.importLibrary('maps'));
-            // const infoWindow = new InfoWindow();
 
+            // Get saved map
+            let curLat = parseFloat(getCookieByName('curLat'));
+            let curLng = parseFloat(getCookieByName('curLng'));
+            let curZoom = parseInt(getCookieByName('curZoom'));
 
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            console.log("curLat:" + curLat);
 
-                    let lat = document.getElementById("lat");
-                    let lng = document.getElementById("lng");
+            let markerLat = parseFloat(getCookieByName('markerLat'));
+            let markerLng = parseFloat(getCookieByName('markerLng'));
 
-                    lat.setAttribute('value', position.coords.latitude);
-                    lng.setAttribute('value', position.coords.longitude);
-
-                    map = new Map(document.getElementById("map"), {
-                        center: {position},
-                        zoom: 15,
-                        streetViewControl: false,
-                        mapTypeControl: false,
-                        mapTypeId: google.maps.MapTypeId.TERRAIN,
-                        mapId: "c2290875eac93973",
-                    });
-
-                    map.setCenter(initialLocation);
-
-                    const marker = new AdvancedMarkerElement({
-                        map,
-                        gmpDraggable: true,
-                        position: {lat: position.coords.latitude, lng: position.coords.longitude},
-                    });
-
-                    marker.addListener('dragend', (event) => {
-                        const position = marker.position;
-                        let lat = document.getElementById("lat");
-                        let lng = document.getElementById("lng");
-
-                        lat.setAttribute('value', position.lat);
-                        lng.setAttribute('value', position.lng);
-                    });
-                });
+            if (!curLat) {
+                lat = curLat;
+                curLat = 53;
             }
+
+            if (curLng) {
+            } else {
+                lng = curLng;
+                curLng = -1.5
+
+            }
+
+            if (curZoom) {
+            } else {
+                zoom = curZoom;
+                curZoom = 7;
+            }
+
+            if (markerLat) {
+            } else {
+                markerLat = curLat;
+            }
+
+            if (markerLng) {
+            } else {
+                markerLng = curLng;
+            }
+
+            initialLocation = new google.maps.LatLng(curLat, curLng);
+
+            let latInput = document.getElementById("latInput");
+            let lngInput = document.getElementById("lngInput");
+
+            latInput.setAttribute('value', curLat);
+            lngInput.setAttribute('value', curLng);
+
+            map = new Map(document.getElementById("map"), {
+                center: initialLocation,
+                zoom: curZoom,
+                streetViewControl: false,
+                mapTypeControl: false,
+                mapTypeId: google.maps.MapTypeId.TERRAIN,
+                mapId: "c2290875eac93973",
+            });
+
+            map.setCenter(initialLocation);
+
+            map.addListener("zoom_changed", () => {
+                const d = new Date();
+                d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
+                let expires = "expires=" + d.toUTCString();
+
+                let curZoom = map.getZoom();
+                document.cookie = "curZoom=" + curZoom + ";" + expires + ";path=/";
+            });
+
+            map.addListener("center_changed", () => {
+                const d = new Date();
+                d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
+                let expires = "expires=" + d.toUTCString();
+
+                let curLat = map.get('center').lat();
+                let curLng = map.get('center').lng();
+
+                document.cookie = "curLat=" + curLat + ";" + expires + ";path=/";
+                document.cookie = "curLng=" + curLng + ";" + expires + ";path=/";
+            });
+
+            map.addListener('click', function (e) {
+                if (activeMarker == false) {
+                    console.log(e);
+                    addMarker(e.latLng);
+                    activeMarker = true;
+                }
+            });
         }
 
         initMap();
+
+        function addMarker(latLng) {
+            marker = new google.maps.Marker({
+                map: map,
+                position: latLng,
+                draggable: true
+            });
+
+            // Save initial marker position as cookie values
+            const d = new Date();
+            d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
+            let expires = "expires=" + d.toUTCString();
+            markerLat = latLng.lat().toFixed(6);
+            markerLng = latLng.lng().toFixed(6);
+            let latInput = document.getElementById("latInput");
+            let lngInput = document.getElementById("lngInput");
+
+            latInput.setAttribute('value', markerLat);
+            lngInput.setAttribute('value', markerLng);
+
+            document.cookie = "markerLat=" + markerLat + ";" + expires + ";path=/";
+            document.cookie = "markerLng=" + markerLng + ";" + expires + ";path=/";
+
+            // Add listener for marker drag
+            marker.addListener('dragend', (event) => {
+                const position = marker.position;
+
+                markerLat = position.lat().toFixed(6);
+                markerLng = position.lng().toFixed(6);
+                let latInput = document.getElementById("latInput");
+                let lngInput = document.getElementById("lngInput");
+
+                latInput.setAttribute('value', markerLat);
+                lngInput.setAttribute('value', markerLng);
+
+                document.cookie = "markerLat=" + markerLat + ";" + expires + ";path=/";
+                document.cookie = "markerLng=" + markerLng + ";" + expires + ";path=/";
+            });
+        }
 
     </script>
     <x-slot name="header">
@@ -85,8 +182,8 @@
     </div>
     <form method="POST" action="/site/add">
         @csrf
-        <input type="hidden" id="lng" name="lng">
-        <input type="hidden" id="lat" name="lat">
+        <input type="hidden" id="lngInput" name="lngInput">
+        <input type="hidden" id="latInput" name="latInput">
 
         <div class="visible p-2 text-sm  bg-white shadow-xl flex mt-4 ml-4 mr-4 h-full flex-1 flex-col gap-1 rounded-xl border border-neutral-200 ">
 

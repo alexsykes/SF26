@@ -54,12 +54,41 @@ class SiteController extends Controller
 
     function sites()
     {
-        if (!isset($_COOKIE['lat']) || !isset($_COOKIE['lng'])) {
+        if (!isset($_COOKIE['curLat']) || !isset($_COOKIE['curLat'])) {
             $curLat = 53.59476;
             $curLng = -2.56092;
+
+            setcookie(
+                'curLat',
+                $curLat,
+                [
+                    'expires' => time() + 3600 * 24 * 365,
+                    'path' => '/',
+                ]
+            );
+
+            setcookie(
+                'curLng',
+                $curLng,
+                [
+                    'expires' => time() + 3600 * 24 * 365,
+                    'path' => '/',
+                ]
+            );
         } else {
-            $curLat = $_COOKIE['lat'];
-            $curLng = $_COOKIE['lng'];
+            $curLat = $_COOKIE['curLat'];
+            $curLng = $_COOKIE['curLng'];
+        }
+
+        if (!isset($_COOKIE['curZoom'])) {
+            setcookie(
+                'curZoom',
+                7,
+                [
+                    'expires' => time() + 3600 * 24 * 365,
+                    'path' => '/',
+                ]
+            );
         }
 
         $sites = Site::select(DB::raw("id, site_name, site_description, begin, end, lat, lng, `from`, `to`, ROUND(ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000) as distance_km"))
@@ -99,8 +128,8 @@ class SiteController extends Controller
             $curLat = 53.59476;
             $curLng = -2.56092;
         } else {
-            $curLat = $_COOKIE['lat'];
-            $curLng = $_COOKIE['lng'];
+            $curLat = $_COOKIE['curLat'];
+            $curLng = $_COOKIE['curLng'];
         }
 
         $localSites = Site::select(DB::raw("id, site_name, site_description, near, site_access, w3w, begin, end, lat, lng, updated_at, `from`, `to`, ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km"))
@@ -222,7 +251,7 @@ class SiteController extends Controller
             ->get()
             ->toArray();
 
-//        dd($sitesForDirection[0]->id);
+//        dd($sitesForDirection[0]);
 
 //        $sitesForDirection = Site::all()
 //            ->where('published', true)
@@ -295,8 +324,8 @@ class SiteController extends Controller
             'to' => $request->input('to'),
             'from' => $request->input('from'),
             'created_by' => $userID,
-            'lat' => $request->input('lat'),
-            'lng' => $request->input('lng'),
+            'lat' => $request->input('latInput'),
+            'lng' => $request->input('lngInput'),
             'hits' => 0,
             'w3w' => $w3w,
             'end' => $end,
@@ -308,8 +337,6 @@ class SiteController extends Controller
             ->send(new AcknowledgeSiteSubmission($user->name, $site));
 
         $this->updateWindDirections($site);
-
-        $this->getForecast($site);
         $message = "Thank you for your submission. We will review the site and get back to you as soon as possible. Please note that the site will not appear in our listings until it is approved.";
         return view('site.acknowledge', ['message' => $message]);
 
@@ -361,24 +388,6 @@ class SiteController extends Controller
         }
     }
 
-    private function getForecast(Site $site)
-    {
-        $open_weather = Config::get('app.OPEN_WEATHER');
-        $lat = $site->lat;
-        $lng = $site->lng;
-
-        $url = "https://api.openweathermap.org/data/3.0/onecall?lat=$lat&lon=$lng&exclude=minutely,alerts&units=imperial&appid=" . $open_weather;
-
-        if (!$site->forecast) {
-            $rawData = (file_get_contents($url, 'r'));
-            Forecast::create([
-                'site_id' => $site->id,
-                'data' => $rawData,
-                'version' => 1,
-            ]);
-        }
-    }
-
     public function publishSite(Request $request)
     {
         $site = Site::find($request->input('siteID'));
@@ -391,6 +400,8 @@ class SiteController extends Controller
         Mail::to($user->email)
             ->bcc('alex@alexsykes.net')
             ->send(new SitePublished($name, $site));
+
+        $this->getForecast($site);
 
         return redirect('/sites_approve');
     }
@@ -442,6 +453,24 @@ class SiteController extends Controller
             }
         }
         return redirect('/suggestions');
+    }
+
+    private function getForecast(Site $site)
+    {
+        $open_weather = Config::get('app.OPEN_WEATHER');
+        $lat = $site->lat;
+        $lng = $site->lng;
+
+        $url = "https://api.openweathermap.org/data/3.0/onecall?lat=$lat&lon=$lng&exclude=minutely,alerts&units=imperial&appid=" . $open_weather;
+
+        if (!$site->forecast) {
+            $rawData = (file_get_contents($url, 'r'));
+            Forecast::create([
+                'site_id' => $site->id,
+                'data' => $rawData,
+                'version' => 1,
+            ]);
+        }
     }
 
     function sitemap()

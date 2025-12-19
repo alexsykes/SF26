@@ -158,9 +158,12 @@
     </script>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">
-            Site Map (work in progress - may have glitches)
+            Site Map
         </h2>
-
+        <div class="text-sm">For full details and the latest forecast for these sites, click on the site
+            name.
+        </div>
+        <div class="text-sm">Distances are measured from the centre of the map when the page was loaded.
     </x-slot>
 
     <div id="mapContainer" class="h-64 sm:h-[32rem]">

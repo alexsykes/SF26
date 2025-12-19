@@ -57,4 +57,21 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function unsubscribe(Request $request): RedirectResponse
+    {
+        //        dd($request->all());
+        $user = $request->user();
+
+        if ($request->email_optout) {
+            $email_optout = true;
+        } else {
+            $email_optout = false;
+        }
+
+        $user->email_optout = $email_optout;
+        $user->save();
+
+        return Redirect::to('/');
+    }
 }

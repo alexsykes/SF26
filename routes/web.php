@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ClubmailController;
 use App\Http\Controllers\ForecastController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
@@ -47,6 +48,7 @@ Route::post('/site_user_update', [SiteController::class, 'site_user_update'])->m
 
 
 // AdminController
+Route::get('/admin', [AdminController::class, 'index'])->middleware(IsSuperUser::class)->name('admin.index');
 Route::get('/suggestions', [AdminController::class, 'suggestions'])->middleware([IsSuperUser::class])->name('suggestions');
 Route::get('/sites_approve', [AdminController::class, 'sitesToApprove'])->middleware([IsSuperUser::class])->name('sites.approve');
 
@@ -58,3 +60,15 @@ Route::get('/nearest', [SiteController::class, 'nearest'])->middleware(['auth', 
 require __DIR__ . '/auth.php';
 Route::put('/nearest', [SiteController::class, 'nearest'])->middleware(['auth', 'verified'])->name('nearest_with_direction');
 require __DIR__ . '/auth.php';
+
+
+// ProfileController
+Route::patch('/profile/unsubscribe', [ProfileController::class, 'unsubscribe'])->middleware('auth', 'verified')->name('profile.unsubscribe');
+
+// ClubmailController
+Route::get('/clubmails', [ClubmailController::class, 'index'])->name('clubmails');
+Route::get('/mail/compose', [ClubmailController::class, 'compose'])->name('compose');
+Route::post('/mail/store', [ClubmailController::class, 'store'])->name('storeMail');
+Route::get('/mail/edit/{id}', [ClubmailController::class, 'edit'])->name('editMail');
+Route::patch('/mail/update', [ClubmailController::class, 'update'])->name('updateMail');
+Route::post('/clubmails/post', [ClubmailController::class, 'sendMail'])->name('sendClubMail');

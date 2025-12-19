@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full ">
 <head>
-    <x-head.tinymce-config/>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://kit.fontawesome.com/086d4db9c7.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -21,7 +20,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-<body class="h-full bg-black text-white">
+<body class="h-full bg-slate-300 text-slate-900">
 <main class="bg-gray-100 text-black">
     <div class="mx-auto max-w-7xl px-4 py-6">
         <div class=" bg-white border-1 border-gray-400 rounded-xl  outline outline-1 -outline-offset-1 drop-shadow-lg outline-gray-300 pb-2">
@@ -30,8 +29,10 @@
             </div>
         </div>
     </div>
-    <div class="mt-4 p-4  bg-black text-white pb-4">
-        <div class="text-sm mt-2 text-center  bg-black text-white"><a href="https://oldgit.uk">©2018 - {{date("Y")}}
+    <div class="mt-2 p-4  bg-slate-300 text-slate-900 pb-2">
+        <div class="text-sm mt-2 text-center  bg-slate-300 text-slate-900">To unsubscribe from these emails, visit your
+            Slopefinder UK profile - <a class="underline" href="https://www.slopefinder.uk/profile"> Click here</a></div>
+        <div class="text-sm mt-2 text-center  bg-slate-300 text-slate-900"><a href="https://oldgit.uk">©2018 - {{date("Y")}}
                 Development by Oldgit UK</a></div>
     </div>
 </main>

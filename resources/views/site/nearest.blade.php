@@ -114,7 +114,7 @@
                 let expires = "expires=" + d.toUTCString();
 
                 let curZoom = map.getZoom();
-                document.cookie = "curZoom=" + curZoom + ";" + expires + ";";
+                document.cookie = "curZoom=" + curZoom + ";" + expires + ";path=/";
             });
             map.addListener("center_changed", () => {
                 const d = new Date();
@@ -124,8 +124,8 @@
                 let curLat = map.get('center').lat();
                 let curLng = map.get('center').lng();
 
-                document.cookie = "curLat=" + curLat + ";" + expires + ";";
-                document.cookie = "curLng=" + curLng + ";" + expires + ";";
+                document.cookie = "curLat=" + curLat + ";" + expires + ";path=/";
+                document.cookie = "curLng=" + curLng + ";" + expires + ";path=/";
             });
 
             marker = new AdvancedMarkerElement({
@@ -177,7 +177,7 @@
         <div class="text-sm">For full details and the latest forecast for these sites, click on the site
             name. For current wind conditions, click on Windy.com
         </div>
-        <div class="text-sm">Distances are measured from the centre of the map.
+        <div class="text-sm">Distances are measured from the centre of the map when the page was loaded.
         </div>
     </x-slot>
     <div id="mapContainer" class="h-64 sm:h-[32rem]">
@@ -188,7 +188,7 @@
         @foreach($sites as $site)
             {{--            @dump($site)--}}
             @php
-                $siteID = $site->id;
+                $siteID = $site->site_id;
                 $site_name = $site->site_name;
 //                $site_dirs = "";
                 $distance_km = "";

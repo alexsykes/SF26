@@ -34,6 +34,9 @@ class AuthenticatedSessionController extends Controller
         $user = Auth::user();
         $username = $user->name;
 
+        $user->last_login = now();
+        $user->save();
+
         $favourites = $user->favourites;
         $ip = $request->getClientIp();
         Log::info("Successful login by $username from IPaddress: $ip");

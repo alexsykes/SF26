@@ -12,25 +12,7 @@
 
     <!-- Styles / Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    {{--    <script>--}}
-    {{--        function success(position) {--}}
-    {{--            document.cookie = "lat=" + position.coords.latitude;--}}
-    {{--            document.cookie = "lng=" + position.coords.longitude;--}}
-    {{--            console.log("Cookies saved");--}}
-    {{--        }--}}
 
-    {{--        document.addEventListener("DOMContentLoaded", function () {--}}
-    {{--            if (navigator.geolocation) {--}}
-    {{--                navigator.geolocation.getCurrentPosition(success);--}}
-    {{--                console.log("Request location");--}}
-    {{--            } else {--}}
-    {{--                console.log("Geolocation is not supported by this browser.");--}}
-    {{--            }--}}
-    {{--            navigator.permissions.query({name: 'geolocation'})--}}
-    {{--                .then(console.log)--}}
-    {{--        });--}}
-
-    {{--    </script>--}}
 
     <script>
         (g => {
@@ -140,11 +122,11 @@
         </div>
     </main>
 </div>
-    <nav>
-        <div class="flex items-center align-middle underline m-4 space-x-4 text-center text-sm justify-center">
-            <a href="/contact" target="_blank">Contact</a>
-        </div>
-    </nav>
+<nav>
+    <div class="flex items-center align-middle underline m-4 space-x-4 text-center text-sm justify-center">
+        <a href="/contact" target="_blank">Contact</a>
+    </div>
+</nav>
 
 @if (Route::has('login'))
     <div class="h-14.5 hidden lg:block"></div>
