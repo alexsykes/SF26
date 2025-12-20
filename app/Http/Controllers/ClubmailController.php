@@ -7,6 +7,8 @@ use App\Models\Clubmail;
 use Auth;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Mailables\Address;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class ClubmailController extends Controller
@@ -103,23 +105,35 @@ class ClubmailController extends Controller
     {
         $clubmail = Clubmail::find($request->id);
 
-//        dd($clubmail);
+        $replyToAddress = $clubmail->replyToAddress;
+        $replyToName = $clubmail->replyToName;
+
         $distribution = $request->distribution;
+
         switch ($distribution) {
+
             case 'test':
-//                dd($clubmail);
                 $address = 'alex@alexsykes.net';
                 $address = 'alexs130151@gmail.com';
-                $replyToAddress = $clubmail->replyToAddress;
-                $replyToName = $clubmail->replyToName;
-                $name = 'alex';
+                $sendToName = 'alex';
                 Mail::to($address)
-                    ->send(new BulkMail($clubmail, $name));
+                    ->send(new BulkMail($clubmail, $sendToName, $replyToAddress, $replyToName));
                 info("Bulk mail sent to $address!");
                 break;
             case 'users':
+                $userList = DB::table('users')->where('email_optout', false)
+                    ->select('name', 'email')
+                    ->get();
 
-                $address = 'alexjeddah@icloud.com';
+                foreach ($userList as $user) {
+                    $sendToName = $user->name;
+                    $sendToEmail = $user->email;
+//                    dump($sendToName, $replyToAddress, $replyToName);
+
+                    Mail::to(new Address($sendToEmail, $sendToName))
+                        ->send(new BulkMail($clubmail, $sendToName, $replyToAddress, $replyToName));
+                    info($sendToEmail);
+                }
                 break;
             default:
                 throw new Exception('Unexpected value');

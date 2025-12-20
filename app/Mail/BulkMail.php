@@ -18,9 +18,9 @@ class BulkMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public Clubmail $clubmail, public $name)
+    public function __construct(public Clubmail $clubmail, public $name, public $replyToAddress, public $replyToName)
     {
-        //re
+
     }
 
     /**
@@ -29,8 +29,7 @@ class BulkMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-//            from: new Address('alex@alexsykes.net'),
-            replyTo: [new Address('alex@alexsykes.net', 'Alex Sykes')],
+            replyTo: [new Address($this->replyToAddress, $this->replyToName)],
             subject: $this->clubmail->subject,
         );
     }
