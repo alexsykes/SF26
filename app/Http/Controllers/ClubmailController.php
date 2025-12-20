@@ -125,20 +125,22 @@ class ClubmailController extends Controller
                     ->select('name', 'email')
                     ->get();
 
+
+                $delay = 1;
                 foreach ($userList as $user) {
                     $sendToName = $user->name;
                     $sendToEmail = $user->email;
 //                    dump($sendToName, $replyToAddress, $replyToName);
 
                     Mail::to(new Address($sendToEmail, $sendToName))
-                        ->send(new BulkMail($clubmail, $sendToName, $replyToAddress, $replyToName));
+                        ->later(now()->addSeconds($delay++),
+                            new BulkMail($clubmail, $sendToName, $replyToAddress, $replyToName));
                     info($sendToEmail);
                 }
                 break;
             default:
                 throw new Exception('Unexpected value');
         }
-
         return redirect('/clubmails');
     }
 }

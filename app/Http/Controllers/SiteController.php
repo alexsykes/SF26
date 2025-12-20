@@ -125,7 +125,7 @@ class SiteController extends Controller
         $userFavourites = $user->favourites;
         $numSites = 3;
 
-        if (!isset($_COOKIE['lat']) || !isset($_COOKIE['lng'])) {
+        if (!isset($_COOKIE['curLat']) || !isset($_COOKIE['curLng'])) {
             $curLat = 53.59476;
             $curLng = -2.56092;
         } else {
