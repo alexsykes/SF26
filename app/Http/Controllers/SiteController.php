@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Mail\AcknowledgeSiteSubmission;
-use App\Mail\EntryChanged;
 use App\Mail\SitePublished;
 use App\Mail\SuggestionAcknowledgement;
 use App\Mail\SuggestionReviewCompleted;
@@ -41,19 +40,29 @@ function convertToDirection(int $input)
 
 class SiteController extends Controller
 {
-    public function index($id)
+    public function index()
+    {
+        $sites = Site::orderBy('site_name', 'asc')->get();
+        return view('sites.index', ['sites' => $sites]);
+    }
+
+    public function detail($id)
     {
         $user = auth()->user();
-        $site = Site::where('id', $id)->first();
+        $username = $user->name;
 
+        $site = Site::where('id', $id)->first();
+        $siteName = $site->site_name;
         $hits = $site->hits;
         $site->hits = $hits + 1;
         $site->save();
 
+        info("$siteName visited by $user->name");
+
         return view('site.detail', compact('site', 'user'));
     }
 
-    function sites()
+    function siteList()
     {
         if (!isset($_COOKIE['curLat']) || !isset($_COOKIE['curLat'])) {
             $curLat = 53.59476;

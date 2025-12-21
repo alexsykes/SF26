@@ -3,42 +3,50 @@
     <div class=" mx-auto px-4 sm:px-2 lg:px-4">
         <div class="flex justify-between h-16">
             <div class="flex">
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('favourites')" :active="request()->routeIs('favourites')">
-                        Favourites
-                    </x-nav-link>
-                </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('sitelist')" :active="request()->routeIs('sitelist')">
-                        Site map
-                    </x-nav-link>
-                </div>
-
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('nearest')" :active="request()->routeIs('nearest')">
-                        What's working?
-                    </x-nav-link>
-                </div>
-
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('near.sites')" :active="request()->routeIs('near.sites')">
-                        Sites (Near to Far)
-                    </x-nav-link>
-                </div>
-
-                @if(Auth::user()->isEditor)
-                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link :href="route('site.add')" :active="request()->routeIs('site.add')">
-                            {{ __('Submit a new Site') }}
-                        </x-nav-link>
-                    </div>
-                @endif
 
                 @if(Auth::user()->isSuperUser)
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.index')">
-                            {{ __('Admin') }}
+                        <x-nav-link :href="route('sites')" :active="request()->routeIs('sites')">
+                            Sites
+                        </x-nav-link>
+                    </div>
+
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('mails')" :active="request()->routeIs('mails')">
+                            Mail
+                        </x-nav-link>
+                    </div>
+
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('clubs')" :active="request()->routeIs('clubs')">
+                            Clubs
+                        </x-nav-link>
+                    </div>
+
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('users')" :active="request()->routeIs('users')">
+                            Users
+                        </x-nav-link>
+                    </div>
+
+                    {{--                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
+                    {{--                    <x-nav-link :href="route('near.sites')" :active="request()->routeIs('near.sites')">--}}
+                    {{--                        Sites (Near to Far)--}}
+                    {{--                    </x-nav-link>--}}
+                    {{--                </div>--}}
+
+                    {{--                @if(Auth::user()->isEditor)--}}
+                    {{--                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
+                    {{--                        <x-nav-link :href="route('site.add')" :active="request()->routeIs('site.add')">--}}
+                    {{--                            {{ __('Submit a new Site') }}--}}
+                    {{--                        </x-nav-link>--}}
+                    {{--                    </div>--}}
+                    {{--                @endif--}}
+
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
+                            {{ __('Public site') }}
                         </x-nav-link>
                     </div>
                 @endif
@@ -109,7 +117,7 @@
             <x-responsive-nav-link :href="route('favourites')" :active="request()->routeIs('favourites')">
                 {{ __('Favourites') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('sitelist')" :active="request()->routeIs('sitelist')">
+            <x-responsive-nav-link :href="route('sites')" :active="request()->routeIs('sites')">
                 Site map
             </x-responsive-nav-link>
 

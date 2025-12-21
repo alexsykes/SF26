@@ -1,3 +1,2 @@
 <x-admin>
-
 </x-admin>

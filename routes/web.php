@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ClubController;
 use App\Http\Controllers\ClubmailController;
 use App\Http\Controllers\ForecastController;
 use App\Http\Controllers\HomeController;
@@ -22,8 +23,9 @@ Route::middleware('auth')->group(function () {
 });
 
 // Site Controller
-Route::get('/site/detail/{id}', [SiteController::class, 'index'])->middleware('auth', 'verified')->name('site.detail');
-Route::get('/sites', [SiteController::class, 'sites'])->middleware(['auth', 'verified'])->name('sites');
+Route::get('/sites', [SiteController::class, 'index'])->name('sites');
+Route::get('/site/detail/{id}', [SiteController::class, 'detail'])->middleware('auth', 'verified')->name('site.detail');
+Route::get('/sitelist', [SiteController::class, 'siteList'])->middleware(['auth', 'verified'])->name('sitelist');
 Route::get('/sites_near', [SiteController::class, 'sites_near'])->middleware(['auth', 'verified'])->name('near.sites');
 Route::get('/site/edit/{id}', [AdminController::class, 'editSite'])->middleware([IsEditor::class]);
 Route::get('/site/update_request/{id}/', [SiteController::class, 'update_request'])->middleware(['auth', 'verified'])->name('site.update_request');
@@ -41,6 +43,8 @@ Route::get('sitemap', [SiteController::class, 'sitemap'])->middleware(['auth', '
 Route::get('/forecast/{id}', [ForecastController::class, 'index'])->middleware(['auth', 'verified'])->name('forecast.index');
 
 // User Controller
+
+Route::get('/users', [UserController::class, 'index'])->name('users');
 Route::get('/user/favourites', [UserController::class, 'favourites'])->middleware(['auth', 'verified'])->name('favourites');
 Route::get('/addFavourite/{id}', [UserController::class, 'addFavourite'])->middleware(['auth', 'verified'])->name('addFavourite');
 Route::get('/removeFavourite/{id}', [UserController::class, 'removeFavourite'])->middleware(['auth', 'verified'])->name('removeFavourite');
@@ -66,9 +70,12 @@ require __DIR__ . '/auth.php';
 Route::patch('/profile/unsubscribe', [ProfileController::class, 'unsubscribe'])->middleware('auth', 'verified')->name('profile.unsubscribe');
 
 // ClubmailController
-Route::get('/clubmails', [ClubmailController::class, 'index'])->name('clubmails');
+Route::get('/mails', [ClubmailController::class, 'index'])->name('mails');
 Route::get('/mail/compose', [ClubmailController::class, 'compose'])->name('compose');
 Route::post('/mail/store', [ClubmailController::class, 'store'])->name('storeMail');
 Route::get('/mail/edit/{id}', [ClubmailController::class, 'edit'])->name('editMail');
 Route::patch('/mail/update', [ClubmailController::class, 'update'])->name('updateMail');
 Route::post('/clubmails/post', [ClubmailController::class, 'sendMail'])->name('sendClubMail');
+
+// ClubController
+Route::get('/clubs', [ClubController::class, 'index'])->name('clubs');

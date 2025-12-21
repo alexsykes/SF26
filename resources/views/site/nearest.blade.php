@@ -155,7 +155,7 @@
             foreach ($sites as $siteForMap) {
 //                dd($siteForMap);
                 $url = env('APP_URL');
-                $url .= "/site/detail/" . $siteForMap->id;
+                $url .= "/site/detail/" . $siteForMap->site_id;
                 ?>
 
                 infowindow = new google.maps.InfoWindow({

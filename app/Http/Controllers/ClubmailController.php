@@ -17,7 +17,7 @@ class ClubmailController extends Controller
     {
         $clubmails = Clubmail::all()
             ->sortByDesc('created_at');
-        return view('/clubmails/list', compact('clubmails'));
+        return view('.clubmails.index', compact('clubmails'));
     }
 
     public function store(Request $request)

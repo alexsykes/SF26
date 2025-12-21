@@ -7,6 +7,14 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
+
+    public function index()
+    {
+        $users = User::all();
+
+        return view('users.index', compact('users'));
+    }
+
     public function favourites()
     {
         $user_id = auth()->user()->id;

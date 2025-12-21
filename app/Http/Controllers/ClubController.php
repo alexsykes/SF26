@@ -9,7 +9,8 @@ class ClubController extends Controller
 {
     public function index()
     {
-        return Club::all();
+        $clubs = Club::all();
+        return view('clubs.index', compact('clubs'));
     }
 
     public function store(Request $request)
