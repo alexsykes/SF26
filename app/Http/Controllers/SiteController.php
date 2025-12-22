@@ -487,8 +487,9 @@ class SiteController extends Controller
     {
         $sites = Site::all()
             ->where('published', true)
-            ->select('id', 'site_name')
-            ->toArray();
+//            ->sortBy('site_name')
+            ->select('id', 'site_name', 'lat', 'lng', 'site_description', 'begin', 'end')
+            ->all();
 
         return view('site.map', ['sites' => $sites]);
     }

@@ -90,6 +90,14 @@
         });
 
         let map;
+        const MAP_BOUNDS =
+            {
+                north: 70,
+                south: -70,
+                west: -160,
+                east: 160
+            }
+
 
         async function initMap() {
             activeMarker = false;
@@ -144,6 +152,11 @@
 
             map = new Map(document.getElementById("map"), {
                 center: initialLocation,
+                restriction: {
+                    latLngBounds:
+                    MAP_BOUNDS,
+                    strictBounds: false,
+                },
                 zoom: curZoom,
                 streetViewControl: false,
                 mapTypeControl: false,

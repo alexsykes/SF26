@@ -18,8 +18,7 @@
 
             // this.form.submit();
         }
-    </script>
-    <script>
+
 
         // https://stackoverflow.com/questions/24952593/how-to-add-my-location-button-in-google-maps
         function addYourLocationButton(map) {
@@ -114,6 +113,14 @@
 
         let map;
 
+        const MAP_BOUNDS =
+            {
+                north: 70,
+                south: -70,
+                west: -160,
+                east: 160
+            }
+
         async function initMap() {
             const {AdvancedMarkerElement} = await google.maps.importLibrary("marker");
             const {Map} = (await google.maps.importLibrary('maps'));
@@ -135,12 +142,22 @@
 
             map = new Map(document.getElementById("map"), {
                 center: initialLocation,
+                restriction: {
+                    latLngBounds:
+                    MAP_BOUNDS,
+                    strictBounds: false,
+                },
                 zoom: parseInt(zoom),
-                streetViewControl: false,
-                mapTypeControl: false,
-                mapTypeId: google.maps.MapTypeId.TERRAIN,
-                mapId: "c2290875eac93973",
-            });
+                streetViewControl:
+                    false,
+                mapTypeControl:
+                    false,
+                mapTypeId:
+                google.maps.MapTypeId.TERRAIN,
+                mapId:
+                    "c2290875eac93973",
+            })
+            ;
 
             map.setCenter(initialLocation);
 
