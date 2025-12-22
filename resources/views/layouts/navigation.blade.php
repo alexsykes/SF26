@@ -10,7 +10,7 @@
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('sitelist')" :active="request()->routeIs('sitelist')">
+                    <x-nav-link :href="route('sitemap')" :active="request()->routeIs('sitemap')">
                         Site map
                     </x-nav-link>
                 </div>
@@ -109,7 +109,7 @@
             <x-responsive-nav-link :href="route('favourites')" :active="request()->routeIs('favourites')">
                 {{ __('Favourites') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('sitelist')" :active="request()->routeIs('sitelist')">
+            <x-responsive-nav-link :href="route('sitemap')" :active="request()->routeIs('sitemap')">
                 Site map
             </x-responsive-nav-link>
 
