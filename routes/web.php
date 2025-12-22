@@ -23,7 +23,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Site Controller
-Route::get('/sites', [SiteController::class, 'index'])->name('sites');
+Route::get('/sites', [SiteController::class, 'index'])->middleware([IsSuperUser::class])->name('sites');
 Route::get('/site/detail/{id}', [SiteController::class, 'detail'])->middleware('auth', 'verified')->name('site.detail');
 Route::get('/sitelist', [SiteController::class, 'siteList'])->middleware(['auth', 'verified'])->name('sitelist');
 Route::get('/sites_near', [SiteController::class, 'sites_near'])->middleware(['auth', 'verified'])->name('near.sites');
