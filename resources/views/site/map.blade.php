@@ -9,11 +9,21 @@
             height: 100vh;
         }
     </style>
-    <div id="map"></div>
     <script async src="https://maps.googleapis.com/maps/api/js?key={{config('gmap.gmap_key')}}&callback=initMap">
     </script>
     <script>
         let map, activeInfoWindow, markers = [];
+
+        function directionChanged() {
+            let directionForm = document.getElementById('directionForm');
+            let windDirection = document.getElementById('windDirection');
+            let direction = windDirection.value;
+            document.cookie = "dir=" + direction;
+            console.log("Direction changed: " + direction);
+            directionForm.submit();
+
+            // this.form.submit();
+        }
 
         function addYourLocationButton(map) {
             var controlDiv = document.createElement('div');
@@ -80,6 +90,51 @@
             return null; // Return null if the cookie is not found
         }
 
+        function initMarkers() {
+            const initialMarkers = <?php echo json_encode($sites); ?>;
+
+            for (let index = 0; index < initialMarkers.length; index++) {
+                const markerData = initialMarkers[index];
+                const siteURL = "<?php echo config('app.url'); ?>" + "/site/detail/" + markerData.id;
+                // console.log(siteURL);
+                const contentString = '<div class="font-semibold">' + markerData.site_name + ' ('
+                    + markerData.begin + ' - '
+                    + markerData.end
+                    + ')'
+                    + '</div><div>' + markerData.site_description + '</div>'
+                    + '<div><a class="pt-4 underline" href="' + siteURL + '">Click here for full details</a></div>'
+
+                ;
+                const marker = new google.maps.Marker({
+                    position: {lat: parseFloat(markerData['lat']), lng: parseFloat(markerData['lng'])},
+                    draggable: false,
+                    map
+                });
+                markers.push(marker);
+
+                const infowindow = new google.maps.InfoWindow({
+                    label: 'Title',
+                    content: contentString,
+                });
+                marker.addListener("click", (event) => {
+                    if (activeInfoWindow) {
+                        activeInfoWindow.close();
+                    }
+                    infowindow.open({
+                        anchor: marker,
+                        shouldFocus: false,
+                        map
+                    });
+                    activeInfoWindow = infowindow;
+                    // markerClicked(marker, index);
+                });
+
+                // marker.addListener("dragend", (event) => {
+                //     markerDragEnd(event, index);
+                // });
+            }
+        }
+
         const MAP_BOUNDS =
             {
                 north: 70,
@@ -90,9 +145,6 @@
 
         async function initMap() {
             const {Map} = await google.maps.importLibrary("maps");
-            // const {AdvancedMarkerElement} = await google.maps.importLibrary("marker");
-
-
             let lat = 53.67;
             let lng = -1.92;
             let zoom = 6;
@@ -146,71 +198,32 @@
 
             addYourLocationButton(map);
         }
-
-        /* --------------------------- Initialize Markers --------------------------- */
-        function initMarkers() {
-            const initialMarkers = <?php echo json_encode($sites); ?>;
-
-            for (let index = 0; index < initialMarkers.length; index++) {
-                const markerData = initialMarkers[index];
-                const siteURL = "<?php echo config('app.url'); ?>" + "/site/detail/" + markerData.id;
-                // console.log(siteURL);
-                const contentString = '<div class="font-semibold">' + markerData.site_name + ' ('
-                    + markerData.begin + ' - '
-                    + markerData.end
-                    + ')'
-                    + '</div><div>' + markerData.site_description + '</div>'
-                    + '<div><a class="pt-4 underline" href="' + siteURL + '">Click here for full details</a></div>'
-
-                ;
-                const marker = new google.maps.Marker({
-                    position: {lat: parseFloat(markerData['lat']), lng: parseFloat(markerData['lng'])},
-                    draggable: false,
-                    map
-                });
-                markers.push(marker);
-
-                const infowindow = new google.maps.InfoWindow({
-                    label: 'Title',
-                    content: contentString,
-                });
-                marker.addListener("click", (event) => {
-                    if (activeInfoWindow) {
-                        activeInfoWindow.close();
-                    }
-                    infowindow.open({
-                        anchor: marker,
-                        shouldFocus: false,
-                        map
-                    });
-                    activeInfoWindow = infowindow;
-                    // markerClicked(marker, index);
-                });
-
-                // marker.addListener("dragend", (event) => {
-                //     markerDragEnd(event, index);
-                // });
-            }
-        }
-
-        /* ------------------------- Handle Map Click Event ------------------------- */
-        // function mapClicked(event) {
-        //     // console.log(map);
-        //     // console.log(event.latLng.lat(), event.latLng.lng());
-        // }
-
-        /* ------------------------ Handle Marker Click Event ----------------------- */
-        // function markerClicked(marker, index) {
-        //     // console.log(map);
-        //     // console.log(marker.position.lat());
-        //     // console.log(marker.position.lng());
-        // }
-
-        /* ----------------------- Handle Marker DragEnd Event ---------------------- */
-        // function markerDragEnd(event, index) {
-        //     // console.log(map);
-        //     // console.log(event.latLng.lat());
-        //     // console.log(event.latLng.lng());
-        // }
     </script>
+    <x-slot name="header">
+        <div class="flex items-start justify-between"><h2
+                    class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">
+                SlopeFinder UK
+            </h2>
+            <form name="directionForm" id="directionForm" method="post" action="/sitemap">
+                @csrf
+                @method('PUT')
+                <select class="" id="windDirection" name="windDirection"
+                        onchange="directionChanged()">
+                    @foreach($directions as $direction)
+                        <option value="{{$direction}}"
+                                @php
+                                    if($direction == $wind_dir) {
+                                        echo " selected ";
+                                    }
+                                @endphp
+                        >{{$direction}}
+                        </option>
+                    @endforeach
+                </select>
+            </form>
+        </div>
+        {{--        <div class="text-sm">{{$msg}}</div>--}}
+
+    </x-slot>
+    <div id="map"></div>
 </x-app-layout>

@@ -483,14 +483,38 @@ class SiteController extends Controller
         }
     }
 
-    function sitemap()
+    function sitemap(Request $request)
     {
-        $sites = Site::all()
-            ->where('published', true)
-//            ->sortBy('site_name')
-            ->select('id', 'site_name', 'lat', 'lng', 'site_description', 'begin', 'end')
-            ->all();
+        $direction = $request->windDirection;
+        $directions = ["Show All", "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
 
-        return view('site.map', ['sites' => $sites]);
+        $windIndex = array_search($direction, $directions);
+//        dump($windIndex);
+        if ($windIndex > 0) {
+            if ($windIndex == 16) {
+                $windIndex = 0;
+            }
+
+            $siteIDsForWind = SiteWindDirections::where('direction', $windIndex)
+                ->pluck('siteID')
+                ->toArray();
+            $siteIDs = implode(',', $siteIDsForWind);
+            $siteIDarray = explode(",", $siteIDs);
+
+
+            $sites = Site::where('published', true)
+                ->whereIn('id', $siteIDarray)
+                ->select('id', 'site_name', 'lat', 'lng', 'site_description', 'begin', 'end')
+                ->get();
+
+
+        } else {
+            $sites = Site::all()
+                ->where('published', true)
+                ->select('id', 'site_name', 'lat', 'lng', 'site_description', 'begin', 'end')
+                ->all();
+        }
+
+        return view('site.map', ['sites' => $sites, 'directions' => $directions, 'wind_dir' => $direction]);
     }
 }

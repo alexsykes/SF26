@@ -15,17 +15,17 @@
                     </x-nav-link>
                 </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('nearest')" :active="request()->routeIs('nearest')">
-                        What's working?
-                    </x-nav-link>
-                </div>
+                {{--                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
+                {{--                    <x-nav-link :href="route('nearest')" :active="request()->routeIs('nearest')">--}}
+                {{--                        What's working?--}}
+                {{--                    </x-nav-link>--}}
+                {{--                </div>--}}
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('near.sites')" :active="request()->routeIs('near.sites')">
-                        Sites (Near to Far)
-                    </x-nav-link>
-                </div>
+                {{--                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
+                {{--                    <x-nav-link :href="route('near.sites')" :active="request()->routeIs('near.sites')">--}}
+                {{--                        Sites (Near to Far)--}}
+                {{--                    </x-nav-link>--}}
+                {{--                </div>--}}
 
                 @if(Auth::user()->isEditor)
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -113,13 +113,13 @@
                 Site map
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('nearest')" :active="request()->routeIs('nearest')">
-                What's working?
-            </x-responsive-nav-link>
+            {{--            <x-responsive-nav-link :href="route('nearest')" :active="request()->routeIs('nearest')">--}}
+            {{--                What's working?--}}
+            {{--            </x-responsive-nav-link>--}}
 
-            <x-responsive-nav-link :href="route('near.sites')" :active="request()->routeIs('near.sites')">
-                Sites (Near to Far)
-            </x-responsive-nav-link>
+            {{--            <x-responsive-nav-link :href="route('near.sites')" :active="request()->routeIs('near.sites')">--}}
+            {{--                Sites (Near to Far)--}}
+            {{--            </x-responsive-nav-link>--}}
 
             @if(Auth::user()->isEditor)
                 <x-responsive-nav-link :href="route('site.add')" :active="request()->routeIs('site.add')">

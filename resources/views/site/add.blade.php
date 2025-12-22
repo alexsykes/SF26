@@ -166,6 +166,8 @@
 
             map.setCenter(initialLocation);
 
+            addMarker(initialLocation);
+
             map.addListener("zoom_changed", () => {
                 const d = new Date();
                 d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
@@ -187,13 +189,13 @@
                 document.cookie = "curLng=" + curLng + ";" + expires + ";path=/";
             });
 
-            map.addListener('click', function (e) {
-                if (activeMarker == false) {
-                    console.log(e);
-                    addMarker(e.latLng);
-                    activeMarker = true;
-                }
-            });
+            // map.addListener('click', function (e) {
+            //     if (activeMarker == false) {
+            //         console.log(e);
+            //         addMarker(e.latLng);
+            //         activeMarker = true;
+            //     }
+            // });
             addYourLocationButton(map);
         }
 

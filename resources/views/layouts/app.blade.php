@@ -27,10 +27,6 @@
     @isset($header)
         <header class="bg-white shadow">
             <div class=" mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                <div class="w-full text-center text-blue-500 font-semibold">SlopeFinder UK is currently under constant
-                    development. Please
-                    accept our apologies for any interruption you may experience
-                </div>
                 {{ $header }}
             </div>
         </header>

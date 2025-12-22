@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/credits', [HomeController::class, 'credits'])->name('credits');
-Route:: get('locate', [ForecastController::class, 'locate'])->middleware(['auth', 'verified'])->name('locate');
+Route:: get('/locate', [ForecastController::class, 'locate'])->middleware(['auth', 'verified'])->name('locate');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -38,6 +38,7 @@ Route::patch('/site/publish', [SiteController::class, 'publishSite'])->middlewar
 Route::patch('/site/update', [SiteController::class, 'update'])->middleware(['auth', 'verified'])->name('site.update');
 
 Route::get('/sitemap', [SiteController::class, 'sitemap'])->middleware(['auth', 'verified'])->name('sitemap');
+Route::put('/sitemap', [SiteController::class, 'sitemap'])->middleware(['auth', 'verified'])->name('sitemap_with_direction');
 
 // Forecast Controller
 Route::get('/forecast/{id}', [ForecastController::class, 'index'])->middleware(['auth', 'verified'])->name('forecast.index');
