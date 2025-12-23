@@ -42,8 +42,18 @@ class SiteController extends Controller
 {
     public function index()
     {
-        $sites = Site::orderBy('site_name', 'asc')->get();
-        return view('sites.index', ['sites' => $sites]);
+        $sites = Site::orderBy('site_name')->get();
+        $newSites = Site::where('published', false)
+            ->orderBy('site_name', 'asc')
+            ->get();
+
+        $suggestions = Suggestion::leftJoin('sites', 'sites.id', '=', 'suggestions.siteID')
+            ->where('completed', false)
+            ->orderBy('site_name', 'asc')
+            ->orderBy('suggestions.created_at', 'desc')
+            ->get(['sites.id as siteID', 'suggestions.id as suggestionsID', 'sites.site_name', 'suggestions.suggestion', 'suggestions.created_at']);
+
+        return view('sites.index', ['sites' => $sites, 'newSites' => $newSites, 'suggestions' => $suggestions]);
     }
 
     public function detail($id)

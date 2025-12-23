@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">{{$site->site_name}}</h2>
     </x-slot>
@@ -24,7 +24,8 @@
                     <tr class=" odd:bg-gray-100">
                         <td class="pl-2">{{$suggestion->name}}</td>
                         <td class="pr-2">{{$suggestion->suggestion}}</td>
-                        <td><input type="checkbox" name="completed[]" class="text-center" value="{{$suggestion->id}}">  </td>
+                        <td><input type="checkbox" name="completed[]" class="text-center" value="{{$suggestion->id}}">
+                        </td>
                     </tr>
                 @endforeach
                 </tbody>
@@ -204,4 +205,4 @@
             </button>
         </div>
     </form>
-</x-app-layout>
+</x-admin>
