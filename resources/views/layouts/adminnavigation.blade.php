@@ -12,11 +12,12 @@
                                 Sites
                             </x-nav-link>
                         </div>
-                        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                            <x-nav-link :href="route('sitemap')" :active="request()->routeIs('sitemap')">
-                                Sitemap
-                            </x-nav-link>
-                        </div>
+
+                        {{--                        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
+                        {{--                            <x-nav-link :href="route('sitemap')" :active="request()->routeIs('sitemap')">--}}
+                        {{--                                Sitemap--}}
+                        {{--                            </x-nav-link>--}}
+                        {{--                        </div>--}}
 
                         <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                             <x-nav-link :href="route('mails')" :active="request()->routeIs('mails')">
@@ -51,7 +52,7 @@
                         {{--                @endif--}}
 
                         <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                            <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
+                            <x-nav-link :href="route('sitemap')" :active="request()->routeIs('sitemap')">
                                 {{ __('Public site') }}
                             </x-nav-link>
                         </div>

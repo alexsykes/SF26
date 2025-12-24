@@ -435,6 +435,8 @@ class SiteController extends Controller
             'near' => 'required',
             'from' => 'required',
             'to' => 'required',
+            'latInput' => 'required',
+            'lngInput' => 'required',
         ]);
 
         $directions = array("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW");
@@ -455,6 +457,8 @@ class SiteController extends Controller
         $site->w3w = $request->input('w3w');
         $site->from = $request->input('from');
         $site->to = $request->input('to');
+        $site->lat = $request->input('latInput');
+        $site->lng = $request->input('lngInput');
 
         $site->update();
 //         Site updated - now update site_wind_directions
@@ -472,7 +476,7 @@ class SiteController extends Controller
                 sendmail($completedID, $site->site_name);
             }
         }
-        return redirect('/suggestions');
+        return redirect('/sites');
     }
 
     private function getForecast(Site $site)
@@ -496,18 +500,22 @@ class SiteController extends Controller
     function sitemap(Request $request)
     {
         $direction = $request->windDirection;
-        $directions = ["Show All", "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
+        $directions = ["Show All", "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
 
+//        dump($direction);
         $windIndex = array_search($direction, $directions);
-//        dump($windIndex);
         if ($windIndex > 0) {
+            $windIndex = $windIndex - 1;
             if ($windIndex == 16) {
                 $windIndex = 0;
             }
 
+//            dump($windIndex, $direction);
             $siteIDsForWind = SiteWindDirections::where('direction', $windIndex)
                 ->pluck('siteID')
                 ->toArray();
+
+//            dump($siteIDsForWind);
             $siteIDs = implode(',', $siteIDsForWind);
             $siteIDarray = explode(",", $siteIDs);
 

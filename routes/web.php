@@ -13,7 +13,7 @@ use App\Http\Middleware\IsSuperUser;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/credits', [HomeController::class, 'credits'])->name('credits');
+Route::get('/credits', [HomeController::class, 'credits'])->name('clubscredits');
 Route:: get('/locate', [ForecastController::class, 'locate'])->middleware(['auth', 'verified'])->name('locate');
 
 Route::middleware('auth')->group(function () {

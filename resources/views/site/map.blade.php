@@ -105,12 +105,12 @@
                     const markerData = initialMarkers[index];
                     const siteURL = "<?php echo config('app.url'); ?>" + "/site/detail/" + markerData.id;
                     // console.log(siteURL);
-                    const contentString = '<div class="font-semibold">' + markerData.site_name + ' ('
+                    const headerContent = markerData.site_name + ' ('
                         + markerData.begin + ' - '
                         + markerData.end
-                        + ')'
-                        + '</div><div>' + markerData.site_description + '</div>'
-                        + '<div><a class="pt-4 underline" href="' + siteURL + '">Click here for full details</a></div>'
+                        + ')';
+                    const contentString = '<div>' + markerData.site_description + '</div>'
+                        + '<div><a class="font-semibold pt-4 underline" href="' + siteURL + '">Click here for full details</a></div>'
 
                     ;
                     const marker = new google.maps.Marker({
@@ -123,6 +123,7 @@
                     const infowindow = new google.maps.InfoWindow({
                         label: 'Title',
                         content: contentString,
+                        headerContent: headerContent,
                     });
                     marker.addListener("click", (event) => {
                         if (activeInfoWindow) {
@@ -136,10 +137,6 @@
                         activeInfoWindow = infowindow;
                         // markerClicked(marker, index);
                     });
-
-                    // marker.addListener("dragend", (event) => {
-                    //     markerDragEnd(event, index);
-                    // });
                 }
             }
         }

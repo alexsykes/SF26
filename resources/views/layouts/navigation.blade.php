@@ -15,18 +15,6 @@
                     </x-nav-link>
                 </div>
 
-                {{--                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
-                {{--                    <x-nav-link :href="route('nearest')" :active="request()->routeIs('nearest')">--}}
-                {{--                        What's working?--}}
-                {{--                    </x-nav-link>--}}
-                {{--                </div>--}}
-
-                {{--                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
-                {{--                    <x-nav-link :href="route('near.sites')" :active="request()->routeIs('near.sites')">--}}
-                {{--                        Sites (Near to Far)--}}
-                {{--                    </x-nav-link>--}}
-                {{--                </div>--}}
-
                 @if(Auth::user()->isEditor)
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <x-nav-link :href="route('site.add')" :active="request()->routeIs('site.add')">
@@ -37,7 +25,7 @@
 
                 @if(Auth::user()->isSuperUser)
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.index')">
+                        <x-nav-link :href="route('sites')" :active="request()->routeIs('sites')">
                             {{ __('Admin') }}
                         </x-nav-link>
                     </div>
@@ -113,17 +101,15 @@
                 Site map
             </x-responsive-nav-link>
 
-            {{--            <x-responsive-nav-link :href="route('nearest')" :active="request()->routeIs('nearest')">--}}
-            {{--                What's working?--}}
-            {{--            </x-responsive-nav-link>--}}
-
-            {{--            <x-responsive-nav-link :href="route('near.sites')" :active="request()->routeIs('near.sites')">--}}
-            {{--                Sites (Near to Far)--}}
-            {{--            </x-responsive-nav-link>--}}
-
             @if(Auth::user()->isEditor)
                 <x-responsive-nav-link :href="route('site.add')" :active="request()->routeIs('site.add')">
                     {{ __('Submit a new Site') }}
+                </x-responsive-nav-link>
+            @endif
+
+            @if(Auth::user()->isSuperUser)
+                <x-responsive-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.index')">
+                    {{ __('Admin') }}
                 </x-responsive-nav-link>
             @endif
         </div>

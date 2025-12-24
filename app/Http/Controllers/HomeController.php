@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Site;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
     public function index()
-    {
         // New stuff
+    {
         if (!isset($_COOKIE['curLat']) || !isset($_COOKIE['curLat'])) {
             $curLat = 53.59476;
             $curLng = -2.56092;

@@ -2,7 +2,15 @@
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">{{$site->site_name}}</h2>
     </x-slot>
-
+    <script
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-AtLvoAbjtcSN2sPXAT5HHkgk97UOOVY&libraries=maps,marker"
+            defer
+    ></script>
+    <gmp-map
+            center="{{$site->lat}},{{$site->lng}}"
+            zoom="14"
+            map-id="aa9cce9d23deaacd767a5d9d"
+            style="height: 500px"></gmp-map>
     <form method="POST" action="/site/update">
         @csrf
         @method('PATCH')
@@ -85,6 +93,36 @@
                         @enderror
                     </div>
 
+                    <div class="sm:col-span-2">
+                        <label for="latInput" class="block  font-semibold ">Latitude</label>
+                        <div class="mt-2">
+                            <div>
+                                <input type="text"
+                                       name="latInput"
+                                       value="{{ $site->lat }}"
+                                       id="latInput">
+                            </div>
+                        </div>
+                        @error('latInput')
+                        <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label for="lngInput" class="block  font-semibold ">Longitude</label>
+                        <div class="mt-2">
+                            <div>
+                                <input type="text"
+                                       name="lngInput"
+                                       value="{{ $site->lng }}"
+                                       id="lngInput">
+                            </div>
+                        </div>
+                        @error('lngInput')
+                        <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <div class="col-span-full">
                         <label for="site_description" class="block  font-semibold ">About</label>
                         <div class="mt-2">
@@ -121,73 +159,73 @@
                             your right that works.</label>
                     </div>
 
-                    <div class="grid sm:col-span-full">
-                        <div class="sm:col-span-3">
-                            <label for="from" class="block text-sm/10 font-semibold md:col-span-3">From:</label>
-                            <select class="ml-2 col-span-1 bg-white pb-2 space-x-4 md:col-span-3" name="from"
-                                    id="from">
-                                @php
-                                    $from = $site->from;
-                                @endphp
-                                <option @php if($from == 0 ) echo "selected"; @endphp value="0">North</option>
-                                <option @php if($from == 1 ) echo "selected"; @endphp value="1">North Northeast
-                                </option>
-                                <option @php if($from == 2 ) echo "selected"; @endphp value="2">Northeast</option>
-                                <option @php if($from == 3 ) echo "selected"; @endphp value="3">East Northeast
-                                </option>
-                                <option @php if($from == 4 ) echo "selected"; @endphp value="4">East</option>
-                                <option @php if($from == 5 ) echo "selected"; @endphp value="5">East Southeast
-                                </option>
-                                <option @php if($from == 6 ) echo "selected"; @endphp value="6">Southeast</option>
-                                <option @php if($from == 7 ) echo "selected"; @endphp value="7">South Southeast
-                                </option>
-                                <option @php if($from == 8 ) echo "selected"; @endphp value="8">South</option>
-                                <option @php if($from == 9 ) echo "selected"; @endphp value="9">South Southwest
-                                </option>
-                                <option @php if($from == 10 ) echo "selected"; @endphp value="10">Southwest</option>
-                                <option @php if($from == 11 ) echo "selected"; @endphp value="11">West Southwest
-                                </option>
-                                <option @php if($from == 12 ) echo "selected"; @endphp value="12">West</option>
-                                <option @php if($from == 13 ) echo "selected"; @endphp value="13">West Northwest
-                                </option>
-                                <option @php if($from == 14 ) echo "selected"; @endphp value="14">Northwest</option>
-                                <option @php if($from == 15 ) echo "selected"; @endphp value="15">North Northwest
-                                </option>
-                            </select>
-                        </div>
-                        <div class="sm:col-span-3">
-                            <label for="to" class="block text-sm/10 font-semibold md:col-span-3">To:</label>
-                            <select class="ml-2 col-span-1  bg-white pb-2 space-x-4 md:col-span-3" name="to"
-                                    id="to">
-                                @php
-                                    $to = $site->to;
-                                @endphp
-                                <option @php if($to == 0 ) echo "selected"; @endphp value="0">North</option>
-                                <option @php if($to == 1 ) echo "selected"; @endphp value="1">North Northeast
-                                </option>
-                                <option @php if($to == 2 ) echo "selected"; @endphp value="2">Northeast</option>
-                                <option @php if($to == 3 ) echo "selected"; @endphp value="3">East Northeast
-                                </option>
-                                <option @php if($to == 4 ) echo "selected"; @endphp value="4">East</option>
-                                <option @php if($to == 5 ) echo "selected"; @endphp value="5">East Southeast
-                                </option>
-                                <option @php if($to == 6 ) echo "selected"; @endphp value="6">Southeast</option>
-                                <option @php if($to == 7 ) echo "selected"; @endphp value="7">South Southeast
-                                </option>
-                                <option @php if($to == 8 ) echo "selected"; @endphp value="8">South</option>
-                                <option @php if($to == 9 ) echo "selected"; @endphp value="9">South Southwest
-                                </option>
-                                <option @php if($to == 10 ) echo "selected"; @endphp value="10">Southwest</option>
-                                <option @php if($to == 11 ) echo "selected"; @endphp value="11">West Southwest
-                                </option>
-                                <option @php if($to == 12 ) echo "selected"; @endphp value="12">West</option>
-                                <option @php if($to == 13 ) echo "selected"; @endphp value="13">West Northwest
-                                </option>
-                                <option @php if($to == 14 ) echo "selected"; @endphp value="14">Northwest</option>
-                                <option @php if($to == 15 ) echo "selected"; @endphp value="15">North Northwest
-                                </option>
-                            </select>
-                        </div>
+                    {{--                    <div class="grid sm:col-span-full">--}}
+                    <div class="">
+                        <label for="from" class="block text-sm/10 font-semibold">From:</label>
+                        <select class="ml-0  bg-white pb-2 space-x-4 sm:col-span-2" name="from"
+                                id="from">
+                            @php
+                                $from = $site->from;
+                            @endphp
+                            <option @php if($from == 0 ) echo "selected"; @endphp value="0">North</option>
+                            <option @php if($from == 1 ) echo "selected"; @endphp value="1">North Northeast
+                            </option>
+                            <option @php if($from == 2 ) echo "selected"; @endphp value="2">Northeast</option>
+                            <option @php if($from == 3 ) echo "selected"; @endphp value="3">East Northeast
+                            </option>
+                            <option @php if($from == 4 ) echo "selected"; @endphp value="4">East</option>
+                            <option @php if($from == 5 ) echo "selected"; @endphp value="5">East Southeast
+                            </option>
+                            <option @php if($from == 6 ) echo "selected"; @endphp value="6">Southeast</option>
+                            <option @php if($from == 7 ) echo "selected"; @endphp value="7">South Southeast
+                            </option>
+                            <option @php if($from == 8 ) echo "selected"; @endphp value="8">South</option>
+                            <option @php if($from == 9 ) echo "selected"; @endphp value="9">South Southwest
+                            </option>
+                            <option @php if($from == 10 ) echo "selected"; @endphp value="10">Southwest</option>
+                            <option @php if($from == 11 ) echo "selected"; @endphp value="11">West Southwest
+                            </option>
+                            <option @php if($from == 12 ) echo "selected"; @endphp value="12">West</option>
+                            <option @php if($from == 13 ) echo "selected"; @endphp value="13">West Northwest
+                            </option>
+                            <option @php if($from == 14 ) echo "selected"; @endphp value="14">Northwest</option>
+                            <option @php if($from == 15 ) echo "selected"; @endphp value="15">North Northwest
+                            </option>
+                        </select>
+                    </div>
+                    <div class="">
+                        <label for="to" class="block text-sm/10 font-semibold">To:</label>
+                        <select class="ml-0   bg-white pb-2 space-x-4 sm:col-span-2" name="to"
+                                id="to">
+                            @php
+                                $to = $site->to;
+                            @endphp
+                            <option @php if($to == 0 ) echo "selected"; @endphp value="0">North</option>
+                            <option @php if($to == 1 ) echo "selected"; @endphp value="1">North Northeast
+                            </option>
+                            <option @php if($to == 2 ) echo "selected"; @endphp value="2">Northeast</option>
+                            <option @php if($to == 3 ) echo "selected"; @endphp value="3">East Northeast
+                            </option>
+                            <option @php if($to == 4 ) echo "selected"; @endphp value="4">East</option>
+                            <option @php if($to == 5 ) echo "selected"; @endphp value="5">East Southeast
+                            </option>
+                            <option @php if($to == 6 ) echo "selected"; @endphp value="6">Southeast</option>
+                            <option @php if($to == 7 ) echo "selected"; @endphp value="7">South Southeast
+                            </option>
+                            <option @php if($to == 8 ) echo "selected"; @endphp value="8">South</option>
+                            <option @php if($to == 9 ) echo "selected"; @endphp value="9">South Southwest
+                            </option>
+                            <option @php if($to == 10 ) echo "selected"; @endphp value="10">Southwest</option>
+                            <option @php if($to == 11 ) echo "selected"; @endphp value="11">West Southwest
+                            </option>
+                            <option @php if($to == 12 ) echo "selected"; @endphp value="12">West</option>
+                            <option @php if($to == 13 ) echo "selected"; @endphp value="13">West Northwest
+                            </option>
+                            <option @php if($to == 14 ) echo "selected"; @endphp value="14">Northwest</option>
+                            <option @php if($to == 15 ) echo "selected"; @endphp value="15">North Northwest
+                            </option>
+                        </select>
+                        {{--                        </div>--}}
                     </div>
                 </div>
                 {{-- Container ends --}}
@@ -205,4 +243,65 @@
             </button>
         </div>
     </form>
+    <script>document.addEventListener('DOMContentLoaded', function () {
+            // var curlatLng = new google.maps.LatLng(-29.3456, 151.4346)
+
+            console.log("loaded");
+            const mapElement = document.querySelector('gmp-map');
+            const map = mapElement.innerMap;
+            console.log(mapElement);
+
+            let mapCentre = new google.maps.LatLng({{$site->lat}}, {{$site->lng}});
+
+            map.setOptions({
+                mapId: 'aa9cce9d23deaacd767a5d9d',
+                center: mapCentre,
+                zoomControl: true,
+                cameraControl: false,
+                mapTypeControl: false,
+                scaleControl: true,
+                streetViewControl: false,
+                rotateControl: false,
+                fullscreenControl: true,
+                mapTypeId: google.maps.MapTypeId.TERRAIN,
+                zoom: 12,
+            });
+
+            map.addListener("center_changed", () => {
+            });
+
+            const marker = new google.maps.marker.AdvancedMarkerElement({
+                position: mapCentre,
+                map,
+                title: "Drag to launch point",
+                gmpDraggable: true,
+            })
+
+            // Add listener for marker drag
+            marker.addListener('dragend', (event) => {
+                // Save initial marker position as cookie values
+                const d = new Date();
+                d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
+                let expires = "expires=" + d.toUTCString();
+
+                const position = marker.position;
+
+
+                console.log("Drag ended");
+                markerLat = position.lat.toFixed(6);
+                markerLng = position.lng.toFixed(6);
+                let latInput = document.getElementById("latInput");
+                let lngInput = document.getElementById("lngInput");
+
+                latInput.setAttribute('value', markerLat);
+                lngInput.setAttribute('value', markerLng);
+
+                document.cookie = "markerLat=" + markerLat + ";" + expires + ";path=/";
+                document.cookie = "markerLng=" + markerLng + ";" + expires + ";path=/";
+            });
+
+        });
+    </script>
+
+
 </x-admin>
