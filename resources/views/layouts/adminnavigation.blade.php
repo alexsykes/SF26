@@ -4,20 +4,12 @@
         <div class="flex justify-between h-16">
             @auth
                 <div class="flex">
-
-
                     @if(Auth::user()->isSuperUser)
                         <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                             <x-nav-link :href="route('sites')" :active="request()->routeIs('sites')">
                                 Sites
                             </x-nav-link>
                         </div>
-
-                        {{--                        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
-                        {{--                            <x-nav-link :href="route('sitemap')" :active="request()->routeIs('sitemap')">--}}
-                        {{--                                Sitemap--}}
-                        {{--                            </x-nav-link>--}}
-                        {{--                        </div>--}}
 
                         <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                             <x-nav-link :href="route('mails')" :active="request()->routeIs('mails')">
@@ -37,31 +29,12 @@
                             </x-nav-link>
                         </div>
 
-                        {{--                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
-                        {{--                    <x-nav-link :href="route('near.sites')" :active="request()->routeIs('near.sites')">--}}
-                        {{--                        Sites (Near to Far)--}}
-                        {{--                    </x-nav-link>--}}
-                        {{--                </div>--}}
-
-                        {{--                @if(Auth::user()->isEditor)--}}
-                        {{--                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
-                        {{--                        <x-nav-link :href="route('site.add')" :active="request()->routeIs('site.add')">--}}
-                        {{--                            {{ __('Submit a new Site') }}--}}
-                        {{--                        </x-nav-link>--}}
-                        {{--                    </div>--}}
-                        {{--                @endif--}}
-
                         <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                             <x-nav-link :href="route('sitemap')" :active="request()->routeIs('sitemap')">
                                 {{ __('Public site') }}
                             </x-nav-link>
                         </div>
                     @endif
-                    {{--                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
-                    {{--                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">--}}
-                    {{--                        {{ __('Dashboard') }}--}}
-                    {{--                    </x-nav-link>--}}
-                    {{--                </div>--}}
                 </div>
             @endauth
             <!-- Settings Dropdown -->
@@ -121,26 +94,25 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
 
-            <x-responsive-nav-link :href="route('favourites')" :active="request()->routeIs('favourites')">
-                {{ __('Favourites') }}
-            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('sites')" :active="request()->routeIs('sites')">
-                Site map
+                Sites
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('nearest')" :active="request()->routeIs('nearest')">
-                What's working?
+            <x-responsive-nav-link :href="route('mails')" :active="request()->routeIs('mails')">
+                Mails
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('near.sites')" :active="request()->routeIs('near.sites')">
-                Sites (Near to Far)
+            <x-responsive-nav-link :href="route('clubs')" :active="request()->routeIs('clubs')">
+                {{ __('Clubs') }}
             </x-responsive-nav-link>
 
-            @if(Auth::user()->isEditor)
-                <x-responsive-nav-link :href="route('site.add')" :active="request()->routeIs('site.add')">
-                    {{ __('Submit a new Site') }}
-                </x-responsive-nav-link>
-            @endif
+            <x-responsive-nav-link :href="route('users')" :active="request()->routeIs('users')">
+                Users
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('sitemap')" :active="request()->routeIs('sitemap')">
+                Public site
+            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->

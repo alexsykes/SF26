@@ -21,8 +21,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-<body class="h-full bg-slate-400 text-white">
-<main class="bg-gray-100 text-black">
+<body class="h-full bg-violet-700 text-white">
+<main class="bg-violet-100 text-black">
     @include('layouts.adminnavigation')
     <div class="mx-auto max-w-7xl px-4 py-6">
         <div class=" bg-white border-1 border-gray-400 rounded-xl  outline outline-1 -outline-offset-1 drop-shadow-lg outline-gray-300 pb-2">
@@ -31,8 +31,9 @@
             </div>
         </div>
     </div>
-    <div class="mt-4 p-4  bg-slate-400 text-white pb-4">
-        <div class="text-sm mt-2 text-center  bg-slate-400 text-white"><a href="https://oldgit.uk">©2018 - {{date("Y")}}
+    <div class="mt-4 p-4  bg-violet-700 text-white pb-4">
+        <div class="text-sm mt-2 text-center  bg-violet-700 text-white"><a href="https://oldgit.uk">©2018
+                - {{date("Y")}}
                 Development by Oldgit UK</a></div>
     </div>
 </main>
