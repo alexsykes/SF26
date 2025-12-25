@@ -9,7 +9,7 @@
     <gmp-map
             center="{{$site->lat}},{{$site->lng}}"
             zoom="14"
-            map-id="aa9cce9d23deaacd767a5d9d"
+            map-id="{{config('gmap.gmap_id')}}"
             style="height: 500px"></gmp-map>
     <form method="POST" action="/site/update">
         @csrf
@@ -93,35 +93,18 @@
                         @enderror
                     </div>
 
-                    <div class="sm:col-span-2">
-                        <label for="latInput" class="block  font-semibold ">Latitude</label>
-                        <div class="mt-2">
-                            <div>
-                                <input type="text"
-                                       name="latInput"
-                                       value="{{ $site->lat }}"
-                                       id="latInput">
-                            </div>
-                        </div>
-                        @error('latInput')
-                        <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
 
-                    <div class="sm:col-span-2">
-                        <label for="lngInput" class="block  font-semibold ">Longitude</label>
-                        <div class="mt-2">
-                            <div>
-                                <input type="text"
-                                       name="lngInput"
-                                       value="{{ $site->lng }}"
-                                       id="lngInput">
-                            </div>
-                        </div>
-                        @error('lngInput')
-                        <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    <input type="hidden"
+                           name="latInput"
+                           value="{{ $site->lat }}"
+                           id="latInput">
+
+
+                    <input type="hidden"
+                           name="lngInput"
+                           value="{{ $site->lng }}"
+                           id="lngInput">
+
 
                     <div class="col-span-full">
                         <label for="site_description" class="block  font-semibold ">About</label>
@@ -244,17 +227,14 @@
         </div>
     </form>
     <script>document.addEventListener('DOMContentLoaded', function () {
-            // var curlatLng = new google.maps.LatLng(-29.3456, 151.4346)
-
-            console.log("loaded");
             const mapElement = document.querySelector('gmp-map');
             const map = mapElement.innerMap;
-            console.log(mapElement);
+            // console.log(mapElement);
 
             let mapCentre = new google.maps.LatLng({{$site->lat}}, {{$site->lng}});
 
             map.setOptions({
-                mapId: 'aa9cce9d23deaacd767a5d9d',
+                // mapId: 'aa9cce9d23deaacd767a5d9d',
                 center: mapCentre,
                 zoomControl: true,
                 cameraControl: false,
@@ -267,15 +247,15 @@
                 zoom: 12,
             });
 
-            map.addListener("center_changed", () => {
-            });
-
             const marker = new google.maps.marker.AdvancedMarkerElement({
                 position: mapCentre,
                 map,
                 title: "Drag to launch point",
                 gmpDraggable: true,
             })
+
+            map.addListener("center_changed", () => {
+            });
 
             // Add listener for marker drag
             marker.addListener('dragend', (event) => {
@@ -285,7 +265,6 @@
                 let expires = "expires=" + d.toUTCString();
 
                 const position = marker.position;
-
 
                 console.log("Drag ended");
                 markerLat = position.lat.toFixed(6);
@@ -302,6 +281,4 @@
 
         });
     </script>
-
-
 </x-admin>

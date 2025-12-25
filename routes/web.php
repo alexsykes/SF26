@@ -34,7 +34,7 @@ Route::put('/sites/direction', [SiteController::class, 'direction'])->middleware
 
 Route::get('/site/add', [SiteController::class, 'addSite'])->middleware([IsEditor::class])->name('site.add');
 Route::post('/site/add', [SiteController::class, 'storeSite'])->middleware([IsEditor::class])->name('site.store');
-Route::patch('/site/publish', [SiteController::class, 'publishSite'])->middleware([IsEditor::class])->name('site.publish');
+Route::get('/site/publish/{id}', [SiteController::class, 'publishSite'])->middleware([IsEditor::class])->name('site.publish');
 
 Route::patch('/site/update', [SiteController::class, 'update'])->middleware(['auth', 'verified'])->name('site.update');
 

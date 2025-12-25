@@ -2,7 +2,10 @@
     <div class="font-semibold">Sites for approval</div>
     <div class="mb-4">
         @foreach($newSites as $site)
-            <div class="col-span-1">{{$site->site_name}}</div>
+            <div class="flex text-sm">
+                <div class="font-semibold sm:w-1/5"><a href="/site/edit/{{$site->id}}">{{$site->site_name}}</a></div>
+                <div class="col-span-1"><a href="/site/publish/{{$site->id}}">Publish</a></div>
+            </div>
         @endforeach
     </div>
 

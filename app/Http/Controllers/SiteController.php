@@ -12,6 +12,7 @@ use App\Models\SiteWindDirections;
 use App\Models\Suggestion;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -410,20 +411,25 @@ class SiteController extends Controller
 
     public function publishSite(Request $request)
     {
-        $site = Site::find($request->input('siteID'));
+        $site = Site::find($request->id);
+
+        $submitterID = $site->created_by;
+        $submitter = User::find($submitterID);
+        $submitterName = $submitter->name;
+        $submitterEmail = $submitter->email;
+
         $site->published = true;
         $site->update();
 
         $user = auth()->user();
         $name = $user->name;
 //dd($name);
-        Mail::to($user->email)
+        Mail::to(new Address($submitterEmail, $submitterName))
             ->bcc('alex@alexsykes.net')
-            ->send(new SitePublished($name, $site));
+            ->send(new SitePublished($submitterName, $site));
 
         $this->getForecast($site);
-
-        return redirect('/sites_approve');
+        return redirect('/sites');
     }
 
     public function update(Request $request)
@@ -527,10 +533,9 @@ class SiteController extends Controller
 
 
         } else {
-            $sites = Site::all()
-                ->where('published', true)
+            $sites = Site::where('published', true)
                 ->select('id', 'site_name', 'lat', 'lng', 'site_description', 'begin', 'end')
-                ->all();
+                ->get();
         }
 
         return view('site.map', ['sites' => $sites, 'directions' => $directions, 'wind_dir' => $direction]);
