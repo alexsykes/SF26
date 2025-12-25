@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewSiteApproved;
 use App\Mail\AcknowledgeSiteSubmission;
-use App\Mail\SitePublished;
 use App\Mail\SuggestionAcknowledgement;
 use App\Mail\SuggestionReviewCompleted;
-use App\Models\Forecast;
 use App\Models\Site;
 use App\Models\SiteWindDirections;
 use App\Models\Suggestion;
@@ -14,8 +13,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 
 function sendmail(int $suggestionID, string $site_name)
@@ -417,18 +416,15 @@ class SiteController extends Controller
         $submitter = User::find($submitterID);
         $submitterName = $submitter->name;
         $submitterEmail = $submitter->email;
+        $address = new Address($submitterEmail, $submitterName);
 
         $site->published = true;
         $site->update();
 
         $user = auth()->user();
         $name = $user->name;
-//dd($name);
-        Mail::to(new Address($submitterEmail, $submitterName))
-            ->bcc('alex@alexsykes.net')
-            ->send(new SitePublished($submitterName, $site));
 
-        $this->getForecast($site);
+        Event::dispatch(new NewSiteApproved($site, $address));
         return redirect('/sites');
     }
 
@@ -485,24 +481,6 @@ class SiteController extends Controller
         return redirect('/sites');
     }
 
-    private function getForecast(Site $site)
-    {
-        $open_weather = Config::get('app.OPEN_WEATHER');
-        $lat = $site->lat;
-        $lng = $site->lng;
-
-        $url = "https://api.openweathermap.org/data/3.0/onecall?lat=$lat&lon=$lng&exclude=minutely,alerts&units=imperial&appid=" . $open_weather;
-
-        if (!$site->forecast) {
-            $rawData = (file_get_contents($url, 'r'));
-            Forecast::create([
-                'site_id' => $site->id,
-                'data' => $rawData,
-                'version' => 1,
-            ]);
-        }
-    }
-
     function sitemap(Request $request)
     {
         $direction = $request->windDirection;
@@ -540,4 +518,6 @@ class SiteController extends Controller
 
         return view('site.map', ['sites' => $sites, 'directions' => $directions, 'wind_dir' => $direction]);
     }
+
+
 }

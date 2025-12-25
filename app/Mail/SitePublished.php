@@ -5,6 +5,7 @@ namespace App\Mail;
 use App\Models\Site;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -17,7 +18,7 @@ class SitePublished extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public $name, public Site $site)
+    public function __construct(public Site $site, public Address $address)
     {
         //
     }
@@ -40,7 +41,7 @@ class SitePublished extends Mailable
         return new Content(
             view: 'mails.site-published',
             with: ['site' => $this->site,
-                'name' => $this->name],
+                'name' => $this->address->name,],
         );
     }
 

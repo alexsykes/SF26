@@ -15,8 +15,8 @@ return new class extends Migration {
             $table->string('Email');
             $table->string('Phone')->nullable();
             $table->string('Website')->nullable();
-            $table->string('Description');
-            $table->string('Notes')->nullable();
+            $table->text('Description');
+            $table->text('Notes')->nullable();
             $table->timestamps();
         });
     }

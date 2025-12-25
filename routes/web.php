@@ -35,6 +35,7 @@ Route::put('/sites/direction', [SiteController::class, 'direction'])->middleware
 Route::get('/site/add', [SiteController::class, 'addSite'])->middleware([IsEditor::class])->name('site.add');
 Route::post('/site/add', [SiteController::class, 'storeSite'])->middleware([IsEditor::class])->name('site.store');
 Route::get('/site/publish/{id}', [SiteController::class, 'publishSite'])->middleware([IsEditor::class])->name('site.publish');
+//Route::patch('/site/publish', [SiteController::class, 'publishSite'])->middleware([IsEditor::class])->name('site.publish');
 
 Route::patch('/site/update', [SiteController::class, 'update'])->middleware(['auth', 'verified'])->name('site.update');
 
@@ -81,3 +82,7 @@ Route::post('/clubmails/post', [ClubmailController::class, 'sendMail'])->name('s
 
 // ClubController
 Route::get('/clubs', [ClubController::class, 'index'])->name('clubs');
+Route::get('/club/edit/{id}', [ClubController::class, 'edit'])->name('club.edit');
+Route::patch('/club/update', [ClubController::class, 'update'])->name('club.update');
+Route::get('/club/add', [ClubController::class, 'add'])->name('club.add');
+Route::post('/club/store', [ClubController::class, 'store'])->name('club.store');

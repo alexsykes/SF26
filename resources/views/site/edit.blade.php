@@ -14,7 +14,19 @@
     <form method="POST" action="/site/update">
         @csrf
         @method('PATCH')
-        <input type="hidden" name="siteID" value="{{$site->id}}">
+        <input type="hidden"
+               name="siteID"
+               value="{{$site->id}}">
+
+        <input type="hidden"
+               name="latInput"
+               value="{{ $site->lat }}"
+               id="latInput">
+
+        <input type="hidden"
+               name="lngInput"
+               value="{{ $site->lng }}"
+               id="lngInput">
         <div class="visible  bg-white shadow-xl flex mt-4 ml-4 mr-4 h-full flex-1 flex-col gap-1 rounded-xl border border-neutral-200 ">
 
             <table class="table-auto">
@@ -52,6 +64,7 @@
                         <div class="mt-2">
                             <div>
                                 <input type="text"
+                                       class="w-full md:w-1/2"
                                        name="site_name"
                                        value="{{ $site->site_name }}"
                                        id="site_name"
@@ -92,19 +105,6 @@
                         <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
                         @enderror
                     </div>
-
-
-                    <input type="hidden"
-                           name="latInput"
-                           value="{{ $site->lat }}"
-                           id="latInput">
-
-
-                    <input type="hidden"
-                           name="lngInput"
-                           value="{{ $site->lng }}"
-                           id="lngInput">
-
 
                     <div class="col-span-full">
                         <label for="site_description" class="block  font-semibold ">About</label>
@@ -234,11 +234,11 @@
             let mapCentre = new google.maps.LatLng({{$site->lat}}, {{$site->lng}});
 
             map.setOptions({
-                // mapId: 'aa9cce9d23deaacd767a5d9d',
+                mapId: 'aa9cce9d23deaacd767a5d9d',
                 center: mapCentre,
                 zoomControl: true,
                 cameraControl: false,
-                mapTypeControl: false,
+                mapTypeControl: true,
                 scaleControl: true,
                 streetViewControl: false,
                 rotateControl: false,

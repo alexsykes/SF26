@@ -13,20 +13,27 @@ class ClubController extends Controller
         return view('clubs.index', compact('clubs'));
     }
 
+    public function edit($id)
+    {
+        $club = Club::find($id);
+        return view('clubs.edit', compact('club'));
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([
             'Name' => ['required'],
             'Area' => ['required'],
             'Contact' => ['required'],
-            'Email' => ['required'],
+            'Email' => ['required', 'email'],
             'Phone' => ['nullable'],
             'Website' => ['nullable'],
             'Description' => ['required'],
             'Notes' => ['nullable'],
         ]);
 
-        return Club::create($data);
+        Club::create($data);
+        return redirect('clubs')->with('success', 'Club Added Successfully');
     }
 
     public function show(Club $club)
@@ -34,13 +41,20 @@ class ClubController extends Controller
         return $club;
     }
 
-    public function update(Request $request, Club $club)
+    public function add()
     {
+        return view('clubs.club');
+    }
+
+    public function update(Request $request)
+    {
+        $club = Club::find($request->id);
+
         $data = $request->validate([
             'Name' => ['required'],
             'Area' => ['required'],
             'Contact' => ['required'],
-            'Email' => ['required'],
+            'Email' => ['required', 'email'],
             'Phone' => ['nullable'],
             'Website' => ['nullable'],
             'Description' => ['required'],
@@ -48,8 +62,7 @@ class ClubController extends Controller
         ]);
 
         $club->update($data);
-
-        return $club;
+        return redirect('clubs')->with('success', 'Club Updated Successfully');
     }
 
     public function destroy(Club $club)
