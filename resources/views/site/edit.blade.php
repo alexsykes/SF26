@@ -238,7 +238,7 @@
                 center: mapCentre,
                 zoomControl: true,
                 cameraControl: false,
-                mapTypeControl: true,
+                mapTypeControl: false,
                 scaleControl: true,
                 streetViewControl: false,
                 rotateControl: false,
@@ -279,6 +279,7 @@
                 document.cookie = "markerLng=" + markerLng + ";" + expires + ";path=/";
             });
 
+            addYourLocationButton(map);
         });
     </script>
 </x-admin>

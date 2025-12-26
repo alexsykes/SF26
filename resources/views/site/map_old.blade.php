@@ -1,4 +1,5 @@
 <x-app-layout>
+{{--    @dump($sites)--}}
     <style>
         .text-center {
             text-align: center;
@@ -9,7 +10,6 @@
             height: 600px;
         }
     </style>
-
     <script>
         (g => {
             var h, a, k, p = " {{config('gmap.gmap_key')}}", c = "google", l = "importLibrary", q = "__ib__",
@@ -47,7 +47,6 @@
 
         async function initMap() {
             const {Map} = await google.maps.importLibrary("maps");
-            const {AdvancedMarkerElement} = (await google.maps.importLibrary('marker'));
             let lat = 53.67;
             let lng = -1.92;
             let zoom = 6;
@@ -72,7 +71,6 @@
                 },
                 zoom: parseInt(zoom),
                 streetViewControl: false,
-                scaleControl: true,
                 mapTypeControl: false,
                 mapTypeId: google.maps.MapTypeId.TERRAIN,
                 mapId: "c2290875eac93973",
@@ -98,11 +96,6 @@
                 document.cookie = "curLng=" + curLng + ";" + expires + ";path=/";
             });
 
-
-            const marker = new AdvancedMarkerElement({
-                map: map,
-                position: {lat: 52.397, lng: -2.644},
-            });
             initMarkers();
             addYourLocationButton(map);
 
@@ -119,8 +112,9 @@
                         + ')';
                     const contentString = '<div>' + markerData.site_description + '</div>'
                         + '<div><a class="font-semibold pt-4 underline" href="' + siteURL + '">Click here for full details</a></div>'
+
                     ;
-                    const marker = new AdvancedMarkerElement({
+                    const marker = new google.maps.Marker({
                         position: {lat: parseFloat(markerData['lat']), lng: parseFloat(markerData['lng'])},
                         draggable: false,
                         map
@@ -176,8 +170,5 @@
         {{--        <div class="text-sm">{{$msg}}</div>--}}
 
     </x-slot>
-    <div id="container" class="flex w-full">
-        <div id="map" class=""></div>
-        <div id="latest" class="w-10">ihoijpojpoj</div>
-    </div>
+    <div id="map"></div>
 </x-app-layout>

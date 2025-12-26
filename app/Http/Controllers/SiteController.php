@@ -481,7 +481,7 @@ class SiteController extends Controller
         return redirect('/sites');
     }
 
-    function sitemap(Request $request)
+    function sitemap_old(Request $request)
     {
         $direction = $request->windDirection;
         $directions = ["Show All", "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
@@ -519,5 +519,44 @@ class SiteController extends Controller
         return view('site.map', ['sites' => $sites, 'directions' => $directions, 'wind_dir' => $direction]);
     }
 
+    function sitemap(Request $request)
+    {
+        $directions = ["Show All", "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+        $direction = 'Show All';
 
+//      Check for PUT
+        if ($request->_method == 'PUT') {
+            $direction = $request->windDirection;
+            $windIndex = array_search($direction, $directions);
+            if ($windIndex > 0) {
+                $windIndex = $windIndex - 1;
+                if ($windIndex == 16) {
+                    $windIndex = 0;
+                }
+
+                $siteIDsForWind = SiteWindDirections::where('direction', $windIndex)
+                    ->pluck('siteID')
+                    ->toArray();
+
+                $siteIDs = implode(',', $siteIDsForWind);
+                $siteIDarray = explode(",", $siteIDs);
+
+                $sites = Site::where('published', true)
+                    ->whereIn('id', $siteIDarray)
+                    ->select('id', 'site_name', 'lat', 'lng', 'site_description', 'begin', 'end')
+                    ->get();
+            } else {
+                $sites = Site::where('published', true)
+                    ->select('id', 'site_name', 'lat', 'lng', 'site_description', 'begin', 'end')
+                    ->get();
+            }
+        } else {
+//            If not PUT then GET
+            $sites = Site::where('published', true)
+                ->select('id', 'site_name', 'lat', 'lng', 'site_description', 'begin', 'end')
+                ->get();
+        }
+
+        return view('site.map', ['sites' => $sites, 'directions' => $directions, 'wind_dir' => $direction]);
+    }
 }
