@@ -86,3 +86,5 @@ Route::get('/club/edit/{id}', [ClubController::class, 'edit'])->name('club.edit'
 Route::patch('/club/update', [ClubController::class, 'update'])->name('club.update');
 Route::get('/club/add', [ClubController::class, 'add'])->name('club.add');
 Route::post('/club/store', [ClubController::class, 'store'])->name('club.store');
+
+Route::post('fetchSites', [SiteController::class, 'fetchSites'])->name('fetchSites');

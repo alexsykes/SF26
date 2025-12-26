@@ -94,6 +94,137 @@
             }
             return null; // Return null if the cookie is not found
         }
+
+        function onClick(direction) {
+            // console.log("Direction: " + direction);
+            fetch(url, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json, text-plain, */*",
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRF-TOKEN": token
+                },
+                method: 'post',
+                credentials: "same-origin",
+                body: JSON.stringify({
+                    direction: direction,
+                })
+
+            })
+
+                // end of fetch request
+
+                // .then(response => {
+                //     if (!response.ok) {
+                //         throw new Error('Network response was not ok');
+                //     }
+                //     console.log("Response: " + response.json());
+                // })
+
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    const contentType = response.headers.get('content-type');
+                    console.log("ContentType: " + contentType);
+                    if (contentType && contentType.includes('application/json')) {
+                        console.log(response.json()); // Decode as JSON
+                    } else {
+                        throw new Error('Response is not JSON');
+                    }
+                })
+
+                .then((data) => {
+                    console.log("Response: " + data);
+                    // window.location.href = redirect;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+        function clearMap() {
+            for (var i = 0; i < markers.length; i++) {
+                marker = markers[i];
+                marker.setMap(null);
+            }
+        }
+
+        async function initMarkers(initialMarkers) {
+            const {Map} = await google.maps.importLibrary("maps");
+            const {AdvancedMarkerElement} = (await google.maps.importLibrary('marker'));
+
+            clearMap();
+
+            for (let index = 0; index < initialMarkers.length; index++) {
+                const markerData = initialMarkers[index];
+                const siteURL = "<?php echo config('app.url'); ?>" + "/site/detail/" + markerData.id;
+                // console.log(siteURL);
+                const headerContent = markerData.site_name + ' ('
+                    + markerData.begin + ' - '
+                    + markerData.end
+                    + ')';
+                const contentString = '<div>' + markerData.site_description + '</div>'
+                    + '<div><a class="font-semibold pt-4 underline" href="' + siteURL + '">Click here for full details</a></div>'
+                ;
+                const marker = new AdvancedMarkerElement({
+                    position: {lat: parseFloat(markerData['lat']), lng: parseFloat(markerData['lng'])},
+                    draggable: false,
+                    map
+                });
+                markers.push(marker);
+
+                const infowindow = new google.maps.InfoWindow({
+                    label: 'Title',
+                    content: contentString,
+                    headerContent: headerContent,
+                });
+                marker.addListener("click", (event) => {
+                    if (activeInfoWindow) {
+                        activeInfoWindow.close();
+                    }
+                    infowindow.open({
+                        anchor: marker,
+                        shouldFocus: false,
+                        map
+                    });
+                    activeInfoWindow = infowindow;
+                    // markerClicked(marker, index);
+                });
+            }
+        }
+
+        async function getData(direction) {
+            let url = '/fetchSites';
+            let redirect = '/sitemap';
+            let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json, text-plain, */*",
+                        "X-Requested-With": "XMLHttpRequest",
+                        "X-CSRF-TOKEN": token
+                    },
+                    method: 'post',
+                    credentials: "same-origin",
+                    body: JSON.stringify({
+                        direction: direction,
+                    })
+
+                });
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                // addMarkers(result);
+                initMarkers(result);
+                // console.log(result);
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
     </script>
 </head>
 <body class="font-sans antialiased">
@@ -103,7 +234,7 @@
     <!-- Page Heading -->
     @isset($header)
         <header class="bg-white shadow">
-            <div class=" mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class=" mx-auto py-2  px-4 sm:px-6 lg:px-8">
                 {{ $header }}
             </div>
         </header>

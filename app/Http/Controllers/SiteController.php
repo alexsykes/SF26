@@ -15,6 +15,7 @@ use Illuminate\Mail\Mailables\Address;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 function sendmail(int $suggestionID, string $site_name)
@@ -558,5 +559,43 @@ class SiteController extends Controller
         }
 
         return view('site.map', ['sites' => $sites, 'directions' => $directions, 'wind_dir' => $direction]);
+    }
+
+    public function fetchSites(Request $request)
+    {
+        $user = Auth::user();
+        $userName = $user->name;
+        $ipAddress = $request->ip();
+        $direction = $request->direction;
+
+        Log::info("$userName request from $ipAddress for: ".$direction);
+
+        $directions = ["Show All", "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+
+//      Check for PUT
+        $windIndex = array_search($direction, $directions);
+        if ($windIndex > 0) {
+            $windIndex = $windIndex - 1;
+            if ($windIndex == 16) {
+                $windIndex = 0;
+            }
+
+            $siteIDsForWind = SiteWindDirections::where('direction', $windIndex)
+                ->pluck('siteID')
+                ->toArray();
+
+            $siteIDs = implode(',', $siteIDsForWind);
+            $siteIDarray = explode(",", $siteIDs);
+
+            $sites = Site::where('published', true)
+                ->whereIn('id', $siteIDarray)
+                ->select('id', 'site_name', 'lat', 'lng', 'site_description', 'begin', 'end')
+                ->get();
+        } else {
+            $sites = Site::where('published', true)
+                ->select('id', 'site_name', 'lat', 'lng', 'site_description', 'begin', 'end')
+                ->get();
+        }
+        return $sites;
     }
 }

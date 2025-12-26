@@ -71,4 +71,6 @@ class ClubController extends Controller
 
         return response()->json();
     }
+
+
 }

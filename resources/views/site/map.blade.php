@@ -10,6 +10,7 @@
         }
     </style>
 
+
     <script>
         (g => {
             var h, a, k, p = " {{config('gmap.gmap_key')}}", c = "google", l = "importLibrary", q = "__ib__",
@@ -103,53 +104,18 @@
                 map: map,
                 position: {lat: 52.397, lng: -2.644},
             });
-            initMarkers();
+            initMarkers(<?php echo json_encode($sites); ?>);
             addYourLocationButton(map);
-
-            function initMarkers() {
-                const initialMarkers = <?php echo json_encode($sites); ?>;
-
-                for (let index = 0; index < initialMarkers.length; index++) {
-                    const markerData = initialMarkers[index];
-                    const siteURL = "<?php echo config('app.url'); ?>" + "/site/detail/" + markerData.id;
-                    // console.log(siteURL);
-                    const headerContent = markerData.site_name + ' ('
-                        + markerData.begin + ' - '
-                        + markerData.end
-                        + ')';
-                    const contentString = '<div>' + markerData.site_description + '</div>'
-                        + '<div><a class="font-semibold pt-4 underline" href="' + siteURL + '">Click here for full details</a></div>'
-                    ;
-                    const marker = new AdvancedMarkerElement({
-                        position: {lat: parseFloat(markerData['lat']), lng: parseFloat(markerData['lng'])},
-                        draggable: false,
-                        map
-                    });
-                    markers.push(marker);
-
-                    const infowindow = new google.maps.InfoWindow({
-                        label: 'Title',
-                        content: contentString,
-                        headerContent: headerContent,
-                    });
-                    marker.addListener("click", (event) => {
-                        if (activeInfoWindow) {
-                            activeInfoWindow.close();
-                        }
-                        infowindow.open({
-                            anchor: marker,
-                            shouldFocus: false,
-                            map
-                        });
-                        activeInfoWindow = infowindow;
-                        // markerClicked(marker, index);
-                    });
-                }
-            }
         }
 
         initMap();
     </script>
+    @if(isset($msg))
+        <div class="bg-teal-100 border-t border-b border-teal-500 text-teal-700 px-4 py-3" role="alert">
+            <p class="font-bold">Informational message</p>
+            <p class="text-sm">Some additional text to explain said message.</p>
+        </div>
+    @endif
     <x-slot name="header">
         <div class="flex items-start justify-between"><h2
                     class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">
@@ -159,7 +125,7 @@
                 @csrf
                 @method('PUT')
                 <select class="" id="windDirection" name="windDirection"
-                        onchange="directionChanged()">
+                        onchange="getData(windDirection.value)">
                     @foreach($directions as $direction)
                         <option value="{{$direction}}"
                                 @php
@@ -173,10 +139,10 @@
                 </select>
             </form>
         </div>
-        {{--        <div class="text-sm">{{$msg}}</div>--}}
-
     </x-slot>
+
     <div id="container" class="flex w-full">
+
         <div id="map" class=""></div>
         <div id="latest" class="w-10">ihoijpojpoj</div>
     </div>
