@@ -111,9 +111,9 @@
         initMap();
     </script>
     @if(isset($msg))
-        <div class="bg-teal-100 border-t border-b border-teal-500 text-teal-700 px-4 py-3" role="alert">
-            <p class="font-bold">Informational message</p>
-            <p class="text-sm">Some additional text to explain said message.</p>
+        <div class="bg-teal-100  border border-teal-500 text-teal-700 px-4 py-3" role="alert">
+            <p class=" font-bold">{{$msg['title']}}</p>
+            <p class=" text-sm">{{$msg['text']}}</p>
         </div>
     @endif
     <x-slot name="header">
@@ -142,7 +142,6 @@
     </x-slot>
 
     <div id="container" class="flex w-full">
-
         <div id="map" class=""></div>
         <div id="latest" class="w-10">ihoijpojpoj</div>
     </div>

@@ -159,13 +159,15 @@
             for (let index = 0; index < initialMarkers.length; index++) {
                 const markerData = initialMarkers[index];
                 const siteURL = "<?php echo config('app.url'); ?>" + "/site/detail/" + markerData.id;
-                // console.log(siteURL);
+
+                const windyURL = 'https://www.windy.com/?' + markerData.lat + "," + markerData.lng + ",14";
+                console.log(windyURL);
                 const headerContent = markerData.site_name + ' ('
                     + markerData.begin + ' - '
                     + markerData.end
                     + ')';
                 const contentString = '<div>' + markerData.site_description + '</div>'
-                    + '<div><a class="font-semibold pt-4 underline" href="' + siteURL + '">Click here for full details</a></div>'
+                    + '<div><br><a class="font-semibold pt-4 underline" href="' + siteURL + '">Full details - click here</a> <br><br> <a class="font-semibold pt-4 underline" href="' + windyURL + '" target=\"_blank\">Windy forecast - click here</a></div>'
                 ;
                 const marker = new AdvancedMarkerElement({
                     position: {lat: parseFloat(markerData['lat']), lng: parseFloat(markerData['lng'])},
@@ -239,7 +241,6 @@
             </div>
         </header>
     @endisset
-
     <!-- Page Content -->
 
     <main>

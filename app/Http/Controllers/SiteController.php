@@ -558,7 +558,10 @@ class SiteController extends Controller
                 ->get();
         }
 
-        return view('site.map', ['sites' => $sites, 'directions' => $directions, 'wind_dir' => $direction]);
+
+        $msg = null;
+
+        return view('site.map', ['sites' => $sites, 'directions' => $directions, 'wind_dir' => $direction, 'msg' => $msg]);
     }
 
     public function fetchSites(Request $request)
@@ -568,7 +571,7 @@ class SiteController extends Controller
         $ipAddress = $request->ip();
         $direction = $request->direction;
 
-        Log::info("$userName request from $ipAddress for: ".$direction);
+        Log::info("$userName request from $ipAddress for: " . $direction);
 
         $directions = ["Show All", "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
 
