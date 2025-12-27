@@ -73,7 +73,7 @@ class SiteController extends Controller
         return view('site.detail', compact('site', 'user'));
     }
 
-    function siteList()
+    function sitesAZ()
     {
         if (!isset($_COOKIE['curLat']) || !isset($_COOKIE['curLat'])) {
             $curLat = 53.59476;

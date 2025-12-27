@@ -24,7 +24,7 @@ Route::middleware('auth')->group(function () {
 
 // Site Controller
 Route::get('/sites', [SiteController::class, 'index'])->middleware([IsSuperUser::class])->name('sites');
-Route::get('/sitesAZ', [SiteController::class, 'sitelist'])->middleware('auth', 'verified')->name('sitesAZ');
+Route::get('/sitesAZ', [SiteController::class, 'sitesAZ'])->middleware('auth', 'verified')->name('sitesAZ');
 Route::get('/site/detail/{id}', [SiteController::class, 'detail'])->middleware('auth', 'verified')->name('site.detail');
 Route::get('/sitelist', [SiteController::class, 'siteList'])->middleware(['auth', 'verified'])->name('sitelist');
 Route::get('/sites_near', [SiteController::class, 'sites_near'])->middleware(['auth', 'verified'])->name('near.sites');
@@ -87,4 +87,5 @@ Route::patch('/club/update', [ClubController::class, 'update'])->name('club.upda
 Route::get('/club/add', [ClubController::class, 'add'])->name('club.add');
 Route::post('/club/store', [ClubController::class, 'store'])->name('club.store');
 
+Route::post('fetchSites', [SiteController::class, 'fetchSites'])->name('fetchSites');
 Route::post('fetchSites', [SiteController::class, 'fetchSites'])->name('fetchSites');
