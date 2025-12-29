@@ -1,6 +1,6 @@
 <x-admin>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">{{$site->site_name}}</h2>
+        <h2 class="font-semibold text-xl leading-tight">{{$site->site_name}}</h2>
     </x-slot>
     <script
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-AtLvoAbjtcSN2sPXAT5HHkgk97UOOVY&libraries=maps,marker"

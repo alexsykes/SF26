@@ -58,7 +58,7 @@
         }
     </script>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">
+        <h2 class="font-semibold text-xl leading-tight">
             {{ __('Favourites') }}
         </h2>
 
@@ -108,16 +108,17 @@
                         <div class="col-span-1">
                             {{$site->site_name}}
                         </div>
-                        <div class="col-span-1 font-semibold"><a class="underline" target="_blank" href="{{$url}}">Windy.com</a></div>
+                        <div class="col-span-1 font-semibold"><a class="underline" target="_blank" href="{{$url}}">Windy.com</a>
+                        </div>
                     </summary>
                     <div id="map{{$i}}" class="bg-slate-500 w-full aspect-video"></div>
 
                     <div class="pl-2 pt-0  bg-white ">{{$site->site_description}}</div>
                     <div class="pl-2  bg-white ">Winds: {{$dirs}}</div>
-{{--                    <div class="pl-2 font-semibold">Current conditions on Windy.com - <a class="underline"--}}
-{{--                                                                                         target="_blank"--}}
-{{--                                                                                         href="{{$url}}">click--}}
-{{--                            here</a></div>--}}
+                    {{--                    <div class="pl-2 font-semibold">Current conditions on Windy.com - <a class="underline"--}}
+                    {{--                                                                                         target="_blank"--}}
+                    {{--                                                                                         href="{{$url}}">click--}}
+                    {{--                            here</a></div>--}}
                     <details>
 
                         <summary class="font-semibold  bg-white pl-2">48 hour forecast</summary>

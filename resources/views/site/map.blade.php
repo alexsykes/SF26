@@ -118,7 +118,7 @@
     @endif
     <x-slot name="header">
         <div class="flex items-start justify-between"><h2
-                    class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">
+                    class="font-semibold text-xl  leading-tight">
                 SlopeFinder UK
             </h2>
             <form name="directionForm" id="directionForm" method="post" action="/sitemap">
@@ -141,8 +141,8 @@
         </div>
     </x-slot>
 
-    <div id="container" class="flex w-full">
+    <div id="container" class="flex w-screen">
         <div id="map" class=""></div>
-        <div id="latest" class="w-10">ihoijpojpoj</div>
+{{--        <div id="latest" class="hidden md:block md:min-w-24 max-w-40">ihoijpojpoj</div>--}}
     </div>
 </x-app-layout>

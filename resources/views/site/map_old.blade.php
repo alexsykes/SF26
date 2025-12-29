@@ -1,5 +1,5 @@
 <x-app-layout>
-{{--    @dump($sites)--}}
+    {{--    @dump($sites)--}}
     <style>
         .text-center {
             text-align: center;
@@ -146,7 +146,7 @@
     </script>
     <x-slot name="header">
         <div class="flex items-start justify-between"><h2
-                    class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">
+                    class="font-semibold text-xl leading-tight">
                 SlopeFinder UK
             </h2>
             <form name="directionForm" id="directionForm" method="post" action="/sitemap">

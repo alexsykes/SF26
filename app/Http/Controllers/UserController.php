@@ -7,10 +7,14 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
-
     public function index()
     {
-        $users = User::all();
+
+        $query = "select  UPPER(LEFT(users.name, 1)) initial,
+   GROUP_CONCAT( CONCAT_WS(',', id, name, email)
+   ORDER BY email SEPARATOR '\n') userdata from users group by initial";
+        $users = DB::select($query);
+
 
         return view('users.index', compact('users'));
     }
@@ -75,5 +79,21 @@ class UserController extends Controller
     public function unsubscribe()
     {
 
+    }
+
+    public function getUserList()
+    {
+        $userData = DB::raw("select 
+   UPPER(LEFT(users.email, 1)) initial,
+   GROUP_CONCAT( CONCAT_WS(',', id, name, email )
+   ORDER BY email SEPARATOR '\n') userdata 
+from
+ users
+group by 
+ initial asc;'")
+            ->toArray();
+
+
+        dd($userData);
     }
 }

@@ -111,16 +111,6 @@
                 })
 
             })
-
-                // end of fetch request
-
-                // .then(response => {
-                //     if (!response.ok) {
-                //         throw new Error('Network response was not ok');
-                //     }
-                //     console.log("Response: " + response.json());
-                // })
-
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -133,7 +123,6 @@
                         throw new Error('Response is not JSON');
                     }
                 })
-
                 .then((data) => {
                     console.log("Response: " + data);
                     // window.location.href = redirect;
@@ -236,7 +225,7 @@
     <!-- Page Heading -->
     @isset($header)
         <header class="bg-white shadow">
-            <div class=" mx-auto py-2  px-4 sm:px-6 lg:px-8">
+            <div class="text-violet-600  mx-auto py-2  px-4 sm:px-6 lg:px-8">
                 {{ $header }}
             </div>
         </header>

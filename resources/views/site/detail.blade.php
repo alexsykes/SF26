@@ -63,7 +63,7 @@
             $url = "https://www.windy.com/?$site->lat,$site->lng,14";
     @endphp
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">
+        <h2 class="font-semibold text-xl leading-tight">
             @php echo $link; @endphp
         </h2>
     </x-slot>
@@ -78,20 +78,20 @@
 
 
                     <div class="flex justify-between">
-                            <button class="border p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "
-                                    onclick="history.back()">Go
-                                Back
-                            </button>
-                            @if($isFavourite)
-                                <p class="border p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "><a
-                                            href="/removeFavourite/{{$site->id}}">Remove
-                                        from Favourites</a></p>
-                            @else
-                                <p class="border p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "><a
-                                            href="/addFavourite/{{$site->id}}">Add
-                                        to
-                                        Favourites</a></p>
-                            @endif
+                        <button class="border p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "
+                                onclick="history.back()">Go
+                            Back
+                        </button>
+                        @if($isFavourite)
+                            <p class="border p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "><a
+                                        href="/removeFavourite/{{$site->id}}">Remove
+                                    from Favourites</a></p>
+                        @else
+                            <p class="border p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "><a
+                                        href="/addFavourite/{{$site->id}}">Add
+                                    to
+                                    Favourites</a></p>
+                        @endif
                     </div>
                     <h1 class="pt-4 mb-1 font-medium">Winds</h1>
                     <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site->begin}} to {{$site->end}}</p>

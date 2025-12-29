@@ -4,30 +4,31 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('favourites')" :active="request()->routeIs('favourites')">
-                        Favourites
-                    </x-nav-link>
+                    <x-nav-link-violet :href="route('sitemap')" :active="request()->routeIs('sitemap')">
+                        <img width="32px" src="{{ asset('storage/images/green-600-home.svg') }}"/>
+                    </x-nav-link-violet>
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('sitemap')" :active="request()->routeIs('sitemap')">
-                        Site map
-                    </x-nav-link>
+
+                    <x-nav-link-violet :href="route('favourites')" :active="request()->routeIs('favourites')">
+                        Favourites
+                    </x-nav-link-violet>
                 </div>
 
                 @if(Auth::user()->isEditor)
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link :href="route('site.add')" :active="request()->routeIs('site.add')">
+                        <x-nav-link-violet :href="route('site.add')" :active="request()->routeIs('site.add')">
                             {{ __('Submit a new Site') }}
-                        </x-nav-link>
+                        </x-nav-link-violet>
                     </div>
                 @endif
 
                 @if(Auth::user()->isSuperUser)
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link :href="route('sites')" :active="request()->routeIs('sites')">
+                        <x-nav-link-violet :href="route('sites')" :active="request()->routeIs('sites')">
                             {{ __('Admin') }}
-                        </x-nav-link>
+                        </x-nav-link-violet>
                     </div>
                 @endif
                 {{--                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
@@ -94,11 +95,12 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
 
-            <x-responsive-nav-link :href="route('favourites')" :active="request()->routeIs('favourites')">
-                {{ __('Favourites') }}
-            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('sitemap')" :active="request()->routeIs('sitemap')">
                 Site map
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('favourites')" :active="request()->routeIs('favourites')">
+                {{ __('Favourites') }}
             </x-responsive-nav-link>
 
             @if(Auth::user()->isEditor)

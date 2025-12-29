@@ -42,13 +42,6 @@ class AuthenticatedSessionController extends Controller
         Log::info("Successful login by $username from IPaddress: $ip");
 
         return redirect('/sitemap');
-
-//        if ($favourites == '') {
-//            return redirect('/sitemap');
-////            return redirect()->intended(route('sitemap', absolute: false));
-//        } else {
-//            return redirect()->intended(route('favourites', absolute: false));
-//        }
     }
 
     /**

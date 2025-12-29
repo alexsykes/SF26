@@ -227,7 +227,7 @@
     </script>
     <x-slot name="header">
         <div class="flex items-start justify-between"><h2
-                    class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">
+                    class="font-semibold text-xl leading-tight">
                 {{ __('Nearest sites for ') }}{{$wind_dir}}
             </h2>
             <form id="directionForm" method="post" action="/nearest">

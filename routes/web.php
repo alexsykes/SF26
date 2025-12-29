@@ -88,4 +88,3 @@ Route::get('/club/add', [ClubController::class, 'add'])->name('club.add');
 Route::post('/club/store', [ClubController::class, 'store'])->name('club.store');
 
 Route::post('fetchSites', [SiteController::class, 'fetchSites'])->name('fetchSites');
-Route::post('fetchSites', [SiteController::class, 'fetchSites'])->name('fetchSites');

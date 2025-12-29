@@ -21,7 +21,7 @@
 @endphp
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">
+        <h2 class="font-semibold text-xl leading-tight">
             {{ __('Nearest sites for ') }}{{$wind_dir}}
         </h2>
         <div class="text-sm">{{$msg}}</div>

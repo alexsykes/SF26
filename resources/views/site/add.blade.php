@@ -175,7 +175,7 @@
 
     </script>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">
+        <h2 class="font-semibold text-xl leading-tight">
             Drag the Marker to the launch point
         </h2>
     </x-slot>

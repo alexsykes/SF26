@@ -3,7 +3,7 @@
     @endphp
     <x-slot name="header">
 
-        <h2 class="font-semibold text-xl text-slate-800 dark:text-slate-200 leading-tight">
+        <h2 class="font-semibold text-xl leading-tight">
             User feedback - {{$site->site_name}}
         </h2>
     </x-slot>
@@ -42,7 +42,8 @@
         <div class="p-4 flex space-x-4">
             <button class="border bg-white p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "
                     onclick="history.back()">Go
-                Back</button>
+                Back
+            </button>
             <button type="submit" class="border bg-white  p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 ">Submit</button>
         </div>
 
