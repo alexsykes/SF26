@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\ClubmailController;
+use App\Http\Controllers\DataController;
 use App\Http\Controllers\ForecastController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
@@ -88,3 +89,10 @@ Route::get('/club/add', [ClubController::class, 'add'])->name('club.add');
 Route::post('/club/store', [ClubController::class, 'store'])->name('club.store');
 
 Route::post('fetchSites', [SiteController::class, 'fetchSites'])->name('fetchSites');
+
+Route::get('/data/request', [DataController::class, 'dataRequest'])->middleware('auth', 'verified')->name('dataRequest');
+Route::post('/dataRequest/submit', [DataController::class, 'store'])->middleware('auth', 'verified')->name('dataRequestSubmit');
+Route::get('/data/requests', [DataController::class, 'list'])->middleware(IsSuperUser::class)->name('datarequests');
+Route::get('/request/process/{id}', [DataController::class, 'process'])->middleware(IsSuperUser::class)->name('request.process');
+Route::post('/request/respond', [DataController::class, 'respond'])->middleware(IsSuperUser::class)->name('respond');
+Route::post('/request/export', [DataController::class, 'export'])->middleware(IsSuperUser::class)->name('export');
