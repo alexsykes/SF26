@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->enum('approved', ['Pending', 'Approved', 'Refused'])->default('Pending');
             $table->boolean('accept')->default(false);
             $table->boolean('completed')->default(false);
-            $table->enum('format', ['CSV', 'JSON', 'PDF', 'TAB', 'SQL', 'Other'])->default('JSON');
+            $table->enum('data_format', ['CSV', 'JSON', 'PDF', 'TAB', 'SQL', 'Other'])->default('JSON');
             $table->timestamps();
         });
     }

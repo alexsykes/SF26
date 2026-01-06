@@ -1,11 +1,30 @@
 <x-app-layout>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <style>
+        .grecaptcha-badge {
+            width: 70px !important;
+            overflow: hidden !important;
+            transition: all 0.3s ease !important;
+            left: 4px !important;
+        }
+
+        .grecaptcha-badge:hover {
+            width: 256px !important;
+        }
+
+    </style>
+    <script>
+        function onSubmit(token) {
+            document.getElementById("requestForm").submit();
+        }
+    </script>
     <x-slot name="header">
         <h2 class="font-semibold text-xl leading-tight">
             Data Request
         </h2>
     </x-slot>
     @php
-        $formatArray = array("JSON", "CSV", "TAB","SQL", "PDF", "Other");
+        $data_formatArray = array("JSON", "CSV","SQL", "Other");
     @endphp
     <div class="visible p-4 text-sm  bg-white shadow-xl flex mt-4 ml-4 mr-4 h-full flex-1 flex-col gap-1 rounded-xl border border-neutral-200 ">
         <div class="text-sm space-y-2">
@@ -25,9 +44,28 @@
                 website will be shared.
             </div>
         </div>
-        <form action="/dataRequest/submit" method="post">
+        <form id="requestForm" action="/dataRequest/submit" method="post">
             @csrf
             <div class="mt-2 grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-4">
+
+
+                <div class="sm:col-span-4">
+                    <label for="data_format" class="block font-semibold">File format for data - if 'Other', give
+                        details in
+                        Data Requested box</label>
+                    <div class="mt-2">
+                        @foreach($data_formatArray as $option)
+                            <input name="data_format" type="radio" id="data_format" value="{{$option}}"
+                                   {{ (old('data_format') == $option) ? ' checked' : '' }}
+                                   required>
+                            <label class="pl-1 pr-4" for="data_format">{{$option}}</label>
+                        @endforeach
+                    </div>
+                    @error('data_format')
+                    <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <div class="sm:col-span-4">
                     <label for="description" class="block  font-semibold ">Data Requested</label>
                     <div class="mt-2">
@@ -59,21 +97,6 @@
                 </div>
 
                 <div class="sm:col-span-4">
-                    <label for="format" class="block font-semibold">File format</label>
-                    <div class="mt-2">
-                        @foreach($formatArray as $option)
-                            <input name="format" type="radio" id="format" value="{{$option}}"
-                                   {{ (old('format') == $option) ? ' checked' : '' }}
-                                   required>
-                            <label class="pl-1 pr-4" for="format">{{$option}}</label>
-                        @endforeach
-                    </div>
-                    @error('format')
-                    <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div class="sm:col-span-4">
                     <label for="purpose" class="pt-2 block  font-semibold ">I have read the terms and conditions of the
                         Creative
                         Commons CC-BY-NC licence and agree to abide by them.</label>
@@ -85,11 +108,14 @@
                         onclick="history.back()">Go
                     Back
                 </button>
-                <button type="submit"
-                        class="border bg-black text-white  p-2 pr-4 pl-4 shadow-md hover:bg-gray-700 ">
-                    Submit
-                </button>
+                <x-primary-button class="g-recaptcha btn btn-primary btn-lg ms-4"
+                                  data-sitekey="{{ config('services.recaptcha_v3.siteKey') }}"
+                                  data-callback="onSubmit"
+                                  data-action="/dataRequest/submit">Submit
+                </x-primary-button>
             </div>
+
         </form>
+
     </div>
 </x-app-layout>

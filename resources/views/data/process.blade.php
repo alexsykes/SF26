@@ -5,7 +5,7 @@
     @endphp
     <div>Data requested - {{$dataRequest->description}}</div>
     <div>Purpose - {{$dataRequest->purpose}}</div>
-    <div>Format - {{$dataRequest->format}}</div>
+    <div>Format - {{$dataRequest->data_format}}</div>
     <div>Requested by - {{$dataRequest->approved}}</div>
 
     <div class="mt-4" id="requestFormDiv">
@@ -34,7 +34,8 @@
 
                 <div class="">
                     @foreach($approvalOptions as $option)
-                        <input name="approved" type="radio" id="approved" value="{{$option}}"
+                        <input onchange="toggle(exportFormDiv, value)" name="approved" type="radio" id="approved"
+                               value="{{$option}}"
                                {{ ($dataRequest->approved == $option) ? ' checked' : '' }}
                                required>
                         <label class="pl-1 pr-4" for="approved">{{$option}}</label>
@@ -63,45 +64,48 @@
         </form>
     </div>
 
-
-    <div class="mt-4" id="exportFormDiv">
-        <form action="/request/export" method="post">
-            @csrf
-            <input type="hidden" value="{{$dataRequest->id}}" name="id" id="id">
-            <input type="hidden" value="{{$dataRequest->format}}" name="format" id="format">
-
-
-            <label class="pr-0 block font-semibold" for="tables">Select tables for export
-                as {{$dataRequest->format}}</label>
-            <div class="mt-2 pl-2 pr-0">
-                @foreach($tableArray as $table)
-                    <div>
-                        <input name="tables[]" type="checkbox"
-                               value="{{$table}}"
-                                @php
-                                    if(isset($tableSelected)) {
-                                    $selected = in_array($table, $tableSelected) ? ' checked ' : '';
-                                    echo $selected;
-                                    }
-                                @endphp
-                        />
-                        <label class="pl-4 pr-0" for="tables">{{$table}}
-                        </label>
-                    </div>
-                @endforeach
-            </div>
-            @error('tables')
-            <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
-            @enderror
+    @if($dataRequest->approved == 'Approved')
+        <div class=" mt-4" id="exportFormDiv">
+            @else
+                <div class=" hidden mt-4" id="exportFormDiv">
+                    @endif
+                    <form action="/request/export" method="post">
+                        @csrf
+                        <input type="hidden" value="{{$dataRequest->id}}" name="id" id="id">
+                        <input type="hidden" value="{{$dataRequest->data_format}}" name="data_format" id="format">
 
 
-            <div class=" pl-0 pt-6 flex space-x-4">
-                <button type="submit"
-                        class="border bg-black text-white  p-2 pr-4 pl-4 shadow-md hover:bg-gray-700 ">
-                    Process
-                </button>
-            </div>
+                        <label class="pr-0 block font-semibold" for="tables">Select tables for export
+                            as {{$dataRequest->data_format}}</label>
+                        <div class="mt-2 pl-2 pr-0">
+                            @foreach($tableArray as $table)
+                                <div>
+                                    <input name="tables[]" type="checkbox"
+                                           value="{{$table}}"
+                                            @php
+                                                if(isset($tableSelected)) {
+                                                $selected = in_array($table, $tableSelected) ? ' checked ' : '';
+                                                echo $selected;
+                                                }
+                                            @endphp
+                                    />
+                                    <label class="pl-4 pr-0" for="tables">{{$table}}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                        @error('tables')
+                        <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
+                        @enderror
 
-        </form>
-    </div>
+
+                        <div class=" pl-0 pt-6 flex space-x-4">
+                            <button type="submit"
+                                    class="border bg-black text-white  p-2 pr-4 pl-4 shadow-md hover:bg-gray-700 ">
+                                Process
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
 </x-admin>

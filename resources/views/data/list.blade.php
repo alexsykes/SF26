@@ -14,7 +14,7 @@
         <div class="sm:columns-5">
             <div><a href="{{$url}}">{{$request->description}}</a></div>
             <div><a href="{{$url}}">{{$request->purpose}}</a></div>
-            <div><a href="{{$url}}">{{$request->format}}</a></div>
+            <div><a href="{{$url}}">{{$request->data_format}}</a></div>
             <div><a href="{{$url}}">{{$request->name}}</a></div>
             <div><a href="{{$url}}">{{$request->approved}}</a></div>
         </div>

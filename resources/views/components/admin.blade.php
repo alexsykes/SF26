@@ -80,6 +80,16 @@
             }
             return null; // Return null if the cookie is not found
         }
+
+        function toggle(divID, value) {
+            // console.log(value);
+            var element = document.getElementById(divID.id);
+            if (value === "Approved") {
+                element.style.display = "block"; // Show the element
+            } else {
+                element.style.display = "none"; // Hide the element
+            }
+        }
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>

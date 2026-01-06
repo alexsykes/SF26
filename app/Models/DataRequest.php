@@ -13,7 +13,7 @@ class DataRequest extends Model
         'comments',
         'approved',
         'accept',
-        'format',
+        'data_format',
     ];
 
     protected function casts(): array
