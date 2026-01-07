@@ -116,15 +116,15 @@
                         throw new Error('Network response was not ok');
                     }
                     const contentType = response.headers.get('content-type');
-                    console.log("ContentType: " + contentType);
+                    // console.log("ContentType: " + contentType);
                     if (contentType && contentType.includes('application/json')) {
-                        console.log(response.json()); // Decode as JSON
+                        // console.log(response.json()); // Decode as JSON
                     } else {
                         throw new Error('Response is not JSON');
                     }
                 })
                 .then((data) => {
-                    console.log("Response: " + data);
+                    // console.log("Response: " + data);
                     // window.location.href = redirect;
                 })
                 .catch(function (error) {
@@ -150,7 +150,7 @@
                 const siteURL = "<?php echo config('app.url'); ?>" + "/site/detail/" + markerData.id;
 
                 const windyURL = 'https://www.windy.com/?' + markerData.lat + "," + markerData.lng + ",14";
-                console.log(windyURL);
+                // console.log(windyURL);
                 const headerContent = markerData.site_name + ' ('
                     + markerData.begin + ' - '
                     + markerData.end

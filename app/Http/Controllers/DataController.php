@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\DataRequestClosed;
 use App\Events\DataRequestOpened;
 use App\Models\DataRequest;
 use App\Rules\ReCaptchaV3;
@@ -67,6 +68,7 @@ class DataController extends Controller
 
         if (isset($request->completed)) {
             $dataRequest->completed = true;
+            DataRequestClosed::dispatch($dataRequest);
         }
         $dataRequest->approved = $request->approved;
         $dataRequest->comments = $request->comments;
