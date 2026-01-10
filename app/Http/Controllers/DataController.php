@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\DataRequestClosed;
 use App\Events\DataRequestOpened;
 use App\Models\DataRequest;
+use App\Models\User;
 use App\Rules\ReCaptchaV3;
 use Ifsnop\Mysqldump as IMysqldump;
 use Illuminate\Http\Request;
@@ -113,22 +114,9 @@ class DataController extends Controller
     private function exportToCsv($requestID, mixed $tables, string $exportDir)
     {
         if ($tables) {
-            $tablesToExport = array();
+//            $tablesToExport = explode(',', $tables);
+
             foreach ($tables as $table) {
-                switch ($table) {
-                    case "Clubs":
-                        $name = "clubs";
-                        break;
-                    case "Wind Directions for Sites" :
-                        $name = "site_wind_directions";
-                        break;
-                    case "Sites" :
-                        $name = "sites";
-                        break;
-                }
-                array_push($tablesToExport, $name);
-            }
-            foreach ($tablesToExport as $table) {
                 $data = DB::table($table)->get();
 //                $csvFileName = $exportDir . $table . '.csv';
                 $csvFileName = $exportDir . "Request" . $requestID . "_" . $table . ".csv";
@@ -142,32 +130,16 @@ class DataController extends Controller
                 fclose($csvFile);
             }
         }
-
-
     }
+
 
     private function exportToJSON($requestID, mixed $tables, string $exportDir)
     {
-//        dd($tables);
         if ($tables) {
-            $tablesToExport = array();
-            foreach ($tables as $table) {
-                switch ($table) {
-                    case "Clubs":
-                        $name = "clubs";
-                        break;
-                    case "Wind Directions for Sites" :
-                        $name = "site_wind_directions";
-                        break;
-                    case "Sites" :
-                        $name = "sites";
-                        break;
-                }
-                array_push($tablesToExport, $name);
-            }
+//            $tablesToExport = explode(',', $tables);
 
             $dataToExport = array();
-            foreach ($tablesToExport as $table) {
+            foreach ($tables as $table) {
                 $JSONdata = DB::table($table)->get()
                     ->toJson();
                 array_push($dataToExport, $JSONdata);
@@ -178,6 +150,7 @@ class DataController extends Controller
             file_put_contents($exportDir . $filename, $jsonData);
         }
     }
+
 
     private function exportToSQL($requestID, mixed $tables, string $exportDir)
     {
@@ -195,7 +168,7 @@ class DataController extends Controller
                         $name = "sites";
                         break;
                 }
-                array_push($tablesToExport, $name);
+                array_push($tablesToExport, $table);
             }
 
             $dbname = config('database.connections.mysql.database');
@@ -213,5 +186,62 @@ class DataController extends Controller
                 info('mysqldump-php error: ' . $e->getMessage());
             }
         }
+    }
+
+    public function action(Request $request)
+    {
+//        dd($request->all());
+        $dataRequest = DataRequest::where('id', $request->id)->first();
+        $attributes = request()->validate([
+            'comments' => 'required',
+            'approved' => 'required',
+        ]);
+
+        if (isset($request->tables) && ($request->tables != '')) {
+            $tables = implode(',', $request->tables);
+        } else {
+            $tables = null;
+        }
+
+        $dataRequest->tables = $tables;
+        $dataRequest->comments = $attributes['comments'];
+        $dataRequest->approved = $attributes['approved'];
+        $dataRequest->update();
+
+        if ($request->submit != "process" || is_null($tables)) {
+            return redirect('/data/requests');
+        }
+
+//      Get user data
+        $user = User::where('id', $dataRequest->created_by)->first();
+        $username = $user->name;
+        $email = $user->email;
+
+        $data_format = $dataRequest->data_format;
+//        $tables = $dataRequest->tables;
+        $requestID = $dataRequest->id;
+        $exportDir = "downloads/";
+
+        $tableArray = explode(',', $tables);
+        switch ($data_format) {
+            case 'CSV':
+                info('CSV');
+                $this->exportToCsv($requestID, $tableArray, $exportDir);
+                break;
+            case 'JSON':
+                info('JSON');
+                $this->exportToJSON($requestID, $tableArray, $exportDir);
+                break;
+            case 'SQL':
+                $this->exportToSQL($requestID, $tableArray, $exportDir);
+                info('SQL');
+                break;
+            case 'Other':
+                info('Other');
+                break;
+            default:
+                break;
+        }
+        return redirect('/data/requests');
     }
 }

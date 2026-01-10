@@ -1,18 +1,20 @@
 <x-admin>
     @php
         $approvalOptions = array("Pending", "Approved", "Refused");
-        $tableArray = array("Sites","Wind Directions for Sites","Clubs");
+        $tableValueArray = array("Sites","Wind Directions for Sites","Clubs");
+        $tableNameArray = array("sites","site_wind_directions","clubs");
+        $selectedTables = explode(',',$dataRequest->tables);
+        
     @endphp
     <div>Data requested - {{$dataRequest->description}}</div>
     <div>Purpose - {{$dataRequest->purpose}}</div>
     <div>Format - {{$dataRequest->data_format}}</div>
-    <div>Requested by - {{$dataRequest->approved}}</div>
+    <div>Requested by - {{$dataRequest->name}}</div>
 
     <div class="mt-4" id="requestFormDiv">
-        <form action="/request/respond" method="post">
+        <form action="/request/action" method="post">
             @csrf
             <input type="hidden" value="{{$dataRequest->id}}" name="id" id="id">
-
             <div class="col-span-full">
                 <label for="comments" class="block  font-semibold ">Feedback</label>
                 <div class="mt-2">
@@ -46,66 +48,50 @@
                 @enderror
             </div>
 
-            <label for="completed" class="block font-semibold mt-4">Mark as Completed</label>
-            <input type="checkbox" id="completed" name="completed" value="1" class="mt-1 block"/>
+            @if($dataRequest->approved == 'Approved')
+                <div class="mt-4" id="exportFormDiv">
+                    @else
+                        <div class="hidden mt-4" id="exportFormDiv">
+                            @endif
+                            <label class="pr-0 block font-semibold" for="tables">Select tables for export
+                                as {{$dataRequest->data_format}}</label>
+                            <div class="mt-2 pl-2 pr-0">
+                                @for($i=0; $i<sizeof($tableValueArray); $i++)
+                                    <div>
+                                        <input name="tables[]" type="checkbox"
+                                               value="{{$tableNameArray[$i]}}"
+                                                @php
+                                                    if(isset($selectedTables)) {
+                                                    $selected = in_array($tableNameArray[$i], $selectedTables) ? ' checked ' : '';
 
-
-            <div class=" pl-0 pt-6 flex space-x-4">
-                <button class="border bg-white p-2 pr-4 shadow-md hover:bg-gray-200 "
-                        onclick="history.back()">Go
-                    Back
-                </button>
-                <button type="submit"
-                        class="border bg-black text-white  p-2 pr-4 pl-4 shadow-md hover:bg-gray-700 ">
-                    Submit
-                </button>
-            </div>
-
-        </form>
-    </div>
-
-    @if($dataRequest->approved == 'Approved')
-        <div class=" mt-4" id="exportFormDiv">
-            @else
-                <div class=" hidden mt-4" id="exportFormDiv">
-                    @endif
-                    <form action="/request/export" method="post">
-                        @csrf
-                        <input type="hidden" value="{{$dataRequest->id}}" name="id" id="id">
-                        <input type="hidden" value="{{$dataRequest->data_format}}" name="data_format" id="format">
-
-
-                        <label class="pr-0 block font-semibold" for="tables">Select tables for export
-                            as {{$dataRequest->data_format}}</label>
-                        <div class="mt-2 pl-2 pr-0">
-                            @foreach($tableArray as $table)
-                                <div>
-                                    <input name="tables[]" type="checkbox"
-                                           value="{{$table}}"
-                                            @php
-                                                if(isset($tableSelected)) {
-                                                $selected = in_array($table, $tableSelected) ? ' checked ' : '';
-                                                echo $selected;
-                                                }
-                                            @endphp
-                                    />
-                                    <label class="pl-4 pr-0" for="tables">{{$table}}
-                                    </label>
-                                </div>
-                            @endforeach
+                                                    echo $selected;
+                                                    }
+                                                @endphp
+                                        />
+                                        <label class="pl-4 pr-0" for="tables">{{$tableValueArray[$i]}}
+                                        </label>
+                                    </div>
+                                @endfor
+                            </div>
+                            @error('tables')
+                            <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
-                        @error('tables')
-                        <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
-                        @enderror
 
-
-                        <div class=" pl-0 pt-6 flex space-x-4">
-                            <button type="submit"
+                        <div name="buttons" class=" pl-0 pt-6 flex space-x-4">
+                            <button class="border bg-white p-2 pr-4 shadow-md hover:bg-gray-200 "
+                                    onclick="history.back()">Go
+                                Back
+                            </button>
+                            <button type="submit" value="update" name="submit"
+                                    class="border bg-gray-200 text-black  p-2 pr-4 pl-4 shadow-md hover:bg-gray-400 ">
+                                Update
+                            </button>
+                            <button type="submit" value="process" name="submit"
                                     class="border bg-black text-white  p-2 pr-4 pl-4 shadow-md hover:bg-gray-700 ">
                                 Process
                             </button>
                         </div>
-
-                    </form>
-                </div>
+        </form>
+    </div>
 </x-admin>
