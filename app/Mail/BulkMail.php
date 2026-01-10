@@ -40,7 +40,7 @@ class BulkMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mails.clubmail',
+            view: 'mails.clubbulkmail',
             with: ['content' => $this->clubmail->content,
                 'name' => $this->name],
         );

@@ -1,4 +1,4 @@
-<x-automail>
+<x-clubmail>
     <body class="">
     <p>Dear {{$name}}, <br>Around a year ago I emailed you as you had been a registered user of Simon Stevens
         now-retired Weather Permitting website. Simon had very generously passed on to me all of the source code and
@@ -19,4 +19,4 @@
     <p>Thank you for taking the time to read this email - I hope that SlopeFinder UK will be useful to you.</p>
     <p>Alex Sykes<br>SlopeFinder UK Developer</p>
     </body>
-</x-automail>
+</x-clubmail>

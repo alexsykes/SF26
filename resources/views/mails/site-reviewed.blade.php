@@ -1,4 +1,4 @@
-<x-automail>
+<x-clubmail>
     <body class="">
     <p>Dear {{$sender}}, <br>Your suggestion relating to {{$site}} has been reviewed.
     </p>
@@ -7,4 +7,4 @@
     <p>Thank you for contributing and helping to keep our data up-to-date. You can visit the updated site <a
                 href="{{config('app.url')}}/site/detail/{{$siteID}}">here</a></p>
     </body>
-</x-automail>
+</x-clubmail>

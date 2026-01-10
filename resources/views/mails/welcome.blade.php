@@ -1,4 +1,4 @@
-<x-automail>
+<x-clubmail>
     <body class="">
     <p>Dear {{$name}}, <br>Thank you for registering with SlopeFinder UK. I hope that you will find it both easy to use
         and useful.
@@ -15,4 +15,4 @@
     <p>Thanks, again, for registering. Please reply to this email if you have any questions or requests.<br>Alex -
         SlopeFinder Admin</p>
     </body>
-</x-automail>
+</x-clubmail>

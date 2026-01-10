@@ -85,17 +85,19 @@ class DataController extends Controller
         $exportDir = "downloads/";
         $tables = $request->tables;
 
+        $requestID = $request->id;
+
         switch ($data_format) {
             case 'CSV':
                 info('CSV');
-                $this->exportToCsv($tables, $exportDir);
+                $this->exportToCsv($requestID, $tables, $exportDir);
                 break;
             case 'JSON':
                 info('JSON');
-                $this->exportToJSON($tables, $exportDir);
+                $this->exportToJSON($requestID, $tables, $exportDir);
                 break;
             case 'SQL':
-                $this->exportToSQL($tables, $exportDir);
+                $this->exportToSQL($requestID, $tables, $exportDir);
                 info('SQL');
                 break;
             case 'Other':
@@ -108,7 +110,7 @@ class DataController extends Controller
         return redirect('/data/requests');
     }
 
-    private function exportToCsv(mixed $tables, string $exportDir)
+    private function exportToCsv($requestID, mixed $tables, string $exportDir)
     {
         if ($tables) {
             $tablesToExport = array();
@@ -128,7 +130,8 @@ class DataController extends Controller
             }
             foreach ($tablesToExport as $table) {
                 $data = DB::table($table)->get();
-                $csvFileName = $exportDir . $table . '.csv';
+//                $csvFileName = $exportDir . $table . '.csv';
+                $csvFileName = $exportDir . "Request" . $requestID . "_" . $table . ".csv";
                 $csvFile = fopen($csvFileName, 'w');
                 $headers = array_keys((array)$data[0]); // Get the column headers from the first row
                 fputcsv($csvFile, $headers);
@@ -143,7 +146,7 @@ class DataController extends Controller
 
     }
 
-    private function exportToJSON(mixed $tables, string $exportDir)
+    private function exportToJSON($requestID, mixed $tables, string $exportDir)
     {
 //        dd($tables);
         if ($tables) {
@@ -171,11 +174,12 @@ class DataController extends Controller
             }
 
             $jsonData = json_encode($dataToExport);
-            file_put_contents($exportDir . 'jsonData.json', $jsonData);
+            $filename = "Request" . $requestID . ".json";
+            file_put_contents($exportDir . $filename, $jsonData);
         }
     }
 
-    private function exportToSQL(mixed $tables, string $exportDir)
+    private function exportToSQL($requestID, mixed $tables, string $exportDir)
     {
         if ($tables) {
             $tablesToExport = array();
@@ -202,7 +206,8 @@ class DataController extends Controller
 //            dd($tablesToExport);
             try {
                 $dump = new IMysqldump\Mysqldump("mysql:host=$host;dbname=$dbname", $dbuser, $pass, dumpSettings: ['include-tables' => $tablesToExport,]);
-                $dump->start($exportDir . 'slopefinder_data.sql');
+                $filename = "Request" . $requestID . ".sql";
+                $dump->start($exportDir . $filename);
                 info("Success");
             } catch (\Exception $e) {
                 info('mysqldump-php error: ' . $e->getMessage());

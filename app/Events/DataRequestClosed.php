@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Mail\DataRequestReceived;
+use App\Mail\DataRequestProcessed;
 use App\Models\DataRequest;
 use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -12,24 +12,25 @@ use Illuminate\Mail\Mailables\Address;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-class DataRequestOpened
+class DataRequestClosed
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(DataRequest $dataRequest)
+    public function __construct(public DataRequest $dataRequest)
     {
-        //
-        info("DataRequestOpened");
+        info("DataRequestClosed");
+//        dd($dataRequest);
         $user = User::find($dataRequest->created_by);
         $username = $user->name;
         $email = $user->email;
         $to = new Address($email, $username);
         $bcc = new Address('info@slopefinder.uk', "SlopeFinder UK Admin");
 
-        Mail::to($to)->send(new DataRequestReceived($username));
+        Mail::to($to)->bcc($bcc)
+            ->send(new DataRequestProcessed($this->dataRequest, $username));
 
     }
 

@@ -4,21 +4,21 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class Clubmail extends Mailable
+class DataRequestReceived extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(public string $name)
     {
         //
+        info("DataRequestReceived");
     }
 
     /**
@@ -27,7 +27,7 @@ class Clubmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Clubmail',
+            subject: 'Data Request Received',
         );
     }
 
@@ -37,14 +37,15 @@ class Clubmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mails.clubbulkmail',
+            view: 'mails.data_request_received',
+            with: ['name' => $this->name]
         );
     }
 
     /**
      * Get the attachments for the message.
      *
-     * @return array<int, Attachment>
+     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
     public function attachments(): array
     {
