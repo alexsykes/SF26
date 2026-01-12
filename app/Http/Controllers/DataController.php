@@ -11,6 +11,7 @@ use Ifsnop\Mysqldump as IMysqldump;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class DataController extends Controller
 {
@@ -190,12 +191,13 @@ class DataController extends Controller
 
     public function action(Request $request)
     {
-//        dd($request->all());
         $dataRequest = DataRequest::where('id', $request->id)->first();
         $attributes = request()->validate([
             'comments' => 'required',
             'approved' => 'required',
         ]);
+
+        $creatorID = $dataRequest->created_by;
 
         if (isset($request->tables) && ($request->tables != '')) {
             $tables = implode(',', $request->tables);
@@ -220,7 +222,12 @@ class DataController extends Controller
         $data_format = $dataRequest->data_format;
 //        $tables = $dataRequest->tables;
         $requestID = $dataRequest->id;
-        $exportDir = "downloads/";
+        $exportDir = "downloads/$creatorID/";
+
+        if (!is_dir($exportDir)) {
+            mkdir($exportDir);
+        }
+
 
         $tableArray = explode(',', $tables);
         switch ($data_format) {
@@ -242,6 +249,7 @@ class DataController extends Controller
             default:
                 break;
         }
+
         return redirect('/data/requests');
     }
 }
