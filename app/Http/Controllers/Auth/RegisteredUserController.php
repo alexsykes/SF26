@@ -19,16 +19,6 @@ use Illuminate\View\View;
 class RegisteredUserController extends Controller
 {
     /**
-     * Display the registration view.
-     */
-    public function create(): View
-    {
-        $disclaimerUrl = Storage::url('Disclaimer.pdf');
-//        dd($disclaimerUrl);
-        return view('auth.register', compact('disclaimerUrl'));
-    }
-
-    /**
      * Handle an incoming registration request.
      *
      * @throws ValidationException
@@ -38,7 +28,7 @@ class RegisteredUserController extends Controller
 
         $request->validate([
                 'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+                'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
                 'password' => ['required', 'confirmed', Password::defaults()],
                 'agree' => ['required', 'accepted'],
                 'g-recaptcha-response' => ['required', new ReCaptchaV3('registerUser')],
@@ -54,5 +44,15 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return redirect('/');
+    }
+
+    /**
+     * Display the registration view.
+     */
+    public function create(): View
+    {
+        $disclaimerUrl = Storage::url('Disclaimer.pdf');
+//        dd($disclaimerUrl);
+        return view('auth.register', compact('disclaimerUrl'));
     }
 }

@@ -11,11 +11,8 @@ use Illuminate\Validation\Rules\Password;
 
 class RegisteredUserController extends Controller
 {
-    public function create(){
-        return view('auth.register');
-    }
-
-    public function store() {
+    public function store()
+    {
         $attrs = request()->validate([
             'name' => ['required'],
             'username' => ['required'],
@@ -33,6 +30,11 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
         return redirect('/');
+    }
+
+    public function create()
+    {
+        return view('auth.register');
     }
 
     public function showProfile()
@@ -59,8 +61,7 @@ class RegisteredUserController extends Controller
                 ->orderBy('isSuperUser', 'desc')
                 ->orderBy('isEditor', 'desc')
                 ->orderBy('name', 'asc')
-                ->get()
-            ;
+                ->get();
 
             return view('auth.profile', ['sites' => $sites, 'clubs' => $clubs, 'sitesWithNotes' => $sitesWithNotes, 'users' => $users, 'favourites' => $favourites]);
 
@@ -70,14 +71,16 @@ class RegisteredUserController extends Controller
         }
     }
 
-    public function editUserProfile($id) {
+    public function editUserProfile($id)
+    {
         $user = User::find($id);
 //        dd($user);
 
         return view('auth.userProfile', ['user' => $user]);
     }
 
-    public function updateUserProfile() {
+    public function updateUserProfile()
+    {
         $adminUser = Auth::user()->id;
         $attrs = request()->validate([
             'userID' => ['required'],
@@ -88,11 +91,11 @@ class RegisteredUserController extends Controller
 
         $isEditor = 0;
         $isSuperUser = 0;
-        if(isset(request()->isEditor)) {
+        if (isset(request()->isEditor)) {
             $isEditor = 1;
         }
 
-        if(isset(request()->isSuperUser)) {
+        if (isset(request()->isSuperUser)) {
             $isSuperUser = 1;
         }
 
@@ -111,6 +114,6 @@ class RegisteredUserController extends Controller
 //        dd($user);
 
 
-       return redirect('auth/profile');
+        return redirect('auth/profile');
     }
 }

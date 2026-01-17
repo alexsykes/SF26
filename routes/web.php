@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BlogPostController;
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\ClubmailController;
 use App\Http\Controllers\DataController;
@@ -97,3 +98,15 @@ Route::get('/request/process/{id}', [DataController::class, 'process'])->middlew
 Route::post('/request/respond', [DataController::class, 'respond'])->middleware(IsSuperUser::class)->name('respond');
 Route::post('/request/export', [DataController::class, 'export'])->middleware(IsSuperUser::class)->name('export');
 Route::post('request/action', [DataController::class, 'action'])->middleware(IsSuperUser::class)->name('action');
+
+// BlogPostController
+Route::get('/blog', [BlogPostController::class, 'index'])->middleware('auth', 'verified')->name('blog');
+Route::get('/blog/form', [BlogPostController::class, 'form'])->name('blog.form');
+Route::post('/blog/store', [BlogPostController::class, 'store'])->name('blog.store');
+Route::get('/blog/edit/{id}', [BlogPostController::class, 'edit'])->name('blog.edit');
+Route::patch('/blog/update', [BlogPostController::class, 'update'])->name('blog.update');
+
+//Route::post('/blog/store', function () {
+//    return 'Hello World';
+//});
+

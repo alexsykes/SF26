@@ -14,6 +14,7 @@ class ReCaptchaV3 implements ValidationRule
         private ?string $action = null,
         private ?float  $minScore = null)
     {
+        $this->minScore = 0.7;
     }
 
     /**

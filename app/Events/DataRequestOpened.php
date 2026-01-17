@@ -30,7 +30,6 @@ class DataRequestOpened
         $bcc = new Address('info@slopefinder.uk', "SlopeFinder UK Admin");
 
         Mail::to($to)->send(new DataRequestReceived($username));
-
     }
 
     /**

@@ -11,7 +11,6 @@ use Ifsnop\Mysqldump as IMysqldump;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class DataController extends Controller
 {
@@ -133,7 +132,6 @@ class DataController extends Controller
         }
     }
 
-
     private function exportToJSON($requestID, mixed $tables, string $exportDir)
     {
         if ($tables) {
@@ -151,7 +149,6 @@ class DataController extends Controller
             file_put_contents($exportDir . $filename, $jsonData);
         }
     }
-
 
     private function exportToSQL($requestID, mixed $tables, string $exportDir)
     {
@@ -210,6 +207,12 @@ class DataController extends Controller
         $dataRequest->approved = $attributes['approved'];
         $dataRequest->update();
 
+        if ($dataRequest->approved == "Refused") {
+            $dataRequest->completed = true;
+            $dataRequest->update();
+            DataRequestClosed::dispatch($dataRequest);
+        }
+
         if ($request->submit != "process" || is_null($tables)) {
             return redirect('/data/requests');
         }
@@ -227,7 +230,6 @@ class DataController extends Controller
         if (!is_dir($exportDir)) {
             mkdir($exportDir);
         }
-
 
         $tableArray = explode(',', $tables);
         switch ($data_format) {
@@ -250,6 +252,10 @@ class DataController extends Controller
                 break;
         }
 
+//        $dataRequest->completed = true;
+        $dataRequest->update();
+
+        DataRequestClosed::dispatch($dataRequest);
         return redirect('/data/requests');
     }
 }

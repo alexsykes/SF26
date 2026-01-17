@@ -21,7 +21,7 @@ class DataRequestClosed
      */
     public function __construct(public DataRequest $dataRequest)
     {
-        info("DataRequestClosed");
+        info("Event: DataRequestClosed");
 //        dd($dataRequest);
         $user = User::find($dataRequest->created_by);
         $username = $user->name;
