@@ -30,10 +30,22 @@
         @endforeach
         </tbody>
     </table>
+
+    <div class="mt-4">
+        <form action="/blog/form" method="post">
+            @csrf
+            <button class="border text-white rounded-lg bg-black p-2 pr-4 pl-4 shadow-md hover:bg-gray-600 "
+                    type="submit"
+                    name="action"
+                    value="new">New
+            </button>
+        </form>
+    </div>
     <script>
         function togglePublished() {
             console.log("i Clicked");
         }
     </script>
+
 
 </x-admin>

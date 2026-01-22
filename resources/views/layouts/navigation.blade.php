@@ -24,6 +24,13 @@
                     </div>
                 @endif
 
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+
+                    <x-nav-link-violet :href="route('blog')" :active="request()->routeIs('blog')">
+                        Blog
+                    </x-nav-link-violet>
+                </div>
+
                 @if(Auth::user()->isSuperUser)
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <x-nav-link-violet :href="route('sites')" :active="request()->routeIs('sites')">
@@ -108,6 +115,11 @@
                     {{ __('Submit a new Site') }}
                 </x-responsive-nav-link>
             @endif
+
+            <x-responsive-nav-link :href="route('blog')" :active="request()->routeIs('blog')">
+                {{ __('Blog') }}
+            </x-responsive-nav-link>
+
 
             @if(Auth::user()->isSuperUser)
                 <x-responsive-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.index')">

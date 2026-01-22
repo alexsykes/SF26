@@ -31,7 +31,7 @@
                         <label class="font-semibold text-slate-400" for="titleInput">Title</label></div>
                     <div class="mt-2">
                         <input class=" " name="title" type="text" id="title"
-                               value="Title"
+                               value="{{old('title')}}"
                                required/>
                     </div>
                     @error('title')
@@ -44,7 +44,7 @@
                         <label class="font-semibold text-slate-400" for="subTitleInput">Subtitle</label>
                         <div class="mt-2">
                             <input class="" name="subtitle" type="text" id="subtitle"
-                                   value="Subtitle"
+                                   value="{{old('subtitle')}}"
                                    required/>
                         </div>
                     </div>
@@ -74,9 +74,7 @@
                     <label class="font-semibold text-slate-400" for="content">Email body</label>
                     <div class="mt-2 ">
                         <textarea class=" w-full" name="content" type="text" id="content">
-                            @php
-                                echo "A few carefully chose words"
-                            @endphp
+                                {{old('content')}}
                         </textarea>
                     </div>
                 </div>
@@ -86,12 +84,9 @@
 
             </div>
             <div id="buttons" class="mt-4 w-full space-x-4">
-                <button class="border rounded-lg bg-white p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "
-                        type="submit"
-                        name="action"
-                        value="cancel">
-                    Cancel
-                </button>
+                <a class="border rounded-lg bg-white p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "
+                   onclick="history.back()">Cancel
+                </a>
                 <button class="border text-white rounded-lg bg-black p-2 pr-4 pl-4 shadow-md hover:bg-gray-600 "
                         type="submit"
                         name="action"

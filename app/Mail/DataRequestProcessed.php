@@ -37,7 +37,7 @@ class DataRequestProcessed extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mails.data_request_processed',
+            view: 'mails.new',
             with: [
                 'request' => $this->request,
                 'name' => $this->name,

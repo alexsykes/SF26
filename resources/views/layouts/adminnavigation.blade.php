@@ -36,6 +36,12 @@
                         </div>
 
                         <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <x-nav-link :href="route('blogs')" :active="request()->routeIs('blogs')">
+                                Blogs
+                            </x-nav-link>
+                        </div>
+
+                        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                             <x-nav-link :href="route('sitemap')" :active="request()->routeIs('sitemap')">
                                 {{ __('Public site') }}
                             </x-nav-link>

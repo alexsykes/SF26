@@ -16,6 +16,7 @@ class BlogPost extends Model
         'category',
         'published',
         'created_by',
+        'updated_by',
     ];
 
     protected function casts(): array

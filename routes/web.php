@@ -100,12 +100,14 @@ Route::post('/request/export', [DataController::class, 'export'])->middleware(Is
 Route::post('request/action', [DataController::class, 'action'])->middleware(IsSuperUser::class)->name('action');
 
 // BlogPostController
-Route::get('/blog', [BlogPostController::class, 'index'])->middleware('auth', 'verified')->name('blog');
-Route::get('/blog/form', [BlogPostController::class, 'form'])->name('blog.form');
-Route::post('/blog/store', [BlogPostController::class, 'store'])->name('blog.store');
-Route::get('/blog/edit/{id}', [BlogPostController::class, 'edit'])->name('blog.edit');
-Route::patch('/blog/update', [BlogPostController::class, 'update'])->name('blog.update');
+Route::get('/blogs', [BlogPostController::class, 'index'])->middleware('auth', 'verified')->name('blogs');
+//Route::get('/blog/form', [BlogPostController::class, 'form'])->middleware('auth', 'verified')->name('blog.form');
+Route::post('/blog/form', [BlogPostController::class, 'form'])->middleware('auth', 'verified')->name('blog.form');
+Route::post('/blog/store', [BlogPostController::class, 'store'])->middleware('auth', 'verified')->name('blog.store');
+Route::get('/blog/edit/{id}', [BlogPostController::class, 'edit'])->middleware('auth', 'verified')->name('blog.edit');
+Route::patch('/blog/update', [BlogPostController::class, 'update'])->middleware('auth', 'verified')->name('blog.update');
 
+Route::get('/blog', [BlogPostController::class, 'display'])->middleware('auth', 'verified')->name('blog');
 //Route::post('/blog/store', function () {
 //    return 'Hello World';
 //});

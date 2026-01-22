@@ -41,7 +41,6 @@ class BlogPostController extends Controller
     {
         $blogPost = BlogPost::findOrFail($request->id);
         $attributes = $request->validated();
-        $attributes['updated_by'] = auth()->id();
         $blogPost->update($attributes);
 
         return redirect('/blog');
@@ -57,5 +56,14 @@ class BlogPostController extends Controller
     public function form()
     {
         return view('blogs.form');
+    }
+
+    public function display()
+    {
+        $blogPosts = BlogPost::where('published', true)
+            ->orderBy('created_at')
+            ->get();
+
+        return view('blogs.blog', compact('blogPosts'));
     }
 }
