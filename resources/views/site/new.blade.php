@@ -119,14 +119,6 @@
                 document.cookie = "curLat=" + curLat + ";" + expires + ";path=/";
                 document.cookie = "curLng=" + curLng + ";" + expires + ";path=/";
             });
-
-            // map.addListener('click', function (e) {
-            //     if (activeMarker == false) {
-            //         console.log(e);
-            //         addMarker(e.latLng);
-            //         activeMarker = true;
-            //     }
-            // });
             addYourLocationButton(map);
         }
 
@@ -177,8 +169,8 @@
             Drag the Marker to the launch point
         </h2>
     </x-slot>
-    <div id="mapContainer" class="h-64 sm:h-[32rem]">
-        <div class="map100" id="map">Map should appear here</div>
+    <div id="map" class="map100 bg-slate-500 w-full aspect-video">
+        <div class="map100" id="map"></div>
     </div>
     <form method="POST" action="/site/add">
         @csrf
@@ -370,4 +362,5 @@
 
         </div>
     </form>
+
 </x-app-layout>

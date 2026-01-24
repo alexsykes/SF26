@@ -108,7 +108,7 @@ Route::get('/blog/edit/{id}', [BlogPostController::class, 'edit'])->middleware('
 Route::patch('/blog/update', [BlogPostController::class, 'update'])->middleware('auth', 'verified')->name('blog.update');
 
 Route::get('/blog', [BlogPostController::class, 'display'])->middleware('auth', 'verified')->name('blog');
-//Route::post('/blog/store', function () {
-//    return 'Hello World';
-//});
+
+
+Route::post('/comment/submit', [\App\Http\Controllers\BlogCommentController::class, 'store'])->middleware('auth', 'verified')->name('comment.store');
 

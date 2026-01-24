@@ -313,7 +313,7 @@ class SiteController extends Controller
 
     public function addSite()
     {
-        return view('site.add');
+        return view('site.new');
     }
 
     public function storeSite(Request $request)

@@ -1,6 +1,7 @@
 <x-admin>
     @php
         $category = ucfirst($blogPost->category);
+        $published = $blogPost->published == true ? "checked" : "";
 //        dump($category);
     @endphp
     <script>
@@ -32,7 +33,7 @@
             <input type="hidden" name="id" id="id" value="{{$blogPost->id}}">
             <div class="w-full  grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
                 @csrf
-                <div id="titleContainer" class="col-span-2">
+                <div id="titleContainer" class="col-span-3">
                     <div>
                         <label class="font-semibold text-slate-400" for="titleInput">Title</label></div>
                     <div class="mt-2">
@@ -45,7 +46,7 @@
                     @enderror
                 </div>
 
-                <div id="subTitleContainer" class="col-span-4">
+                <div id="subTitleContainer" class="col-span-3">
                     <div>
                         <label class="font-semibold text-slate-400" for="subTitleInput">Subtitle</label>
                         <div class="mt-2">
@@ -59,12 +60,12 @@
                     @enderror
                 </div>
 
-                <div id="categoryDiv" class="col-span-full">
+                <div id="categoryDiv" class="col-span-3">
                     <label class="font-semibold text-slate-400" for="category">Category</label>
                     <div class="mt-2">
                         @foreach($categoryArray as $option)
                             <input name="category" type="radio" id="category" value="{{$option}}"
-                                   {{ ($category == $option) ? ' checked' : '' }}
+                                   {{ ($category == $option) ? ' checked' : null }}
                                    required>
                             <label class="pl-1 pr-4" for="category">{{$option}}</label>
                         @endforeach
@@ -72,6 +73,13 @@
                     @error('category')
                     <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
                     @enderror
+                </div>
+
+                <div id="publishDiv" class="col-span-3">
+                    <label class="font-semibold text-slate-400" for="category">Published</label>
+                    <div class="mt-2">
+                        <input name="published" id="published" type="checkbox" {{$published}}>
+                    </div>
                 </div>
 
 
@@ -90,12 +98,9 @@
 
             </div>
             <div id="buttons" class="mt-4 w-full space-x-4">
-                <button class="border rounded-lg bg-white p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "
-                        type="submit"
-                        name="action"
-                        value="cancel">
-                    Cancel
-                </button>
+                <a class="border rounded-lg bg-white p-2 pr-4 pl-4 shadow-md hover:bg-gray-200 "
+                   onclick="history.back()">Cancel
+                </a>
                 <button class="border text-white rounded-lg bg-black p-2 pr-4 pl-4 shadow-md hover:bg-gray-600 "
                         type="submit"
                         name="action"

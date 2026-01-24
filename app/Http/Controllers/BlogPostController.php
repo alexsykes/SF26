@@ -9,7 +9,8 @@ class BlogPostController extends Controller
 {
     public function index()
     {
-        $posts = BlogPost::all();
+        $posts = BlogPost::orderBy('created_at', 'desc')->paginate(20);
+
         return view('blogs.index', compact('posts'));
     }
 
@@ -19,10 +20,11 @@ class BlogPostController extends Controller
         $attributes = $request->validated();
 
         $attributes['created_by'] = auth()->id();
-        $attributes['published'] = true;
+        $attributes['published'] = $request->published == "on" ? true : false;
+
 
         $blogPost = BlogPost::create($attributes);
-        return redirect('/blog');
+        return redirect('/blogs');
     }
 
     public function show(BlogPost $blogPost)
@@ -41,9 +43,10 @@ class BlogPostController extends Controller
     {
         $blogPost = BlogPost::findOrFail($request->id);
         $attributes = $request->validated();
+        $attributes['published'] = $request->published == "on" ? true : false;
         $blogPost->update($attributes);
 
-        return redirect('/blog');
+        return redirect('/blogs');
     }
 
     public function destroy(BlogPost $blogPost)
@@ -61,7 +64,7 @@ class BlogPostController extends Controller
     public function display()
     {
         $blogPosts = BlogPost::where('published', true)
-            ->orderBy('created_at')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return view('blogs.blog', compact('blogPosts'));

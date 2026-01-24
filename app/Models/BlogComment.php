@@ -3,27 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class BlogPost extends Model
+class BlogComment extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
-        'title',
-        'subtitle',
-        'content',
-        'category',
-        'published',
         'created_by',
-        'updated_by',
+        'post_id',
+        'comment',
+        'published',
+        'note',
     ];
-
-    public function comments(): HasMany
-    {
-        return $this->hasMany(BlogComment::class, 'post_id');
-    }
 
     protected function casts(): array
     {

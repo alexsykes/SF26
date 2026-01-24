@@ -26,7 +26,7 @@
             <input type="hidden" name="published" id="published" value="true">
             <div class="w-full  grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
                 @csrf
-                <div id="titleContainer" class="col-span-2">
+                <div id="titleContainer" class="col-span-3">
                     <div>
                         <label class="font-semibold text-slate-400" for="titleInput">Title</label></div>
                     <div class="mt-2">
@@ -39,7 +39,7 @@
                     @enderror
                 </div>
 
-                <div id="subTitleContainer" class="col-span-4">
+                <div id="subTitleContainer" class="col-span-3">
                     <div>
                         <label class="font-semibold text-slate-400" for="subTitleInput">Subtitle</label>
                         <div class="mt-2">
@@ -53,7 +53,7 @@
                     @enderror
                 </div>
 
-                <div id="categoryDiv" class="col-span-full">
+                <div id="categoryDiv" class="col-span-3">
                     <label class="font-semibold text-slate-400" for="category">Category</label>
                     <div class="mt-2">
                         @foreach($categoryArray as $option)
@@ -66,6 +66,13 @@
                     @error('category')
                     <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
                     @enderror
+                </div>
+
+                <div id="publishDiv" class="col-span-3">
+                    <label class="font-semibold text-slate-400" for="category">Published</label>
+                    <div class="mt-2">
+                        <input name="published" id="published" type="checkbox" checked>
+                    </div>
                 </div>
 
 
