@@ -66,7 +66,9 @@ class BlogPostController extends Controller
         $blogPosts = BlogPost::where('published', true)
             ->orderBy('created_at', 'desc')
             ->get();
-
+//        $blogPosts = BlogPost::find(3)
+//            ->get();
+//        dd($blogPosts);
         return view('blogs.blog', compact('blogPosts'));
     }
 }

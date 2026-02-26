@@ -22,7 +22,7 @@ class BlogPost extends Model
 
     public function comments(): HasMany
     {
-        return $this->hasMany(BlogComment::class, 'post_id');
+        return $this->hasMany(BlogComment::class, 'blog_post_id');
     }
 
     protected function casts(): array
