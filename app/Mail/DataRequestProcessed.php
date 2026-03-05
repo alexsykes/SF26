@@ -16,10 +16,7 @@ class DataRequestProcessed extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public DataRequest $request, public string $name)
-    {
-
-    }
+    public function __construct(public DataRequest $request, public string $name) {}
 
     /**
      * Get the message envelope.
@@ -52,20 +49,21 @@ class DataRequestProcessed extends Mailable
      */
     public function attachments(): array
     {
-        info("Attachments");
+        info('Attachments');
         $dataRequest = $this->request;
         $creatorID = $dataRequest->created_by;
         $exportDir = "downloads/$creatorID/";
 
         $filenames = scandir($exportDir);
 
-        $attachments = array();
+        $attachments = [];
 
         foreach ($filenames as $filename) {
-            if ($filename != "." && $filename != "..") {
-                $attachments[] = $exportDir . $filename;
+            if ($filename != '.' && $filename != '..') {
+                $attachments[] = $exportDir.$filename;
             }
         }
+
         return $attachments;
     }
 }

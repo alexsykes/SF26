@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('clubs', function (Blueprint $table) {
@@ -17,6 +18,7 @@ return new class extends Migration {
             $table->string('Website')->nullable();
             $table->text('Description');
             $table->text('Notes')->nullable();
+            $table->enum('Status', ['Active', 'Inactive', 'Hidden'])->default('Hidden');
             $table->timestamps();
         });
     }

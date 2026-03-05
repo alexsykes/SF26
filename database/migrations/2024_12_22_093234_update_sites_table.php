@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('site_owner')->nullable();
         });
 
-
         // Add extra columns
         Schema::table('users', function (Blueprint $table) {
             $table->string('username');

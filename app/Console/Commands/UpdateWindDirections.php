@@ -25,6 +25,6 @@ class UpdateWindDirections extends Command
      */
     public function handle()
     {
-        info("app:update-wind-directions started.");
+        info('app:update-wind-directions started.');
     }
 }

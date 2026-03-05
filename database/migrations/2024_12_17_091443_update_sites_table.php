@@ -14,7 +14,7 @@ return new class extends Migration
         //
         Schema::table('sites', function (Blueprint $table) {
             $table->string('paid')->nullable();
-         });
+        });
 
     }
 

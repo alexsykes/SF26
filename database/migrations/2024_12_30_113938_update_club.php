@@ -12,14 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         //
-//        Schema::table('clubs', function (Blueprint $table) {
-//            $table->string('contact_name')->nullable();
-//            $table->string('contact_email')->nullable();
-//        });
+        //        Schema::table('clubs', function (Blueprint $table) {
+        //            $table->string('contact_name')->nullable();
+        //            $table->string('contact_email')->nullable();
+        //        });
 
-
-//        Schema::table('users', function (Blueprint $table) {
-//        });
+        //        Schema::table('users', function (Blueprint $table) {
+        //        });
 
     }
 

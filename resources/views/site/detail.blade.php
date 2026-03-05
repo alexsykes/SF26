@@ -98,9 +98,9 @@
                     <h1 class="mb-1 font-medium">Locality</h1>
                     <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site->near}}</p>
                     <h1 class="mb-1 font-medium">Description</h1>
-                    <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site->site_description}}</p>
+                    <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">@php echo $site->site_description; @endphp</p>
                     <h1 class="mb-1 font-medium">Access</h1>
-                    <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{$site->site_access}}</p>
+                    <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">@php echo $site->site_access; @endphp</p>
 
                     <p><strong>Coordinates:</strong> Lat: {{$site->lat }}° Lng: {{$site->lng }}°</p>
                     <p><strong>W3W: </strong><a href="https://what3words.com/{{$site->w3w }}">{{$site->w3w}}</a></p>

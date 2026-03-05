@@ -25,6 +25,6 @@ class GetGForecasts extends Command
      */
     public function handle()
     {
-        info("app:get-g-forecasts started.");
+        info('app:get-g-forecasts started.');
     }
 }

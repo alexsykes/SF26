@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BlogCommentController;
 use App\Http\Controllers\BlogPostController;
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\ClubmailController;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/credits', [HomeController::class, 'credits'])->name('clubscredits');
-Route:: get('/locate', [ForecastController::class, 'locate'])->middleware(['auth', 'verified'])->name('locate');
+Route::get('/locate', [ForecastController::class, 'locate'])->middleware(['auth', 'verified'])->name('locate');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -37,7 +38,7 @@ Route::put('/sites/direction', [SiteController::class, 'direction'])->middleware
 Route::get('/site/add', [SiteController::class, 'addSite'])->middleware([IsEditor::class])->name('site.add');
 Route::post('/site/add', [SiteController::class, 'storeSite'])->middleware([IsEditor::class])->name('site.store');
 Route::get('/site/publish/{id}', [SiteController::class, 'publishSite'])->middleware([IsEditor::class])->name('site.publish');
-//Route::patch('/site/publish', [SiteController::class, 'publishSite'])->middleware([IsEditor::class])->name('site.publish');
+// Route::patch('/site/publish', [SiteController::class, 'publishSite'])->middleware([IsEditor::class])->name('site.publish');
 
 Route::patch('/site/update', [SiteController::class, 'update'])->middleware(['auth', 'verified'])->name('site.update');
 
@@ -55,7 +56,6 @@ Route::get('/addFavourite/{id}', [UserController::class, 'addFavourite'])->middl
 Route::get('/removeFavourite/{id}', [UserController::class, 'removeFavourite'])->middleware(['auth', 'verified'])->name('removeFavourite');
 Route::post('/site_user_update', [SiteController::class, 'site_user_update'])->middleware(['auth', 'verified'])->name('site.user.update');
 
-
 // AdminController
 Route::get('/admin', [AdminController::class, 'index'])->middleware(IsSuperUser::class)->name('admin.index');
 Route::get('/suggestions', [AdminController::class, 'suggestions'])->middleware([IsSuperUser::class])->name('suggestions');
@@ -66,10 +66,9 @@ Route::post('/contact', [AdminController::class, 'sendMail'])->name('sendMail');
 
 // LocateController
 Route::get('/nearest', [SiteController::class, 'nearest'])->middleware(['auth', 'verified'])->name('nearest');
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
 Route::put('/nearest', [SiteController::class, 'nearest'])->middleware(['auth', 'verified'])->name('nearest_with_direction');
-require __DIR__ . '/auth.php';
-
+require __DIR__.'/auth.php';
 
 // ProfileController
 Route::patch('/profile/unsubscribe', [ProfileController::class, 'unsubscribe'])->middleware('auth', 'verified')->name('profile.unsubscribe');
@@ -101,14 +100,15 @@ Route::post('request/action', [DataController::class, 'action'])->middleware(IsS
 
 // BlogPostController
 Route::get('/blogs', [BlogPostController::class, 'index'])->middleware('auth', 'verified')->name('blogs');
-//Route::get('/blog/form', [BlogPostController::class, 'form'])->middleware('auth', 'verified')->name('blog.form');
+// Route::get('/blog/form', [BlogPostController::class, 'form'])->middleware('auth', 'verified')->name('blog.form');
 Route::post('/blog/form', [BlogPostController::class, 'form'])->middleware('auth', 'verified')->name('blog.form');
 Route::post('/blog/store', [BlogPostController::class, 'store'])->middleware('auth', 'verified')->name('blog.store');
 Route::get('/blog/edit/{id}', [BlogPostController::class, 'edit'])->middleware('auth', 'verified')->name('blog.edit');
 Route::patch('/blog/update', [BlogPostController::class, 'update'])->middleware('auth', 'verified')->name('blog.update');
 
 Route::get('/blog', [BlogPostController::class, 'display'])->middleware('auth', 'verified')->name('blog');
-//Route::post('/blog/store', function () {
-//    return 'Hello World';
-//});
 
+Route::post('/comment/submit', [BlogCommentController::class, 'store'])->middleware('auth', 'verified');
+// Route::post('/blog/store', function () {
+//    return 'Hello World';
+// });

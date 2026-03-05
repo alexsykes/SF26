@@ -22,6 +22,6 @@ class ForecastController extends Controller
                 abort(404);
             }
         }
-//        dd($forecast);
+        //        dd($forecast);
     }
 }

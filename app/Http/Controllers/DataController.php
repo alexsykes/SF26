@@ -14,10 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class DataController extends Controller
 {
-    public function index()
-    {
-
-    }
+    public function index() {}
 
     public function dataRequest()
     {
@@ -39,6 +36,7 @@ class DataController extends Controller
         $attributes['approved'] = 'Pending';
         $dataRequest = DataRequest::create($attributes);
         DataRequestOpened::dispatch($dataRequest);
+
         return view('data.acknowledge');
     }
 
@@ -81,9 +79,9 @@ class DataController extends Controller
 
     public function export(Request $request)
     {
-//        dd($request->all());
+        //        dd($request->all());
         $data_format = $request->data_format;
-        $exportDir = "downloads/";
+        $exportDir = 'downloads/';
         $tables = $request->tables;
 
         $requestID = $request->id;
@@ -108,24 +106,25 @@ class DataController extends Controller
                 break;
 
         }
+
         return redirect('/data/requests');
     }
 
     private function exportToCsv($requestID, mixed $tables, string $exportDir)
     {
         if ($tables) {
-//            $tablesToExport = explode(',', $tables);
+            //            $tablesToExport = explode(',', $tables);
 
             foreach ($tables as $table) {
                 $data = DB::table($table)->get();
-//                $csvFileName = $exportDir . $table . '.csv';
-                $csvFileName = $exportDir . "Request" . $requestID . "_" . $table . ".csv";
+                //                $csvFileName = $exportDir . $table . '.csv';
+                $csvFileName = $exportDir.'Request'.$requestID.'_'.$table.'.csv';
                 $csvFile = fopen($csvFileName, 'w');
-                $headers = array_keys((array)$data[0]); // Get the column headers from the first row
+                $headers = array_keys((array) $data[0]); // Get the column headers from the first row
                 fputcsv($csvFile, $headers);
 
                 foreach ($data as $row) {
-                    fputcsv($csvFile, (array)$row);
+                    fputcsv($csvFile, (array) $row);
                 }
                 fclose($csvFile);
             }
@@ -135,9 +134,9 @@ class DataController extends Controller
     private function exportToJSON($requestID, mixed $tables, string $exportDir)
     {
         if ($tables) {
-//            $tablesToExport = explode(',', $tables);
+            //            $tablesToExport = explode(',', $tables);
 
-            $dataToExport = array();
+            $dataToExport = [];
             foreach ($tables as $table) {
                 $JSONdata = DB::table($table)->get()
                     ->toJson();
@@ -145,25 +144,25 @@ class DataController extends Controller
             }
 
             $jsonData = json_encode($dataToExport);
-            $filename = "Request" . $requestID . ".json";
-            file_put_contents($exportDir . $filename, $jsonData);
+            $filename = 'Request'.$requestID.'.json';
+            file_put_contents($exportDir.$filename, $jsonData);
         }
     }
 
     private function exportToSQL($requestID, mixed $tables, string $exportDir)
     {
         if ($tables) {
-            $tablesToExport = array();
+            $tablesToExport = [];
             foreach ($tables as $table) {
                 switch ($table) {
-                    case "Clubs":
-                        $name = "clubs";
+                    case 'Clubs':
+                        $name = 'clubs';
                         break;
-                    case "Wind Directions for Sites" :
-                        $name = "site_wind_directions";
+                    case 'Wind Directions for Sites':
+                        $name = 'site_wind_directions';
                         break;
-                    case "Sites" :
-                        $name = "sites";
+                    case 'Sites':
+                        $name = 'sites';
                         break;
                 }
                 array_push($tablesToExport, $table);
@@ -174,14 +173,14 @@ class DataController extends Controller
             $host = config('database.connections.mysql.host');
             $dbuser = config('database.connections.mysql.username');
 
-//            dd($tablesToExport);
+            //            dd($tablesToExport);
             try {
-                $dump = new IMysqldump\Mysqldump("mysql:host=$host;dbname=$dbname", $dbuser, $pass, dumpSettings: ['include-tables' => $tablesToExport,]);
-                $filename = "Request" . $requestID . ".sql";
-                $dump->start($exportDir . $filename);
-                info("Success");
+                $dump = new IMysqldump\Mysqldump("mysql:host=$host;dbname=$dbname", $dbuser, $pass, dumpSettings: ['include-tables' => $tablesToExport]);
+                $filename = 'Request'.$requestID.'.sql';
+                $dump->start($exportDir.$filename);
+                info('Success');
             } catch (\Exception $e) {
-                info('mysqldump-php error: ' . $e->getMessage());
+                info('mysqldump-php error: '.$e->getMessage());
             }
         }
     }
@@ -207,27 +206,27 @@ class DataController extends Controller
         $dataRequest->approved = $attributes['approved'];
         $dataRequest->update();
 
-        if ($dataRequest->approved == "Refused") {
+        if ($dataRequest->approved == 'Refused') {
             $dataRequest->completed = true;
             $dataRequest->update();
             DataRequestClosed::dispatch($dataRequest);
         }
 
-        if ($request->submit != "process" || is_null($tables)) {
+        if ($request->submit != 'process' || is_null($tables)) {
             return redirect('/data/requests');
         }
 
-//      Get user data
+        //      Get user data
         $user = User::where('id', $dataRequest->created_by)->first();
         $username = $user->name;
         $email = $user->email;
 
         $data_format = $dataRequest->data_format;
-//        $tables = $dataRequest->tables;
+        //        $tables = $dataRequest->tables;
         $requestID = $dataRequest->id;
         $exportDir = "downloads/$creatorID/";
 
-        if (!is_dir($exportDir)) {
+        if (! is_dir($exportDir)) {
             mkdir($exportDir);
         }
 
@@ -252,10 +251,11 @@ class DataController extends Controller
                 break;
         }
 
-//        $dataRequest->completed = true;
+        //        $dataRequest->completed = true;
         $dataRequest->update();
 
         DataRequestClosed::dispatch($dataRequest);
+
         return redirect('/data/requests');
     }
 }

@@ -1,13 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\User;
 
-use Illuminate\Support\Facades\Password;
-use Illuminate\Http\Request;
+use App\Models\User;
 use Hash;
-use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 class PasswordResetController extends Controller
 {
@@ -23,7 +22,7 @@ class PasswordResetController extends Controller
             request()->only('email', 'password', 'password_confirmation', 'token'),
             function (User $user, string $password) {
                 $user->forceFill([
-                    'password' => Hash::make($password)
+                    'password' => Hash::make($password),
                 ])->setRememberToken(Str::random(60));
 
                 $user->save();
@@ -32,7 +31,7 @@ class PasswordResetController extends Controller
         );
 
         $status == Password::PASSWORD_RESET;
-        if($status) {
+        if ($status) {
             return redirect('login')->with('status', __($status));
 
         } else {

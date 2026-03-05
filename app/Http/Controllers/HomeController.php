@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Auth;
 class HomeController extends Controller
 {
     public function index()
-        // New stuff
+    // New stuff
     {
-        if (!isset($_COOKIE['curLat']) || !isset($_COOKIE['curLat'])) {
+        if (! isset($_COOKIE['curLat']) || ! isset($_COOKIE['curLat'])) {
             $curLat = 53.59476;
             $curLng = -2.56092;
 
@@ -36,7 +36,7 @@ class HomeController extends Controller
             $curLng = $_COOKIE['curLng'];
         }
 
-        if (!isset($_COOKIE['curZoom'])) {
+        if (! isset($_COOKIE['curZoom'])) {
             setcookie(
                 'curZoom',
                 7,
@@ -47,9 +47,7 @@ class HomeController extends Controller
             );
         }
 
-
         // New stuff ends
-
 
         if (Auth::check()) {
             $user = Auth::user();
@@ -62,6 +60,7 @@ class HomeController extends Controller
             }
         } else {
             $randomSite = Site::inRandomOrder()->first();
+
             return view('welcome', compact('randomSite'));
         }
     }
@@ -70,5 +69,4 @@ class HomeController extends Controller
     {
         return view('credits');
     }
-
 }

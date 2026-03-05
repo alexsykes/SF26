@@ -1,10 +1,41 @@
 <x-admin>
+    @php
+        $statusOptions = array('Active', 'Inactive', 'Hidden');
+        $status = $club->status;
+    @endphp
     <form action="/club/update" method="post">
         @csrf
         @method('PATCH')
         <input type="hidden" name="id" id="id" value="{{$club->id}}">
 
         <div id="container" class="mt-2 grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-4">
+            <div class="sm:col-span-4">
+                <label for="Status" class="block  font-semibold ">Status</label>
+                <div class="flex space-x-4">
+                    <div id="activeStatus" class="items-start"><input type="radio" id="Active" name="status"
+                                                                      @php
+                                                                          if($status === 'Active') { echo ' checked '; }
+                                                                      @endphp
+
+                                                                      value="Active">
+                        <label for="test">Active</label></div>
+                    <div id="inactiveStatus" class="items-start"><input type="radio" id="Inactive" name="status"
+                                                                        @php
+                                                                            if($status === 'Inactive') { echo ' checked '; }
+                                                                        @endphp
+                                                                        value="Inactive">
+                        <label for="test">Inactive</label></div>
+                    <div id="hiddenStatus" class="items-start"><input type="radio" id="Hidden" name="status"
+                                                                      @php
+                                                                          if($status === 'Hidden') { echo ' checked '; }
+                                                                      @endphp
+                                                                      value="Hidden">
+                        <label for="test">Hidden</label></div>
+                </div>
+                @error('status')
+                <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
+                @enderror
+            </div>
 
             <div class="sm:col-span-4">
                 <label for="Name" class="block  font-semibold ">Name</label>
@@ -79,6 +110,24 @@
 
 
             <div class="sm:col-span-4">
+                <label for="Website" class="block  font-semibold ">Website</label>
+                <div class="mt-2">
+                    <div>
+                        <input type="text"
+                               class="w-full md:w-1/2"
+                               name="Website"
+                               value="{{ $club->Website }}"
+                               id="Website"
+                               placeholder="">
+                    </div>
+                </div>
+                @error('Website')
+                <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+
+            <div class="sm:col-span-4">
                 <label for="Area" class="block  font-semibold ">Area</label>
                 <div class="mt-2">
                     <div>
@@ -124,24 +173,6 @@
                     </div>
                 </div>
                 @error('Notes')
-                <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-
-            <div class="sm:col-span-4">
-                <label for="Website" class="block  font-semibold ">Website</label>
-                <div class="mt-2">
-                    <div>
-                        <input type="text"
-                               class="w-full md:w-1/2"
-                               name="Website"
-                               value="{{ $club->Website }}"
-                               id="Website"
-                               placeholder="">
-                    </div>
-                </div>
-                @error('Website')
                 <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
                 @enderror
             </div>

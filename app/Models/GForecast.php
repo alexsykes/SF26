@@ -11,7 +11,9 @@ class GForecast extends Model
         'data',
         'version',
     ];
+
     protected $primaryKey = 'site_id';
+
     public function site()
     {
         return $this->belongsTo('App\Models\Site');

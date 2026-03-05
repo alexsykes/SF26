@@ -41,7 +41,7 @@ class SitePublished extends Mailable
         return new Content(
             view: 'mails.site-published',
             with: ['site' => $this->site,
-                'name' => $this->address->name,],
+                'name' => $this->address->name, ],
         );
     }
 

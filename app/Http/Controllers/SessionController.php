@@ -2,43 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class SessionController extends Controller
 {
-    public function login(){
+    public function login()
+    {
         return view('auth.login');
     }
 
-    public function create() {
+    public function create()
+    {
         return view('auth.login');
     }
 
-    public function store() {
-//        validate
+    public function store()
+    {
+        //        validate
         $attrs = request()->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        if( !  Auth::attempt($attrs)) {
+        if (! Auth::attempt($attrs)) {
             throw ValidationException::withMessages([
-                'password' => ['The email address and/or password you entered is incorrect.']
+                'password' => ['The email address and/or password you entered is incorrect.'],
 
             ]);
         }
 
-      request()->session()->regenerate();
+        request()->session()->regenerate();
 
         return redirect('/');
     }
 
-    public function destroy() {
+    public function destroy()
+    {
 
         Auth::logout();
+
         return redirect('/');
     }
 }

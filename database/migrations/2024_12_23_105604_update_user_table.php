@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-              // Add extra columns
-                Schema::table('users', function (Blueprint $table) {
-                    $table->integer('hasAgreed');
-                });
+        // Add extra columns
+        Schema::table('users', function (Blueprint $table) {
+            $table->integer('hasAgreed');
+        });
     }
 
     /**

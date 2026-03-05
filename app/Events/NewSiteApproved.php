@@ -38,9 +38,9 @@ class NewSiteApproved
         $lat = $site->lat;
         $lng = $site->lng;
 
-        $url = "https://api.openweathermap.org/data/3.0/onecall?lat=$lat&lon=$lng&exclude=minutely,alerts&units=imperial&appid=" . $open_weather;
+        $url = "https://api.openweathermap.org/data/3.0/onecall?lat=$lat&lon=$lng&exclude=minutely,alerts&units=imperial&appid=".$open_weather;
 
-        if (!$site->forecast) {
+        if (! $site->forecast) {
             $rawData = (file_get_contents($url, 'r'));
             Forecast::create([
                 'site_id' => $site->id,

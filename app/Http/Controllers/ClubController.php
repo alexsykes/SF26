@@ -10,12 +10,14 @@ class ClubController extends Controller
     public function index()
     {
         $clubs = Club::all();
+
         return view('clubs.index', compact('clubs'));
     }
 
     public function edit($id)
     {
         $club = Club::find($id);
+
         return view('clubs.edit', compact('club'));
     }
 
@@ -33,7 +35,8 @@ class ClubController extends Controller
         ]);
 
         Club::create($data);
-        return redirect('clubs')->with('success', 'Club Added Successfully');
+
+        return redirect('/sitemap')->with('success', 'Club Added Successfully');
     }
 
     public function show(Club $club)
@@ -50,6 +53,7 @@ class ClubController extends Controller
     {
         $club = Club::find($request->id);
 
+
         $data = $request->validate([
             'Name' => ['required'],
             'Area' => ['required'],
@@ -58,10 +62,13 @@ class ClubController extends Controller
             'Phone' => ['nullable'],
             'Website' => ['nullable'],
             'Description' => ['required'],
+            'status' => ['required'],
             'Notes' => ['nullable'],
         ]);
 
+        info("Status: $request->status");
         $club->update($data);
+
         return redirect('clubs')->with('success', 'Club Updated Successfully');
     }
 
@@ -71,6 +78,4 @@ class ClubController extends Controller
 
         return response()->json();
     }
-
-
 }

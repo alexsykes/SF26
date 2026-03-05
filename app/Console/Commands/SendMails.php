@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Mail\SiteAnnouncement;
-use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Support\Facades\DB;
@@ -40,12 +39,12 @@ class SendMails extends Command
             $email = $user->email;
             $name = $user->name;
 
-//        $email = "alexs1301@yahoo.com";
-//        $name = "Alex Yahoo";
+            //        $email = "alexs1301@yahoo.com";
+            //        $name = "Alex Yahoo";
             $address = new Address($email, $name);
-//            Mail::to($address)->send(new SiteAnnouncement($name));
+            //            Mail::to($address)->send(new SiteAnnouncement($name));
             info("app:send-mails sent to $name at  $email");
-//        }
+            //        }
         }
     }
 }

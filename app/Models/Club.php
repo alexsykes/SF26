@@ -15,5 +15,6 @@ class Club extends Model
         'Website',
         'Description',
         'Notes',
+        'status',
     ];
 }

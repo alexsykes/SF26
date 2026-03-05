@@ -10,8 +10,8 @@ class Note extends Model
     //
     protected $fillable = ['item_id', 'user_id', 'note', 'type', 'completed', 'accepted'];
 
-    public function site(): BelongsTo {
-        return $this->belongsTo(Site::class, 'item_id', 'id' );
+    public function site(): BelongsTo
+    {
+        return $this->belongsTo(Site::class, 'item_id', 'id');
     }
-
 }

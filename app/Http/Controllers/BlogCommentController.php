@@ -24,7 +24,9 @@ class BlogCommentController extends Controller
         $data['post_id'] = $request->post_id;
         $data['published'] = true;
 
-        return BlogComment::create($data);
+        $blogComment = BlogComment::create($data);
+
+        return redirect('/blog/');
     }
 
     public function show(BlogComment $blogComment)

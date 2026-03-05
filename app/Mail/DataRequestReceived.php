@@ -18,7 +18,7 @@ class DataRequestReceived extends Mailable
     public function __construct(public string $name)
     {
         //
-        info("DataRequestReceived");
+        info('DataRequestReceived');
     }
 
     /**

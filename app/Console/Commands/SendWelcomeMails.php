@@ -37,7 +37,7 @@ class SendWelcomeMails extends Command
             $user->isEditor = 1;
             $user->updated_at = now();
             $user->save();
-            info($name . " welcomed and approved");
+            info($name.' welcomed and approved');
             Mail::to(new Address($email, $name))->send(new WelcomeMail($name, $email));
         }
     }

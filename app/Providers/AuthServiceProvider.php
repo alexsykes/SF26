@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Policies\NotePolicy;
 use Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -24,7 +23,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         //
         Gate::define('manage_users', function (User $user) {
-            return $user->role == "admin";
+            return $user->role == 'admin';
         });
 
         /* define a admin user role */
@@ -34,7 +33,7 @@ class AuthServiceProvider extends ServiceProvider
 
         /* define a manager user role */
         Gate::define('isEditorOrAbove', function ($user) {
-            return ($user->isEditor || $user->isSuperUser);
+            return $user->isEditor || $user->isSuperUser;
 
         });
 

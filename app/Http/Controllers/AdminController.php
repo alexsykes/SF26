@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
 {
-
     public function index()
     {
         return view('admin.index');
@@ -30,13 +29,14 @@ class AdminController extends Controller
             ->select('suggestions.*', 'sites.site_name', 'users.name', 'users.email')
             ->orderBy('created_at')
             ->get();
-//dd($suggestions);
+
+        // dd($suggestions);
         return view('admin.suggestion_list', compact('suggestions'));
     }
 
     public function editSite(Request $request)
     {
-//        $user = auth()->user();
+        //        $user = auth()->user();
         $siteID = $request->id;
         $site = DB::table('sites')
             ->where('id', $siteID)
@@ -58,7 +58,7 @@ class AdminController extends Controller
             ->where('published', false)
             ->get();
 
-//        dd($sites);
+        //        dd($sites);
         return view('admin.sites_approve', compact('sites'));
     }
 
@@ -71,11 +71,11 @@ class AdminController extends Controller
     {
 
         $request->validate([
-                'sender' => ['required', 'string', 'max:255'],
-                'message' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
-                'g-recaptcha-response' => ['required', new ReCaptchaV3('sendMail')],
-            ]
+            'sender' => ['required', 'string', 'max:255'],
+            'message' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
+            'g-recaptcha-response' => ['required', new ReCaptchaV3('sendMail')],
+        ]
         );
 
         $from = $request->sender;
@@ -88,13 +88,13 @@ class AdminController extends Controller
             info("Mail copied to $from at $at");
         }
 
-        $adminAddress = "slopefinder@alexsykes.net";
-        $bcc = "info@slopefinder.uk";
+        $adminAddress = 'slopefinder@alexsykes.net';
+        $bcc = 'info@slopefinder.uk';
         Mail::to($adminAddress)
             ->send(new WebContact($from, $at, $content));
         info("Contact mail from $from at $at");
 
-//        dd($request->all());
+        //        dd($request->all());
         if (Auth::check()) {
             return view('admin.sent');
         } else {

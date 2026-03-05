@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Note;
-use Illuminate\Support\Facades\Auth;
 
 class NoteController extends Controller
 {
-
-
-    public function store(){
+    public function store()
+    {
 
         $created_by = Auth()->id();
         request()->validate([
@@ -23,15 +20,15 @@ class NoteController extends Controller
             'type' => request('type'),
             'user_id' => $created_by,
         ]);
+
         return redirect('/');
     }
 
-    public function list() {
+    public function list()
+    {
         $processed = Note::where('completed', true)->get()->sortByDesc('created_at');
         $pending = Note::where('completed', false)->get()->sortBy('created_at');
 
         return view('notes.list', ['pending' => $pending, 'processed' => $processed]);
     }
-
-
 }

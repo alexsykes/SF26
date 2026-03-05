@@ -22,12 +22,12 @@ class DataRequestOpened
     public function __construct(DataRequest $dataRequest)
     {
         //
-        info("DataRequestOpened");
+        info('DataRequestOpened');
         $user = User::find($dataRequest->created_by);
         $username = $user->name;
         $email = $user->email;
         $to = new Address($email, $username);
-        $bcc = new Address('info@slopefinder.uk', "SlopeFinder UK Admin");
+        $bcc = new Address('info@slopefinder.uk', 'SlopeFinder UK Admin');
 
         Mail::to($to)->send(new DataRequestReceived($username));
     }

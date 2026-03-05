@@ -20,6 +20,6 @@ class Suggestion extends Model
         'suggestion',
         'completed',
         'completed_at',
-        'action'
+        'action',
     ];
 }

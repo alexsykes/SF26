@@ -28,14 +28,15 @@ function sendmail(int $suggestionID, string $site_name)
     $email = $user->email;
     $name = $user->name;
 
-    info("Send mail to $name: " . $email);
+    info("Send mail to $name: ".$email);
 
     Mail::to($email)->send(new SuggestionReviewCompleted($name, $suggestion, $site_name, $siteID));
 }
 
 function convertToDirection(int $input)
 {
-    $directions = array("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW");
+    $directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+
     return $directions[$input];
 }
 
@@ -73,9 +74,9 @@ class SiteController extends Controller
         return view('site.detail', compact('site', 'user'));
     }
 
-    function sitesAZ()
+    public function sitesAZ()
     {
-        if (!isset($_COOKIE['curLat']) || !isset($_COOKIE['curLat'])) {
+        if (! isset($_COOKIE['curLat']) || ! isset($_COOKIE['curLat'])) {
             $curLat = 53.59476;
             $curLng = -2.56092;
 
@@ -101,7 +102,7 @@ class SiteController extends Controller
             $curLng = $_COOKIE['curLng'];
         }
 
-        if (!isset($_COOKIE['curZoom'])) {
+        if (! isset($_COOKIE['curZoom'])) {
             setcookie(
                 'curZoom',
                 7,
@@ -127,13 +128,12 @@ class SiteController extends Controller
         $siteIDArray = explode(',', $siteIDs['favourites']);
 
         $favourites = auth()->user()->favourites;
-//        dd($favourites);
+        //        dd($favourites);
 
         $sitesForMap = Site::all()
             ->where('published', true)
             ->select('id', 'site_name', 'lat', 'lng', 'begin', 'end')
             ->toArray();
-
 
         return view('site.list', compact('sites', 'favourites', 'sitesForMap'));
     }
@@ -145,7 +145,7 @@ class SiteController extends Controller
         $userFavourites = $user->favourites;
         $numSites = 3;
 
-        if (!isset($_COOKIE['curLat']) || !isset($_COOKIE['curLng'])) {
+        if (! isset($_COOKIE['curLat']) || ! isset($_COOKIE['curLng'])) {
             $curLat = 53.59476;
             $curLng = -2.56092;
         } else {
@@ -166,7 +166,7 @@ class SiteController extends Controller
             ->get()
             ->toArray();
 
-//        dd($localSites);
+        //        dd($localSites);
         return view('dashboard', compact('localSites', 'curLat', 'curLng', 'allSites', 'userFavourites'));
     }
 
@@ -174,6 +174,7 @@ class SiteController extends Controller
     {
         $site = Site::where('id', $id)->first();
         $user = auth()->user();
+
         return view('site.update_form', compact('site', 'user'));
     }
 
@@ -195,16 +196,17 @@ class SiteController extends Controller
             ->bcc('ale@alexsykes.net')
             ->send(new SuggestionAcknowledgement($user->name, $site_name, $attributes['suggestion']));
 
-        $message = "Thank you for your submission. We will review comments and get back to you as soon as possible.";
+        $message = 'Thank you for your submission. We will review comments and get back to you as soon as possible.';
+
         return view('site.acknowledge', ['message' => $message]);
     }
 
     public function nearest(Request $request)
     {
-//      Setup data arrays and get location if set
-        $directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+        //      Setup data arrays and get location if set
+        $directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
 
-        if (!isset($_COOKIE['curLat']) || !isset($_COOKIE['curLng'])) {
+        if (! isset($_COOKIE['curLat']) || ! isset($_COOKIE['curLng'])) {
             $curLat = -2.547855;
             $curLng = 54.00366;
         } else {
@@ -212,7 +214,7 @@ class SiteController extends Controller
             $curLng = $_COOKIE['curLng'];
         }
 
-//      Get data for nearest site
+        //      Get data for nearest site
         //      Find the nearest site
         $nearestSite = DB::table('sites')
             ->selectRaw("sites.id, forecasts.data,  ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km")
@@ -230,13 +232,13 @@ class SiteController extends Controller
         $wind_speed = $current->wind_speed;
         $wind_deg = $current->wind_deg;
 
-        $windIndex = (int)(($wind_deg * 16 / 360) + 0.5);
+        $windIndex = (int) (($wind_deg * 16 / 360) + 0.5);
 
         if ($windIndex == 16) {
             $windIndex = 0;
         }
 
-//      Check whether request includes wind direction
+        //      Check whether request includes wind direction
         if ($request->windDirection) {
             $direction = $request->windDirection;
             $windIndex = array_search($direction, $directions);
@@ -253,40 +255,40 @@ class SiteController extends Controller
             ->select('direction')
             ->get()
             ->toArray();
-        $site_winds = array();
+        $site_winds = [];
 
         foreach ($site_directions as $site_direction) {
             $site_winds[] = $site_direction->direction;
         }
 
-        setcookie("nearestSiteID", $siteID, time() + (86400 * 30), "/");
+        setcookie('nearestSiteID', $siteID, time() + (86400 * 30), '/');
 
-        $sitesForDirection = DB::table("site_wind_directions")
+        $sitesForDirection = DB::table('site_wind_directions')
             ->selectRaw("sites.*, forecasts.*, ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km")
-            ->leftJoin("sites", "site_wind_directions.siteID", "=", "sites.id")
+            ->leftJoin('sites', 'site_wind_directions.siteID', '=', 'sites.id')
             ->leftJoin('forecasts', 'sites.id', '=', 'forecasts.site_id')
-            ->where("direction", $windIndex)
+            ->where('direction', $windIndex)
             ->where('sites.published', true)
             ->orderBy('distance_km', 'asc')
 //            ->limit(10)
             ->get()
             ->toArray();
 
-//        dd($sitesForDirection[0]);
+        //        dd($sitesForDirection[0]);
 
-//        $sitesForDirection = Site::all()
-//            ->where('published', true)
-//            ->select('id', 'site_name', 'lat', 'lng', 'begin', 'end')
-//            ->toArray();
+        //        $sitesForDirection = Site::all()
+        //            ->where('published', true)
+        //            ->select('id', 'site_name', 'lat', 'lng', 'begin', 'end')
+        //            ->toArray();
 
         return view('site.nearest', ['current' => $current, 'directions' => $directions, 'sites' => $sitesForDirection, 'nearestSite' => $site, 'site_winds' => $site_winds, 'windIndex' => $windIndex, 'wind_dir' => $wind_dir]);
     }
 
     public function direction(Request $request)
     {
-        $directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
+        $directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N'];
 
-        if (!isset($_COOKIE['lat']) || !isset($_COOKIE['lng'])) {
+        if (! isset($_COOKIE['lat']) || ! isset($_COOKIE['lng'])) {
             $curLat = -2.547855;
             $curLng = 54.00366;
         } else {
@@ -297,11 +299,11 @@ class SiteController extends Controller
         $dir = $request->input('windDirection');
         $windIndex = array_search($dir, $directions);
 
-        $sitesForDirection = DB::table("site_wind_directions")
+        $sitesForDirection = DB::table('site_wind_directions')
             ->selectRaw("sites.*, forecasts.*, ST_Distance_Sphere(point(lat, lng), point($curLat,$curLng))/1000 as distance_km")
-            ->leftJoin("sites", "site_wind_directions.siteID", "=", "sites.id")
+            ->leftJoin('sites', 'site_wind_directions.siteID', '=', 'sites.id')
             ->leftJoin('forecasts', 'sites.id', '=', 'forecasts.site_id')
-            ->where("direction", $windIndex)
+            ->where('direction', $windIndex)
             ->where('sites.published', true)
             ->orderBy('distance_km', 'asc')
             ->limit(10)
@@ -333,7 +335,6 @@ class SiteController extends Controller
 
         $w3w = $request->input('w3w');
 
-
         $begin = convertToDirection($request->input('from'));
         $end = convertToDirection($request->input('to'));
 
@@ -358,28 +359,28 @@ class SiteController extends Controller
             ->send(new AcknowledgeSiteSubmission($user->name, $site));
 
         $this->updateWindDirections($site);
-        $message = "Thank you for your submission. We will review the site and get back to you as soon as possible. Please note that the site will not appear in our listings until it is approved.";
+        $message = 'Thank you for your submission. We will review the site and get back to you as soon as possible. Please note that the site will not appear in our listings until it is approved.';
+
         return view('site.acknowledge', ['message' => $message]);
 
     }
 
     private function updateWindDirections(?Site $site)
     {
-//        Delete existing
+        //        Delete existing
         $siteID = $site->id;
         $deleted = DB::table('site_wind_directions')->where('siteID', $siteID)->delete();
 
-//        Set up direction array
-        $directions = array("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW");
+        //        Set up direction array
+        $directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
 
         $numDirs = count($directions);
 
-//        Get end points
+        //        Get end points
         $beginIndex = $site->from;
         $endIndex = $site->to;
 
-
-//        dd($siteID, $beginIndex, $endIndex);
+        //        dd($siteID, $beginIndex, $endIndex);
 
         if ($endIndex > $beginIndex) {
             for ($i = $beginIndex; $i <= $endIndex; $i++) {
@@ -426,6 +427,7 @@ class SiteController extends Controller
         $name = $user->name;
 
         Event::dispatch(new NewSiteApproved($site, $address));
+
         return redirect('/sites');
     }
 
@@ -442,7 +444,7 @@ class SiteController extends Controller
             'lngInput' => 'required',
         ]);
 
-        $directions = array("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW");
+        $directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
 
         $siteID = $request->input('siteID');
         $site = Site::where('id', $siteID)->first();
@@ -452,7 +454,7 @@ class SiteController extends Controller
         $site->end = $directions[$endIndex];
         $site->begin = $directions[$beginIndex];
 
-        $site->site_wind_directions = $directions[$beginIndex] . " to " . $directions[$endIndex];
+        $site->site_wind_directions = $directions[$beginIndex].' to '.$directions[$endIndex];
 
         $site->site_name = $request->input('site_name');
         $site->site_description = $request->input('site_description');
@@ -464,11 +466,11 @@ class SiteController extends Controller
         $site->lng = $request->input('lngInput');
 
         $site->update();
-//         Site updated - now update site_wind_directions
+        //         Site updated - now update site_wind_directions
 
         $this->updateWindDirections($site);
 
-//      Process Suggestions
+        //      Process Suggestions
         if ($request->input('completed') !== null) {
             $completed = $request->input('completed');
             foreach ($completed as $completedID) {
@@ -479,15 +481,16 @@ class SiteController extends Controller
                 sendmail($completedID, $site->site_name);
             }
         }
+
         return redirect('/sites');
     }
 
-    function sitemap_old(Request $request)
+    public function sitemap_old(Request $request)
     {
         $direction = $request->windDirection;
-        $directions = ["Show All", "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+        $directions = ['Show All', 'N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
 
-//        dump($direction);
+        //        dump($direction);
         $windIndex = array_search($direction, $directions);
         if ($windIndex > 0) {
             $windIndex = $windIndex - 1;
@@ -495,21 +498,19 @@ class SiteController extends Controller
                 $windIndex = 0;
             }
 
-//            dump($windIndex, $direction);
+            //            dump($windIndex, $direction);
             $siteIDsForWind = SiteWindDirections::where('direction', $windIndex)
                 ->pluck('siteID')
                 ->toArray();
 
-//            dump($siteIDsForWind);
+            //            dump($siteIDsForWind);
             $siteIDs = implode(',', $siteIDsForWind);
-            $siteIDarray = explode(",", $siteIDs);
-
+            $siteIDarray = explode(',', $siteIDs);
 
             $sites = Site::where('published', true)
                 ->whereIn('id', $siteIDarray)
                 ->select('id', 'site_name', 'lat', 'lng', 'site_description', 'begin', 'end')
                 ->get();
-
 
         } else {
             $sites = Site::where('published', true)
@@ -520,12 +521,12 @@ class SiteController extends Controller
         return view('site.map', ['sites' => $sites, 'directions' => $directions, 'wind_dir' => $direction]);
     }
 
-    function sitemap(Request $request)
+    public function sitemap(Request $request)
     {
-        $directions = ["Show All", "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+        $directions = ['Show All', 'N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
         $direction = 'Show All';
 
-//      Check for PUT
+        //      Check for PUT
         if ($request->_method == 'PUT') {
             $direction = $request->windDirection;
             $windIndex = array_search($direction, $directions);
@@ -540,7 +541,7 @@ class SiteController extends Controller
                     ->toArray();
 
                 $siteIDs = implode(',', $siteIDsForWind);
-                $siteIDarray = explode(",", $siteIDs);
+                $siteIDarray = explode(',', $siteIDs);
 
                 $sites = Site::where('published', true)
                     ->whereIn('id', $siteIDarray)
@@ -552,12 +553,11 @@ class SiteController extends Controller
                     ->get();
             }
         } else {
-//            If not PUT then GET
+            //            If not PUT then GET
             $sites = Site::where('published', true)
                 ->select('id', 'site_name', 'lat', 'lng', 'site_description', 'begin', 'end')
                 ->get();
         }
-
 
         $msg = null;
 
@@ -571,11 +571,11 @@ class SiteController extends Controller
         $ipAddress = $request->ip();
         $direction = $request->direction;
 
-        Log::info("$userName request from $ipAddress for: " . $direction);
+        Log::info("$userName request from $ipAddress for: ".$direction);
 
-        $directions = ["Show All", "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+        $directions = ['Show All', 'N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
 
-//      Check for PUT
+        //      Check for PUT
         $windIndex = array_search($direction, $directions);
         if ($windIndex > 0) {
             $windIndex = $windIndex - 1;
@@ -588,7 +588,7 @@ class SiteController extends Controller
                 ->toArray();
 
             $siteIDs = implode(',', $siteIDsForWind);
-            $siteIDarray = explode(",", $siteIDs);
+            $siteIDarray = explode(',', $siteIDs);
 
             $sites = Site::where('published', true)
                 ->whereIn('id', $siteIDarray)
@@ -599,6 +599,7 @@ class SiteController extends Controller
                 ->select('id', 'site_name', 'lat', 'lng', 'site_description', 'begin', 'end')
                 ->get();
         }
+
         return $sites;
     }
 }

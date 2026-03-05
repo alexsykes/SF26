@@ -28,7 +28,7 @@ class NewMember extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'New Member - ' . $this->user->name
+            subject: 'New Member - '.$this->user->name
         );
     }
 

@@ -16,14 +16,14 @@ class BlogPostController extends Controller
 
     public function store(BlogPostRequest $request)
     {
-        info("Processing");
+        info('Processing');
         $attributes = $request->validated();
 
         $attributes['created_by'] = auth()->id();
-        $attributes['published'] = $request->published == "on" ? true : false;
-
+        $attributes['published'] = $request->published == 'on' ? true : false;
 
         $blogPost = BlogPost::create($attributes);
+
         return redirect('/blogs');
     }
 
@@ -36,6 +36,7 @@ class BlogPostController extends Controller
     {
         $id = request('id');
         $blogPost = BlogPost::findOrFail($id);
+
         return view('blogs.edit', compact('blogPost'));
     }
 
@@ -43,7 +44,7 @@ class BlogPostController extends Controller
     {
         $blogPost = BlogPost::findOrFail($request->id);
         $attributes = $request->validated();
-        $attributes['published'] = $request->published == "on" ? true : false;
+        $attributes['published'] = $request->published == 'on' ? true : false;
         $blogPost->update($attributes);
 
         return redirect('/blogs');
@@ -64,11 +65,13 @@ class BlogPostController extends Controller
     public function display()
     {
         $blogPosts = BlogPost::where('published', true)
+            ->where('id', 4)
             ->orderBy('created_at', 'desc')
             ->get();
-//        $blogPosts = BlogPost::find(3)
-//            ->get();
-//        dd($blogPosts);
+
+        //        $blogPosts = BlogPost::find(3)
+        //            ->get();
+        //        dd($blogPosts);
         return view('blogs.blog', compact('blogPosts'));
     }
 }

@@ -123,7 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-
     'OPEN_WEATHER' => env('OPEN_WEATHER'),
     'TINY_CLOUD_API' => env('TINY_CLOUD_API'),
 

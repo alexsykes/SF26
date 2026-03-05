@@ -12,7 +12,7 @@ class Site extends Model
 
     protected $fillable = ['site_name', 'near', 'site_description', 'site_access', 'site_wind_directions', 'lat', 'lng', 'created_by', 'hits', 'updated_by', 'published', 'w3w', 'updated_at', 'dir', 'from', 'to', 'begin', 'end'];
 
-    static function getPublishedSiteList()
+    public static function getPublishedSiteList()
     {
         $sites = Site::where('published', 1)
             ->orderBy('site_name')
@@ -22,7 +22,7 @@ class Site extends Model
         return $sites;
     }
 
-    static function getFiveSites()
+    public static function getFiveSites()
     {
         $sites = Site::where('published', 1)
             ->orderBy('site_name')
@@ -32,13 +32,12 @@ class Site extends Model
         return $sites;
     }
 
-
-//    public function notes(): hasMany {
-//        return $this->hasMany(Note::class, 'item_id', 'id');
-//    }
-//    public function user(): BelongsTo {
-//        return $this->belongsTo(User::class)->orderBy('id','asc');
-//    }
+    //    public function notes(): hasMany {
+    //        return $this->hasMany(Note::class, 'item_id', 'id');
+    //    }
+    //    public function user(): BelongsTo {
+    //        return $this->belongsTo(User::class)->orderBy('id','asc');
+    //    }
 
     public function forecast(): HasOne
     {

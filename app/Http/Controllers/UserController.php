@@ -15,7 +15,6 @@ class UserController extends Controller
    ORDER BY email SEPARATOR '\n') userdata from users group by initial";
         $users = DB::select($query);
 
-
         return view('users.index', compact('users'));
     }
 
@@ -23,7 +22,7 @@ class UserController extends Controller
     {
         $user_id = auth()->user()->id;
 
-//        Get siteIDs from logged in user
+        //        Get siteIDs from logged in user
         $siteIDs = User::where('id', $user_id)
             ->select('favourites')
             ->first();
@@ -38,7 +37,7 @@ class UserController extends Controller
             ->get()
             ->toArray();
 
-//        dd($favourites[0]->data);
+        //        dd($favourites[0]->data);
         return view('user.favourites', compact('favourites'));
     }
 
@@ -54,6 +53,7 @@ class UserController extends Controller
 
         $user->favourites = trim($newFavourites, " ,\n\r\t\v\x00");
         $user->save();
+
         return redirect('/user/favourites');
     }
 
@@ -71,15 +71,9 @@ class UserController extends Controller
         return redirect('/user/favourites');
     }
 
-    public function getNearest()
-    {
+    public function getNearest() {}
 
-    }
-
-    public function unsubscribe()
-    {
-
-    }
+    public function unsubscribe() {}
 
     public function getUserList()
     {
@@ -92,7 +86,6 @@ from
 group by 
  initial asc;'")
             ->toArray();
-
 
         dd($userData);
     }

@@ -11,17 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-//        Schema::table('sites', function (Blueprint $table) {
-//            $table->boolean('published')->nullable();
-//        });
+        //        Schema::table('sites', function (Blueprint $table) {
+        //            $table->boolean('published')->nullable();
+        //        });
 
-            Schema::table('clubs', function (Blueprint $table) {
-                $table->boolean('published')->nullable();
-            });
+        Schema::table('clubs', function (Blueprint $table) {
+            $table->boolean('published')->nullable();
+        });
     }
-
-
-
 
     /**
      * Reverse the migrations.

@@ -8,14 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('blog_posts', function (Blueprint $table) {
+        Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('subtitle');
-            $table->text('content');
-            $table->enum('category', ['general', 'sites', 'clubs', 'development']);
-            $table->boolean('published');
+            $table->text('context');
+            $table->string('category');
             $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('updated_by');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -23,6 +23,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('blog_posts');
+        Schema::dropIfExists('posts');
     }
 };

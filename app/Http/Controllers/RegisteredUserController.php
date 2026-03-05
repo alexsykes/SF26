@@ -21,7 +21,6 @@ class RegisteredUserController extends Controller
             'g-recaptcha-response' => ['required', new ReCaptchaV3('submitRegister')],
         ]);
 
-
         $attrs['accept_terms'] = request()->has('accept_terms');
         $attrs['user_id'] = 0;
 
@@ -29,6 +28,7 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+
         return redirect('/');
     }
 
@@ -47,7 +47,6 @@ class RegisteredUserController extends Controller
 
         $favourites = DB::select('SELECT sites.*, favourites.id AS favID FROM favourites JOIN sites ON favourites.site_id = sites.id  WHERE favourites.user_id = ? ORDER BY sites.site_name', [$user->id]);
 
-
         if ($isSuperUser) {
             $sitesWithNotes = DB::table('sites')
                 ->rightJoin('notes', 'sites.id', '=', 'notes.item_id')
@@ -55,7 +54,7 @@ class RegisteredUserController extends Controller
                 ->get()
                 ->sortBy('site_name');
 
-//            $users = User::all()->sortBy(['isSuperUser' , 'isEditor', 'email']);
+            //            $users = User::all()->sortBy(['isSuperUser' , 'isEditor', 'email']);
 
             $users = DB::table('users')
                 ->orderBy('isSuperUser', 'desc')
@@ -74,7 +73,7 @@ class RegisteredUserController extends Controller
     public function editUserProfile($id)
     {
         $user = User::find($id);
-//        dd($user);
+        //        dd($user);
 
         return view('auth.userProfile', ['user' => $user]);
     }
@@ -111,8 +110,7 @@ class RegisteredUserController extends Controller
             'isSuperUser' => $isSuperUser,
         ]);
 
-//        dd($user);
-
+        //        dd($user);
 
         return redirect('auth/profile');
     }

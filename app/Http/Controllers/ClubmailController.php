@@ -17,12 +17,13 @@ class ClubmailController extends Controller
     {
         $clubmails = Clubmail::all()
             ->sortByDesc('created_at');
+
         return view('.clubmails.index', compact('clubmails'));
     }
 
     public function store(Request $request)
     {
-//        dd($request->all());
+        //        dd($request->all());
         $user = Auth::user();
         $updated_by = $user->id;
         $data = $request->validate([
@@ -34,7 +35,7 @@ class ClubmailController extends Controller
         ]);
 
         $data['updated_by'] = $updated_by;
-//        dd($data);
+        //        dd($data);
         Clubmail::create($data);
 
         return redirect('/clubmails');
@@ -48,6 +49,7 @@ class ClubmailController extends Controller
     public function edit($id)
     {
         $mail = Clubmail::find($id);
+
         return view('clubmails.edit', compact('mail'));
     }
 
@@ -56,13 +58,15 @@ class ClubmailController extends Controller
         switch ($request->input('action')) {
             case 'save':
                 $this->saveMail($request);
-                return redirect('/mail/edit/' . $request->id);
+
+                return redirect('/mail/edit/'.$request->id);
 
                 break;
             case 'prepare':
                 $this->saveMail($request);
                 $clubmail = Clubmail::find($request->id);
                 $user = Auth::user();
+
                 return view('clubmails.prepare', compact('clubmail', 'user'));
                 break;
         }
@@ -125,12 +129,11 @@ class ClubmailController extends Controller
                     ->select('name', 'email')
                     ->get();
 
-
                 $delay = 1;
                 foreach ($userList as $user) {
                     $sendToName = $user->name;
                     $sendToEmail = $user->email;
-//                    dump($sendToName, $replyToAddress, $replyToName);
+                    //                    dump($sendToName, $replyToAddress, $replyToName);
 
                     Mail::to(new Address($sendToEmail, $sendToName))
                         ->later(now()->addSeconds($delay++),
@@ -141,6 +144,7 @@ class ClubmailController extends Controller
             default:
                 throw new Exception('Unexpected value');
         }
+
         return redirect('/clubmails');
     }
 }

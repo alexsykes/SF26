@@ -9,6 +9,6 @@ class Favourite extends Model
     protected $fillable = [
         'user_id',
         'site_id',
-        'hits'
+        'hits',
     ];
 }

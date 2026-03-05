@@ -21,6 +21,7 @@ class IsEditor
                 return redirect('/');
             }
         }
+
         return redirect('/');
     }
 }

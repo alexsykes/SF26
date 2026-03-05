@@ -18,10 +18,7 @@ class BulkMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public Clubmail $clubmail, public $name, public $replyToAddress, public $replyToName)
-    {
-
-    }
+    public function __construct(public Clubmail $clubmail, public $name, public $replyToAddress, public $replyToName) {}
 
     /**
      * Get the message envelope.
