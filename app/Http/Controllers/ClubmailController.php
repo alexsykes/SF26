@@ -23,7 +23,6 @@ class ClubmailController extends Controller
 
     public function store(Request $request)
     {
-        //        dd($request->all());
         $user = Auth::user();
         $updated_by = $user->id;
         $data = $request->validate([
@@ -34,11 +33,9 @@ class ClubmailController extends Controller
             'content' => ['required', 'string'],
         ]);
 
-        $data['updated_by'] = $updated_by;
-        //        dd($data);
         Clubmail::create($data);
 
-        return redirect('/clubmails');
+        return redirect('/mails');
     }
 
     public function show(Clubmail $clubmail)
@@ -59,7 +56,7 @@ class ClubmailController extends Controller
             case 'save':
                 $this->saveMail($request);
 
-                return redirect('/mail/edit/'.$request->id);
+                return redirect('/mails');
 
                 break;
             case 'prepare':
@@ -145,6 +142,6 @@ class ClubmailController extends Controller
                 throw new Exception('Unexpected value');
         }
 
-        return redirect('/clubmails');
+        return redirect('/mails');
     }
 }

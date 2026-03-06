@@ -1,5 +1,5 @@
 <x-automail>
-
+{{--@dump($mail)--}}
     {{--    @dd($replyToName, $replyToAddress);--}}
     <form method="POST" action="/mail/update">
         @method('PATCH')
@@ -48,7 +48,7 @@
                     <input type="text"
                            class="w-full md:w-1/2"
                            name="replyToAddress"
-                           value={{$mail->replyToAddress}}
+                           value="{{$mail->replyToAddress}}"
                            required
                            id="replyToAddress"
                            placeholder="Email address">
@@ -63,14 +63,13 @@
             <label for="summary" class="block  font-semibold ">Summary</label>
             <div class="mt-2 ">
                 <div>
-                                <textarea name="summary"
-                                          required
-                                          id="summary"
-                                          rows="3"
-                                          class="w-full"
-                                          placeholder="Summary of email content">@php
-                                        echo $mail->summary;
-                                    @endphp</textarea>
+                    <input type="text"
+                           class="w-full md:w-1/2"Brief description of contents
+                           name="summary"
+                           value="{{$mail->summary}}"
+                           required
+                           id="summary"
+                           placeholder="Brief description of contents">
                 </div>
             </div>
             @error('summary')
@@ -107,7 +106,7 @@
                     class="border bg-black text-white  p-2 pr-4 pl-4 shadow-md hover:bg-gray-500 " name="action"
                     value="save">Save
             </button>
-            
+
             <button type="submit"
                     class="border bg-black text-white  p-2 pr-4 pl-4 shadow-md hover:bg-gray-500 " name="action"
                     value="prepare">Prepare

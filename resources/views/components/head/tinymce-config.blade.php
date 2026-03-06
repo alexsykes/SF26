@@ -6,8 +6,8 @@
         license_key: 'gpl',
         // plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
         // toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | image media table | align lineheight | link numlist bullist indent outdent | emoticons charmap | removeformat',
-        // plugins: 'link',
-        // toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link ',
+        plugins: 'link',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align | link ',
 
         link_assume_external_targets: true,
         relative_urls: false,

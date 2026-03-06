@@ -28,7 +28,7 @@ function sendmail(int $suggestionID, string $site_name)
     $email = $user->email;
     $name = $user->name;
 
-    info("Send mail to $name: ".$email);
+    info("Send mail to $name: " . $email);
 
     Mail::to($email)->send(new SuggestionReviewCompleted($name, $suggestion, $site_name, $siteID));
 }
@@ -76,7 +76,7 @@ class SiteController extends Controller
 
     public function sitesAZ()
     {
-        if (! isset($_COOKIE['curLat']) || ! isset($_COOKIE['curLat'])) {
+        if (!isset($_COOKIE['curLat']) || !isset($_COOKIE['curLat'])) {
             $curLat = 53.59476;
             $curLng = -2.56092;
 
@@ -102,7 +102,7 @@ class SiteController extends Controller
             $curLng = $_COOKIE['curLng'];
         }
 
-        if (! isset($_COOKIE['curZoom'])) {
+        if (!isset($_COOKIE['curZoom'])) {
             setcookie(
                 'curZoom',
                 7,
@@ -145,7 +145,7 @@ class SiteController extends Controller
         $userFavourites = $user->favourites;
         $numSites = 3;
 
-        if (! isset($_COOKIE['curLat']) || ! isset($_COOKIE['curLng'])) {
+        if (!isset($_COOKIE['curLat']) || !isset($_COOKIE['curLng'])) {
             $curLat = 53.59476;
             $curLng = -2.56092;
         } else {
@@ -206,7 +206,7 @@ class SiteController extends Controller
         //      Setup data arrays and get location if set
         $directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
 
-        if (! isset($_COOKIE['curLat']) || ! isset($_COOKIE['curLng'])) {
+        if (!isset($_COOKIE['curLat']) || !isset($_COOKIE['curLng'])) {
             $curLat = -2.547855;
             $curLng = 54.00366;
         } else {
@@ -232,7 +232,7 @@ class SiteController extends Controller
         $wind_speed = $current->wind_speed;
         $wind_deg = $current->wind_deg;
 
-        $windIndex = (int) (($wind_deg * 16 / 360) + 0.5);
+        $windIndex = (int)(($wind_deg * 16 / 360) + 0.5);
 
         if ($windIndex == 16) {
             $windIndex = 0;
@@ -288,7 +288,7 @@ class SiteController extends Controller
     {
         $directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N'];
 
-        if (! isset($_COOKIE['lat']) || ! isset($_COOKIE['lng'])) {
+        if (!isset($_COOKIE['lat']) || !isset($_COOKIE['lng'])) {
             $curLat = -2.547855;
             $curLng = 54.00366;
         } else {
@@ -454,7 +454,7 @@ class SiteController extends Controller
         $site->end = $directions[$endIndex];
         $site->begin = $directions[$beginIndex];
 
-        $site->site_wind_directions = $directions[$beginIndex].' to '.$directions[$endIndex];
+        $site->site_wind_directions = $directions[$beginIndex] . ' to ' . $directions[$endIndex];
 
         $site->site_name = $request->input('site_name');
         $site->site_description = $request->input('site_description');
@@ -464,6 +464,7 @@ class SiteController extends Controller
         $site->to = $request->input('to');
         $site->lat = $request->input('latInput');
         $site->lng = $request->input('lngInput');
+        $site->site_updated_at = now();
 
         $site->update();
         //         Site updated - now update site_wind_directions
@@ -571,7 +572,7 @@ class SiteController extends Controller
         $ipAddress = $request->ip();
         $direction = $request->direction;
 
-        Log::info("$userName request from $ipAddress for: ".$direction);
+        Log::info("$userName request from $ipAddress for: " . $direction);
 
         $directions = ['Show All', 'N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
 

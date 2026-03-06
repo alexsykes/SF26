@@ -85,7 +85,7 @@ Route::post('/clubmails/post', [ClubmailController::class, 'sendMail'])->name('s
 Route::get('/clubs', [ClubController::class, 'index'])->name('clubs');
 Route::get('/club/edit/{id}', [ClubController::class, 'edit'])->name('club.edit');
 Route::patch('/club/update', [ClubController::class, 'update'])->name('club.update');
-Route::get('/club/add', [ClubController::class, 'add'])->name('club.add');
+Route::get('/club/register', [ClubController::class, 'add'])->name('club.register');
 Route::post('/club/store', [ClubController::class, 'store'])->name('club.store');
 
 Route::post('fetchSites', [SiteController::class, 'fetchSites'])->name('fetchSites');

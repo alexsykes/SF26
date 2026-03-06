@@ -45,7 +45,7 @@
                     <input type="text"
                            class="w-full md:w-1/2"
                            name="replyToAddress"
-                           value={{$replyToAddress}}
+
                            required
                            id="replyToAddress"
                            placeholder="Email address">
@@ -60,15 +60,16 @@
             <label for="summary" class="block  font-semibold ">Summary</label>
             <div class="mt-2 ">
                 <div>
-                                <textarea name="summary"
-                                          required
-                                          id="summary"
-                                          rows="3"
-                                          class="w-full"
-                                          placeholder="Summary of email content"></textarea>
+                    <input type="text"
+                           class="w-full md:w-1/2"
+                           name="summary"
+
+                           required
+                           id="summary"
+                           placeholder="Brief description of contents">
                 </div>
             </div>
-            @error('summary')
+            @error('replyToAddress')
             <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
             @enderror
         </div>
