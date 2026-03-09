@@ -464,7 +464,6 @@ class SiteController extends Controller
         $site->to = $request->input('to');
         $site->lat = $request->input('latInput');
         $site->lng = $request->input('lngInput');
-        $site->site_updated_at = now();
 
         $site->update();
         //         Site updated - now update site_wind_directions
@@ -602,5 +601,23 @@ class SiteController extends Controller
         }
 
         return $sites;
+    }
+
+    public function getUpdatedSites()
+    {
+        $updatedSites = Site::where('published', true);
+
+    }
+
+    public function updatedSites()
+    {
+        $updates = Suggestion::where('action', 'accept')
+            ->join('sites', 'sites.id', '=', 'suggestions.siteID')
+            ->orderBy('suggestions.created_at', 'desc')
+            ->select('suggestions.created_at', 'sites.site_name','sites.id', 'suggestions.suggestion' )
+            ->limit(20)
+            ->get();
+
+        return view('sites.updates', ['updates' => $updates]);
     }
 }

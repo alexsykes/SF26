@@ -41,6 +41,7 @@ Route::get('/site/publish/{id}', [SiteController::class, 'publishSite'])->middle
 // Route::patch('/site/publish', [SiteController::class, 'publishSite'])->middleware([IsEditor::class])->name('site.publish');
 
 Route::patch('/site/update', [SiteController::class, 'update'])->middleware(['auth', 'verified'])->name('site.update');
+Route::get('/sites/updated', [SiteController::class, 'updatedSites'])->middleware(['auth', 'verified'])->name('updatedSites');
 
 Route::get('/sitemap', [SiteController::class, 'sitemap'])->middleware(['auth', 'verified'])->name('sitemap');
 Route::put('/sitemap', [SiteController::class, 'sitemap'])->middleware(['auth', 'verified'])->name('sitemap_with_direction');
@@ -66,9 +67,9 @@ Route::post('/contact', [AdminController::class, 'sendMail'])->name('sendMail');
 
 // LocateController
 Route::get('/nearest', [SiteController::class, 'nearest'])->middleware(['auth', 'verified'])->name('nearest');
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 Route::put('/nearest', [SiteController::class, 'nearest'])->middleware(['auth', 'verified'])->name('nearest_with_direction');
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 // ProfileController
 Route::patch('/profile/unsubscribe', [ProfileController::class, 'unsubscribe'])->middleware('auth', 'verified')->name('profile.unsubscribe');
@@ -85,8 +86,9 @@ Route::post('/clubmails/post', [ClubmailController::class, 'sendMail'])->name('s
 Route::get('/clubs', [ClubController::class, 'index'])->name('clubs');
 Route::get('/club/edit/{id}', [ClubController::class, 'edit'])->name('club.edit');
 Route::patch('/club/update', [ClubController::class, 'update'])->name('club.update');
-Route::get('/club/register', [ClubController::class, 'add'])->name('club.register');
+Route::get('/club/register', [ClubController::class, 'add'])->middleware('auth', 'verified')->name('club.register');
 Route::post('/club/store', [ClubController::class, 'store'])->name('club.store');
+Route::get('/club/list', [ClubController::class, 'list'])->middleware('auth', 'verified')->name('club.list');
 
 Route::post('fetchSites', [SiteController::class, 'fetchSites'])->name('fetchSites');
 

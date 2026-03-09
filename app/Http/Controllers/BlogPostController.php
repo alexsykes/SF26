@@ -65,7 +65,7 @@ class BlogPostController extends Controller
     public function display()
     {
         $blogPosts = BlogPost::where('published', true)
-            ->where('id', 4)
+//            ->where('id', 4)
             ->orderBy('created_at', 'desc')
             ->get();
 

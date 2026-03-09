@@ -112,7 +112,6 @@ class ClubmailController extends Controller
         $distribution = $request->distribution;
 
         switch ($distribution) {
-
             case 'test':
                 $address = 'alex@alexsykes.net';
                 $address = 'alexs130151@gmail.com';
@@ -130,7 +129,6 @@ class ClubmailController extends Controller
                 foreach ($userList as $user) {
                     $sendToName = $user->name;
                     $sendToEmail = $user->email;
-                    //                    dump($sendToName, $replyToAddress, $replyToName);
 
                     Mail::to(new Address($sendToEmail, $sendToName))
                         ->later(now()->addSeconds($delay++),

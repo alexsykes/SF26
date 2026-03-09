@@ -16,6 +16,13 @@
                     </x-nav-link-violet>
                 </div>
 
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+
+                    <x-nav-link-violet :href="route('updatedSites')" :active="request()->routeIs('updatedSites')">
+                        Updates
+                    </x-nav-link-violet>
+                </div>
+
                 @if(Auth::user()->isEditor)
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <x-nav-link-violet :href="route('site.add')" :active="request()->routeIs('site.add')">
@@ -108,6 +115,10 @@
 
             <x-responsive-nav-link :href="route('favourites')" :active="request()->routeIs('favourites')">
                 {{ __('Favourites') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('updatedSites')" :active="request()->routeIs('updatedSites')">
+                {{ __('Updates') }}
             </x-responsive-nav-link>
 
             @if(Auth::user()->isEditor)

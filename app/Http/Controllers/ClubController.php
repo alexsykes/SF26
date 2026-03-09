@@ -78,4 +78,12 @@ class ClubController extends Controller
 
         return response()->json();
     }
+
+    public function list()
+    {
+        $clubs = Club::where('status', 'Active')
+            ->orderBy('clubs.name')
+            ->get();
+        return view('clubs.list', compact('clubs'));
+    }
 }
