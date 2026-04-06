@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\DataRequestClosed;
 use App\Events\DataRequestOpened;
+use App\Events\DataRequestRefusedEvent;
 use App\Models\DataRequest;
 use App\Models\User;
 use App\Rules\ReCaptchaV3;
@@ -14,7 +15,9 @@ use Illuminate\Support\Facades\DB;
 
 class DataController extends Controller
 {
-    public function index() {}
+    public function index()
+    {
+    }
 
     public function dataRequest()
     {
@@ -43,7 +46,7 @@ class DataController extends Controller
     public function list()
     {
         $dataRequest = DataRequest::leftJoin('users', 'data_requests.created_by', '=', 'users.id')
-            ->where('data_requests.completed', false)
+//            ->where('data_requests.completed', false)
             ->select('data_requests.*', 'users.name')
             ->orderBy('data_requests.approved')
             ->get();
@@ -118,13 +121,13 @@ class DataController extends Controller
             foreach ($tables as $table) {
                 $data = DB::table($table)->get();
                 //                $csvFileName = $exportDir . $table . '.csv';
-                $csvFileName = $exportDir.'Request'.$requestID.'_'.$table.'.csv';
+                $csvFileName = $exportDir . 'Request' . $requestID . '_' . $table . '.csv';
                 $csvFile = fopen($csvFileName, 'w');
-                $headers = array_keys((array) $data[0]); // Get the column headers from the first row
+                $headers = array_keys((array)$data[0]); // Get the column headers from the first row
                 fputcsv($csvFile, $headers);
 
                 foreach ($data as $row) {
-                    fputcsv($csvFile, (array) $row);
+                    fputcsv($csvFile, (array)$row);
                 }
                 fclose($csvFile);
             }
@@ -144,8 +147,8 @@ class DataController extends Controller
             }
 
             $jsonData = json_encode($dataToExport);
-            $filename = 'Request'.$requestID.'.json';
-            file_put_contents($exportDir.$filename, $jsonData);
+            $filename = 'Request' . $requestID . '.json';
+            file_put_contents($exportDir . $filename, $jsonData);
         }
     }
 
@@ -176,11 +179,11 @@ class DataController extends Controller
             //            dd($tablesToExport);
             try {
                 $dump = new IMysqldump\Mysqldump("mysql:host=$host;dbname=$dbname", $dbuser, $pass, dumpSettings: ['include-tables' => $tablesToExport]);
-                $filename = 'Request'.$requestID.'.sql';
-                $dump->start($exportDir.$filename);
+                $filename = 'Request' . $requestID . '.sql';
+                $dump->start($exportDir . $filename);
                 info('Success');
             } catch (\Exception $e) {
-                info('mysqldump-php error: '.$e->getMessage());
+                info('mysqldump-php error: ' . $e->getMessage());
             }
         }
     }
@@ -209,7 +212,8 @@ class DataController extends Controller
         if ($dataRequest->approved == 'Refused') {
             $dataRequest->completed = true;
             $dataRequest->update();
-            DataRequestClosed::dispatch($dataRequest);
+            DataRequestRefusedEvent::dispatch($dataRequest);
+            return redirect('/data/requests');
         }
 
         if ($request->submit != 'process' || is_null($tables)) {
@@ -226,7 +230,7 @@ class DataController extends Controller
         $requestID = $dataRequest->id;
         $exportDir = "downloads/$creatorID/";
 
-        if (! is_dir($exportDir)) {
+        if (!is_dir($exportDir)) {
             mkdir($exportDir);
         }
 

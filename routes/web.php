@@ -98,7 +98,7 @@ Route::get('/data/requests', [DataController::class, 'list'])->middleware(IsSupe
 Route::get('/request/process/{id}', [DataController::class, 'process'])->middleware(IsSuperUser::class)->name('request.process');
 Route::post('/request/respond', [DataController::class, 'respond'])->middleware(IsSuperUser::class)->name('respond');
 Route::post('/request/export', [DataController::class, 'export'])->middleware(IsSuperUser::class)->name('export');
-Route::post('request/action', [DataController::class, 'action'])->middleware(IsSuperUser::class)->name('action');
+Route::post('/request/action', [DataController::class, 'action'])->middleware(IsSuperUser::class)->name('action');
 
 // BlogPostController
 Route::get('/blogs', [BlogPostController::class, 'index'])->middleware('auth', 'verified')->name('blogs');

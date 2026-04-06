@@ -21,15 +21,16 @@ class DataRequestClosed
      */
     public function __construct(public DataRequest $dataRequest)
     {
-        info('Event: DataRequestClosed');
+        info('Event: DataRequestID: '.$dataRequest->id.' ' . $dataRequest->approved);
         //        dd($dataRequest);
         $user = User::find($dataRequest->created_by);
         $username = $user->name;
         $email = $user->email;
         $to = new Address($email, $username);
         $bcc = new Address('info@slopefinder.uk', 'SlopeFinder UK Admin');
-
-        Mail::to($to)->bcc($bcc)
+//
+        Mail::to($to)
+            ->bcc($bcc)
             ->send(new DataRequestProcessed($this->dataRequest, $username));
 
     }

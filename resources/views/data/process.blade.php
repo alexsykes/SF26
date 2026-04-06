@@ -4,8 +4,18 @@
         $tableValueArray = array("Sites","Wind Directions for Sites","Clubs");
         $tableNameArray = array("sites","site_wind_directions","clubs");
         $selectedTables = explode(',',$dataRequest->tables);
-        
+
     @endphp
+    @if ($errors->any())
+        <div class="text-red-500 bg-red-100 border-red-500 border shadow-lg rounded-lg p-2 pl-4 alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div>Data requested - {{$dataRequest->description}}</div>
     <div>Purpose - {{$dataRequest->purpose}}</div>
     <div>Format - {{$dataRequest->data_format}}</div>
@@ -22,9 +32,10 @@
                           name="comments"
                           id="comments"
                           rows="3"
-                          required
-                          class="block w-full rounded-md bg-white px-3 py-1.5 text-base  outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:"
-                          placeholder="">{{$dataRequest->comments}}</textarea>
+
+                          class="block w-full rounded-md bg-white px-3 py-1.5 text-base  outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:">
+                      {{$dataRequest->comments}}
+                  </textarea>
                 </div>
 
                 @error('comments')
@@ -78,7 +89,7 @@
                             @enderror
                         </div>
 
-                        <div name="buttons" class=" pl-0 pt-6 flex space-x-4">
+                        <div id="buttons" class=" pl-0 pt-6 flex space-x-4">
                             <button class="border bg-white p-2 pr-4 shadow-md hover:bg-gray-200 "
                                     onclick="history.back()">Go
                                 Back
@@ -91,7 +102,9 @@
                                     class="border bg-black text-white  p-2 pr-4 pl-4 shadow-md hover:bg-gray-700 ">
                                 Process
                             </button>
+
                         </div>
+                </div>
         </form>
     </div>
 </x-admin>

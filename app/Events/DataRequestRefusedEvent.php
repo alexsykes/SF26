@@ -2,27 +2,30 @@
 
 namespace App\Events;
 
-use App\Mail\DataRequestReceived;
 use App\Models\DataRequest;
 use App\Models\User;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Queue\SerializesModels;
+use \App\Mail\DataRequestRefused;
 use Illuminate\Support\Facades\Mail;
 
-class DataRequestOpened
+class DataRequestRefusedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(DataRequest $dataRequest)
+    public function __construct(public DataRequest $dataRequest)
     {
-        //
-        info('DataRequestOpened');
+        info('Event: DataRequestRefused: '.$dataRequest->id);
+
         $user = User::find($dataRequest->created_by);
         $username = $user->name;
         $email = $user->email;
@@ -31,7 +34,7 @@ class DataRequestOpened
 
         Mail::to($to)
             ->bcc($bcc)
-            ->send(new DataRequestReceived($username));
+            ->send(new DataRequestRefused($this->dataRequest, $username));
     }
 
     /**

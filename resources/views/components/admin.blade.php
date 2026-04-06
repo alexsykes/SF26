@@ -107,6 +107,8 @@
     </style>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{{ config('app.name', 'SlopeFinder UK') }} - Admin</title>
 </head>
 <body class="h-full bg-violet-700 text-white">
 <main class="bg-violet-100 text-black">

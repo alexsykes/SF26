@@ -33,6 +33,7 @@ class DataRequestController extends Controller
 
     public function update(Request $request, DataRequest $dataRequest)
     {
+//        dd($request->all());
         $data = $request->validate([
             'created_by' => ['required', 'integer'],
             'description' => ['required'],
@@ -43,7 +44,6 @@ class DataRequestController extends Controller
         ]);
 
         $dataRequest->update($data);
-
         return $dataRequest;
     }
 
