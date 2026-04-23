@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\NewUserRegistration;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Rules\ReCaptchaV3;
@@ -26,12 +27,12 @@ class RegisteredUserController extends Controller
     {
 
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Password::defaults()],
-            'agree' => ['required', 'accepted'],
-            'g-recaptcha-response' => ['required', new ReCaptchaV3('registerUser')],
-        ]
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+                'password' => ['required', 'confirmed', Password::defaults()],
+                'agree' => ['required', 'accepted'],
+                'g-recaptcha-response' => ['required', new ReCaptchaV3('registerUser')],
+            ]
         );
         $user = User::create([
             'name' => $request->name,
@@ -39,10 +40,9 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
         event(new Registered($user));
-        info("New user registration: $user->name");
         Auth::login($user);
-
-        return redirect('/');
+        NewUserRegistration::dispatch($user);
+        return redirect('/sitemap');
     }
 
     /**
