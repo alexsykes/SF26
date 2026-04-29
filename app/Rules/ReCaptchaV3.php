@@ -52,10 +52,10 @@ class ReCaptchaV3 implements ValidationRule
                 return;
             }
 
-            // Passed test and proceed
+            // Tests pass so proceed
             if ($body['success'] == true) {
-                $ip = Request::ip();
-                Log::info("Recaptcha success: $ip");
+                $score = $body['score'];
+                Log::info('Google reCAPTCHA score: ' . $score);
             }
 
             // When this fails it means the action didn't match the one set in the button's data-action.

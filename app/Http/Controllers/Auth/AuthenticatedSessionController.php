@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Rules\ReCaptchaV3;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +27,7 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->validate([
-            //            'g-recaptcha-response' => ['required', new ReCaptchaV3('registerUser')],
+            'g-recaptcha-response' => ['required', new ReCaptchaV3('login')],
         ]);
 
         $request->authenticate();

@@ -70,7 +70,7 @@
             <x-primary-button class="g-recaptcha btn btn-primary btn-lg ms-4"
                               data-sitekey="{{ config('services.recaptcha_v3.siteKey') }}"
                               data-callback="onSubmit"
-                              data-action="registerUser">Submit
+                              data-action="login">Submit
             </x-primary-button>
         </div>
     </form>
